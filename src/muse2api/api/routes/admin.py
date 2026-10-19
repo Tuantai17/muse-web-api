@@ -15,13 +15,60 @@ from ... import __version__
 from ...accounts.keepalive import renew_account
 from ...accounts.model import Account, AccountStatus
 from ...auth.keys import ApiKey
-from ...errors import InvalidRequest, NotFound
+from ...errors import InvalidRequest, Muse2APIError, NotFound
 from ...services.container import Services
 from ...upstream.muse import missing_session_cookies
 from ..deps import get_services, require_admin_key
-from ..schemas import AccountCreate, AccountUpdate, KeyCreate, KeyUpdate
+from ..schemas import AccountCreate, AccountsImportRequest, AccountUpdate, KeyCreate, KeyUpdate
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(require_admin_key)])
+
+
+def parse_cookies(value: dict[str, str] | str | list[dict]) -> tuple[dict[str, str], dict[str, int]]:
+    """Normalise the three cookie import formats into ``(cookies, cookie_expires)``.
+
+    ``cookie_expires`` maps cookie name -> unix expiry seconds; only cookie-export
+    lists carry expiry info, the other formats return an empty dict.
+    """
+    if isinstance(value, dict):
+        return dict(value), {}
+    if isinstance(value, str):
+        cookies: dict[str, str] = {}
+        for part in value.split(";"):
+            part = part.strip()
+            if not part or "=" not in part:
+                continue
+            name, _, val = part.partition("=")
+            name = name.strip()
+            if name:
+                cookies[name] = val.strip()
+        return cookies, {}
+    if isinstance(value, list):
+        cookies, expires = {}, {}
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict) or not entry.get("name"):
+                raise InvalidRequest(f"cookies[{i}] must be an object with 'name' and 'value'")
+            name = str(entry["name"])
+            cookies[name] = str(entry.get("value", ""))
+            exp = entry.get("expirationDate")
+            if exp is not None:
+                try:
+                    expires[name] = int(float(exp))
+                except (TypeError, ValueError):
+                    raise InvalidRequest(f"cookies[{i}].expirationDate is not a number") from None
+        return cookies, expires
+    raise InvalidRequest("cookies must be a dict, a raw 'Cookie' header string, or a cookie-export list")
+
+
+def _build_account(item: AccountCreate) -> Account:
+    """Build an Account from a create payload, normalising the cookie format first."""
+    cookies, expires = parse_cookies(item.cookies)
+    cookies = {k: v for k, v in cookies.items() if v}
+    expires = {k: v for k, v in expires.items() if k in cookies}
+    if not cookies:
+        raise InvalidRequest("cookies must not be empty")
+    return Account(label=item.label, cookies=cookies,
+                   cookie_expires={**expires, **item.cookie_expires}, enabled=item.enabled)
 
 
 def _get(svc: Services, account_id: str) -> Account:
@@ -48,13 +95,26 @@ async def list_accounts(svc: Services = Depends(get_services)) -> dict:
 
 @router.post("/accounts")
 async def create_account(body: AccountCreate, svc: Services = Depends(get_services)) -> dict:
-    cookies = {k: v for k, v in body.cookies.items() if v}
-    if not cookies:
-        raise InvalidRequest("cookies must not be empty")
-    acc = Account(label=body.label, cookies=cookies, cookie_expires=body.cookie_expires,
-                  enabled=body.enabled)
+    acc = _build_account(body)
     await svc.pool.upsert(acc)
-    return {"account": acc.public(), "missing_cookies": missing_session_cookies(cookies)}
+    return {"account": acc.public(), "missing_cookies": missing_session_cookies(acc.cookies)}
+
+
+@router.post("/accounts/import")
+async def import_accounts(body: AccountsImportRequest,
+                          svc: Services = Depends(get_services)) -> dict:
+    """Import several accounts in one request; a failing entry does not abort the batch."""
+    results = []
+    for i, item in enumerate(body.accounts):
+        try:
+            acc = _build_account(item)
+        except Muse2APIError as e:
+            results.append({"index": i, "ok": False, "error": e.message, "code": e.code})
+            continue
+        await svc.pool.upsert(acc)
+        results.append({"index": i, "ok": True, "account": acc.public(),
+                        "missing_cookies": missing_session_cookies(acc.cookies)})
+    return {"data": results}
 
 
 @router.patch("/accounts/{account_id}")

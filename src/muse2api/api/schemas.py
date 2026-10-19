@@ -61,9 +61,20 @@ class VideoCreateRequest(_Lenient):
 
 class AccountCreate(BaseModel):
     label: str = ""
-    cookies: dict[str, str]
+    # Three accepted formats (TODO D1):
+    #   1. dict {"name": "value"}
+    #   2. raw "Cookie" request header string "a=1; b=2"
+    #   3. list of cookie-export entries (e.g. EditThisCookie):
+    #      [{"name": ..., "value": ..., "expirationDate": ...}, ...]
+    cookies: dict[str, str] | str | list[dict[str, Any]]
     cookie_expires: dict[str, int] = Field(default_factory=dict)
     enabled: bool = True
+
+
+class AccountsImportRequest(BaseModel):
+    """Bulk cookie import: every entry is validated like AccountCreate; entries that
+    fail are reported individually without aborting the batch."""
+    accounts: list[AccountCreate] = Field(min_length=1)
 
 
 class AccountUpdate(BaseModel):

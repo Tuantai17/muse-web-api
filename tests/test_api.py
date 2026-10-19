@@ -287,3 +287,112 @@ def test_admin_accounts_crud(client, auth, admin):
     assert client.post(f"/admin/accounts/{acc['id']}/renew", headers=admin).json()["ok"]
     assert client.delete(f"/admin/accounts/{acc['id']}", headers=admin).status_code == 200
     assert client.get("/admin/status", headers=admin).json()["accounts"]["total"] == 0
+
+
+def test_admin_account_cookie_header_string(client, admin):
+    r = client.post("/admin/accounts", headers=admin,
+                    json={"label": "hdr", "cookies": "hatch_sess=abc123; hatch_vml=xyz; empty="})
+    assert r.status_code == 200
+    # The empty value is dropped, like with the dict format.
+    acc_id = r.json()["account"]["id"]
+    listed = {a["id"]: a for a in client.get("/admin/accounts", headers=admin).json()["data"]}
+    masked = listed[acc_id]["cookies"]
+    assert set(masked) == {"hatch_sess", "hatch_vml"}
+    assert "hatch_vml" not in r.json()["missing_cookies"]
+
+
+def test_admin_account_cookie_export_list(client, admin):
+    r = client.post("/admin/accounts", headers=admin, json={
+        "label": "exp", "cookies": [
+            {"name": "hatch_sess", "value": "abc123", "expirationDate": 1790000000.5,
+             "domain": ".muse.ai", "httpOnly": True},
+            {"name": "hatch_vml", "value": "xyz"},
+        ]})
+    assert r.status_code == 200
+    acc_id = r.json()["account"]["id"]
+    listed = {a["id"]: a for a in client.get("/admin/accounts", headers=admin).json()["data"]}
+    assert listed[acc_id]["cookie_expires"] == {"hatch_sess": 1790000000}
+
+
+def test_admin_account_cookie_bad_format(client, admin):
+    bad_entry = client.post("/admin/accounts", headers=admin,
+                            json={"cookies": [{"value": "no-name"}]})
+    assert bad_entry.status_code == 400
+    empty = client.post("/admin/accounts", headers=admin, json={"cookies": "  ;  "})
+    assert empty.status_code == 400
+
+
+def test_admin_accounts_bulk_import(client, admin):
+    r = client.post("/admin/accounts/import", headers=admin, json={"accounts": [
+        {"label": "b1", "cookies": {"hatch_sess": "one"}},
+        {"label": "b2", "cookies": "hatch_sess=two; hatch_vml=three"},
+        {"label": "b3", "cookies": {}},  # fails, but must not abort the batch
+    ]})
+    assert r.status_code == 200
+    rows = r.json()["data"]
+    assert [x["ok"] for x in rows] == [True, True, False]
+    assert rows[2]["code"] == "invalid_request"
+    assert client.get("/admin/status", headers=admin).json()["accounts"]["total"] == 2
+
+
+def test_chat_stream_heartbeat(settings, auth):
+    # C4: with stream_heartbeat_interval set, the 200 goes out immediately and
+    # ': keepalive' SSE comments precede the first data chunk.
+    from fastapi.testclient import TestClient
+
+    from muse2api.app import create_app
+    from muse2api.drivers.mock import MockDriver
+
+    settings.stream_heartbeat_interval = 0.05
+    app = create_app(settings, MockDriver(delay=0.3))
+    with TestClient(app) as c:
+        with c.stream("POST", "/v1/chat/completions", headers=auth, json={
+            "messages": [{"role": "user", "content": "slow stream"}], "stream": True,
+        }) as r:
+            assert r.status_code == 200
+            lines = list(r.iter_lines())
+    keepalives = [ln for ln in lines if ln.startswith(":")]
+    data_lines = [ln for ln in lines if ln.startswith("data: ")]
+    assert len(keepalives) >= 1, lines
+    assert lines.index(keepalives[0]) < lines.index(data_lines[0])
+    assert data_lines[-1][6:] == "[DONE]"
+    text = "".join(
+        json.loads(ln[6:])["choices"][0]["delta"].get("content", "")
+        for ln in data_lines[:-1] if json.loads(ln[6:])["choices"])
+    assert "slow stream" in text
+
+
+def test_chat_stream_no_heartbeat_by_default(client, auth):
+    # Default (interval 0): no ': keepalive' comments; first token awaited pre-200.
+    with client.stream("POST", "/v1/chat/completions", headers=auth, json={
+        "messages": [{"role": "user", "content": "no heartbeat"}], "stream": True,
+    }) as r:
+        assert r.status_code == 200
+        lines = list(r.iter_lines())
+    assert not any(ln.startswith(":") for ln in lines)
+
+
+def test_chat_stream_heartbeat_upstream_error(settings, auth):
+    # Heartbeat mode commits the 200 before the first token, so an upstream
+    # failure surfaces as an SSE error event instead of an HTTP error.
+    from fastapi.testclient import TestClient
+
+    from muse2api.app import create_app
+    from muse2api.drivers.mock import MockDriver
+    from muse2api.errors import UpstreamError
+
+    class FailingDriver(MockDriver):
+        async def chat_stream(self, account, req):
+            if False:
+                yield
+            raise UpstreamError("boom")
+
+    settings.stream_heartbeat_interval = 0.05
+    app = create_app(settings, FailingDriver())
+    with TestClient(app) as c:
+        with c.stream("POST", "/v1/chat/completions", headers=auth, json={
+            "messages": [{"role": "user", "content": "x"}], "stream": True,
+        }) as r:
+            assert r.status_code == 200
+            lines = list(r.iter_lines())
+    assert any("boom" in ln for ln in lines), lines

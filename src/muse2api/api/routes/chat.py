@@ -75,22 +75,40 @@ async def chat_completions(body: ChatCompletionRequest, request: Request,
             },
         }
 
-    # Pull the first delta before committing to a 200 so that account/upstream
-    # failures surface as proper HTTP errors instead of a broken event stream.
-    try:
-        first = await anext(stream)
-    except StopAsyncIteration:
-        first = ""
-
     def chunk(delta: dict, finish: str | None = None) -> dict:
         return {"id": completion_id, "object": "chat.completion.chunk", "created": created,
                 "model": model_name,
                 "choices": [{"index": 0, "delta": delta, "finish_reason": finish}]}
 
-    async def events() -> AsyncIterator[bytes]:
-        produced = first
+    async def events(first: str | None) -> AsyncIterator[bytes]:
+        # ``first`` is the pre-fetched first delta when heartbeats are disabled;
+        # when enabled it is None and the first token is awaited here, after the
+        # 200 (headers) has already been committed to the client.
         try:
-            yield _sse(chunk({"role": "assistant", "content": first}))
+            if first is None and svc.settings.stream_heartbeat_interval > 0:
+                # C4: some clients/proxies drop idle SSE connections while the
+                # gateway waits for the first upstream token (up to
+                # first_token_timeout). Send SSE comment heartbeats until it
+                # arrives. asyncio.wait (not wait_for) polls so the in-flight
+                # __anext__ is never cancelled between heartbeats.
+                pending = asyncio.ensure_future(anext(stream))
+                try:
+                    while True:
+                        done, _ = await asyncio.wait(
+                            {pending},
+                            timeout=svc.settings.stream_heartbeat_interval)
+                        if done:
+                            try:
+                                first = pending.result()
+                            except StopAsyncIteration:
+                                first = ""
+                            break
+                        yield b": keepalive\n\n"
+                finally:
+                    if not pending.done():
+                        pending.cancel()
+            produced = first or ""
+            yield _sse(chunk({"role": "assistant", "content": produced}))
             async for delta in stream:
                 produced += delta
                 yield _sse(chunk({"content": delta}))
@@ -112,5 +130,21 @@ async def chat_completions(body: ChatCompletionRequest, request: Request,
             await stream.aclose()
         yield _sse("[DONE]")
 
-    return StreamingResponse(events(), media_type="text/event-stream",
+    # With stream_heartbeat_interval set (C4), the 200 goes out immediately and
+    # ': keepalive' SSE comments are sent while the first token is pending;
+    # upstream errors then surface as SSE error events instead of HTTP codes.
+    if svc.settings.stream_heartbeat_interval > 0:
+        return StreamingResponse(events(None), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache",
+                                          "X-Accel-Buffering": "no"})
+
+    # Default: pull the first delta before committing to a 200 so that
+    # account/upstream failures surface as proper HTTP errors instead of a
+    # broken event stream.
+    try:
+        first = await anext(stream)
+    except StopAsyncIteration:
+        first = ""
+
+    return StreamingResponse(events(first), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})

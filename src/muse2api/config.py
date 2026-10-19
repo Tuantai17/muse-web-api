@@ -61,6 +61,11 @@ class Settings(BaseSettings):
     # --- timeouts (seconds) ---
     chat_timeout: float = 300.0
     first_token_timeout: float = 45.0
+    stream_heartbeat_interval: float = Field(
+        default=0.0,
+        description="SSE ': keepalive' comment interval while waiting for the first "
+        "stream token; 0 disables. Keeps idle clients/proxies from timing out.",
+    )
     image_timeout: float = 240.0
     video_timeout: float = 600.0
 
