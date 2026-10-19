@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 import base64
+import ipaddress
 import mimetypes
 import re
+import socket
+import urllib.parse
 import uuid
 from pathlib import Path
 
@@ -48,6 +52,66 @@ class MediaStore:
         return mimetypes.guess_type(name)[0] or "application/octet-stream"
 
 
+_MAX_FETCH_BYTES = 20 * 1024 * 1024  # 20 MiB cap on server-side image fetches
+_MAX_REDIRECTS = 5
+
+
+def _assert_public_url(url: str) -> str:
+    """Reject non-http(s) URLs and hosts resolving to non-public IPs (SSRF guard)."""
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        raise InvalidRequest("image_url must be a public http(s) URL")
+    return url
+
+
+async def _assert_public_host(hostname: str) -> None:
+    """Reject hostnames resolving to non-public IPs (SSRF guard)."""
+    try:
+        infos = await asyncio.get_running_loop().getaddrinfo(
+            hostname, None, type=socket.SOCK_STREAM
+        )
+    except socket.gaierror as exc:
+        raise InvalidRequest("image_url host does not resolve") from exc
+    for info in infos:
+        ip = ipaddress.ip_address(info[4][0])
+        if ip.version == 6 and ip.ipv4_mapped is not None:
+            ip = ip.ipv4_mapped
+        if (
+            ip.is_private
+            or ip.is_loopback
+            or ip.is_link_local
+            or ip.is_multicast
+            or ip.is_reserved
+            or ip.is_unspecified
+        ):
+            raise InvalidRequest("image_url must resolve to a public IP address")
+
+
+async def _fetch_public_image(url: str, *, timeout: float) -> tuple[bytes, str]:
+    """Fetch an image URL with manual redirect validation and a size cap."""
+    url = _assert_public_url(url)
+    await _assert_public_host(urllib.parse.urlparse(url).hostname or "")
+    async with httpx.AsyncClient(timeout=timeout, follow_redirects=False) as client:
+        for _ in range(_MAX_REDIRECTS + 1):
+            async with client.stream("GET", url) as resp:
+                if resp.status_code in (301, 302, 303, 307, 308):
+                    location = resp.headers.get("location")
+                    if not location:
+                        raise InvalidRequest("image_url redirect missing location")
+                    url = _assert_public_url(urllib.parse.urljoin(url, location))
+                    await _assert_public_host(urllib.parse.urlparse(url).hostname or "")
+                    continue
+                resp.raise_for_status()
+                mime = resp.headers.get("content-type", "image/png").split(";")[0]
+                body = bytearray()
+                async for chunk in resp.aiter_bytes(65536):
+                    body.extend(chunk)
+                    if len(body) > _MAX_FETCH_BYTES:
+                        raise InvalidRequest("image_url response exceeds 20 MiB")
+                return bytes(body), mime
+        raise InvalidRequest("image_url exceeded redirect limit")
+
+
 async def load_image_ref(ref: str, *, timeout: float = 20.0) -> tuple[bytes, str]:
     """Decode a data URL or download an http(s) URL. Returns ``(bytes, mime)``."""
     ref = ref.strip()
@@ -59,11 +123,7 @@ async def load_image_ref(ref: str, *, timeout: float = 20.0) -> tuple[bytes, str
         except ValueError as exc:
             raise InvalidRequest("invalid base64 image data") from exc
     if ref.startswith(("http://", "https://")):
-        async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
-            resp = await client.get(ref)
-            resp.raise_for_status()
-            mime = resp.headers.get("content-type", "image/png").split(";")[0]
-            return resp.content, mime
+        return await _fetch_public_image(ref, timeout=timeout)
     try:
         return base64.b64decode(ref, validate=True), "image/png"
     except ValueError as exc:

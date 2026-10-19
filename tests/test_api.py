@@ -396,3 +396,40 @@ def test_chat_stream_heartbeat_upstream_error(settings, auth):
             assert r.status_code == 200
             lines = list(r.iter_lines())
     assert any("boom" in ln for ln in lines), lines
+
+
+# --- SSRF guard for load_image_ref ---
+
+def test_ssrf_rejects_non_http_scheme():
+    import pytest
+
+    from muse2api.core.media import _assert_public_url
+    from muse2api.errors import InvalidRequest
+    with pytest.raises(InvalidRequest):
+        _assert_public_url("ftp://example.com/x.png")
+    with pytest.raises(InvalidRequest):
+        _assert_public_url("file:///etc/passwd")
+
+
+async def test_ssrf_rejects_non_public_ips():
+    import pytest
+
+    from muse2api.core.media import _assert_public_host
+    from muse2api.errors import InvalidRequest
+    for host in ("127.0.0.1", "10.0.0.1", "192.168.1.1", "169.254.169.254", "::1"):
+        with pytest.raises(InvalidRequest):
+            await _assert_public_host(host)
+
+
+async def test_ssrf_accepts_public_ip():
+    from muse2api.core.media import _assert_public_host
+    await _assert_public_host("8.8.8.8")  # literal IP, no DNS needed
+
+
+async def test_load_image_ref_rejects_loopback_url():
+    import pytest
+
+    from muse2api.core.media import load_image_ref
+    from muse2api.errors import InvalidRequest
+    with pytest.raises(InvalidRequest):
+        await load_image_ref("http://127.0.0.1:9999/x.png", timeout=5)
