@@ -8,6 +8,7 @@ import ipaddress
 import mimetypes
 import re
 import socket
+import time
 import urllib.parse
 import uuid
 from pathlib import Path
@@ -46,6 +47,27 @@ class MediaStore:
         if not p.is_file():
             raise NotFound("media not found")
         return p
+
+    def prune(self, max_age_seconds: float) -> int:
+        """Delete stored media files older than ``max_age_seconds``.
+
+        Only removes files whose names match the store's safe pattern, so a
+        foreign file dropped into the directory is never touched. Returns the
+        number of deleted files.
+        """
+        if max_age_seconds <= 0:
+            return 0
+        cutoff = time.time() - max_age_seconds
+        removed = 0
+        for child in self.root.iterdir():
+            if (
+                child.is_file()
+                and _SAFE_NAME.match(child.name)
+                and child.stat().st_mtime < cutoff
+            ):
+                child.unlink()
+                removed += 1
+        return removed
 
     @staticmethod
     def mime_of(name: str) -> str:

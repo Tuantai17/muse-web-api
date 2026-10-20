@@ -60,3 +60,35 @@ def test_resolve_model():
     assert resolve_model(None, "video").id == "muse-video"
     with pytest.raises(InvalidRequest):
         resolve_model("muse-image", "chat")
+
+
+def test_media_prune_removes_only_expired_files(tmp_path):
+    import os
+    import time
+
+    from muse2api.core.media import MediaStore
+
+    store = MediaStore(tmp_path / "media")
+    old_name = store.save(b"old", "image/png")
+    new_name = store.save(b"new", "image/png")
+    old_time = time.time() - 30 * 86400  # 30 days ago
+    os.utime(store.path_of(old_name), (old_time, old_time))
+
+    removed = store.prune(14 * 86400)
+    assert removed == 1
+    assert not (tmp_path / "media" / old_name).exists()
+    assert (tmp_path / "media" / new_name).exists()
+
+
+def test_media_prune_disabled_and_foreign_files(tmp_path):
+    from muse2api.core.media import MediaStore
+
+    store = MediaStore(tmp_path / "media")
+    name = store.save(b"data", "image/png")
+    (tmp_path / "media" / "foreign.txt").write_text("do not touch")
+
+    assert store.prune(0) == 0
+    assert (tmp_path / "media" / name).exists()
+    # prune with negative threshold never deletes
+    assert store.prune(-1) == 0
+    assert (tmp_path / "media" / "foreign.txt").exists()

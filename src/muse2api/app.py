@@ -37,6 +37,9 @@ async def _housekeeping(services: Services) -> None:
         if time.monotonic() - last_prune >= _PRUNE_INTERVAL:
             last_prune = time.monotonic()
             await services.requests.prune(services.settings.request_log_retention_days)
+            removed = services.media.prune(services.settings.media_retention_days * 86400)
+            if removed:
+                log.info("media cleanup: removed %d expired file(s)", removed)
 
 
 def create_app(settings: Settings | None = None, driver: MuseDriver | None = None) -> FastAPI:
