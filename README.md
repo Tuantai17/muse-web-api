@@ -1,6 +1,10 @@
 <h1 align="center">muse2api</h1>
 
 <p align="center">
+  <b>English</b> | <a href="README.zh-CN.md">中文</a>
+</p>
+
+<p align="center">
   An async gateway that exposes the <a href="https://muse.ai">muse.ai</a> web app as an <b>OpenAI-compatible API</b>
 </p>
 
@@ -42,21 +46,28 @@ The project focuses on **clean engineering and easy collaboration**:
 
 ## Status
 
-> **v0.1, framework stage**: the architecture and basic features are fully written, but the test suite has not been run yet and nothing has been tested against a real muse.ai account.
+> **Current**: the mock-driver test suite passes locally (81 tests, no network access) and CI runs on every push to main; the browser driver and the direct-protocol driver still need live testing against a real muse.ai account.
 
 | Module | Status | Notes |
 |---|---|---|
 | OpenAI protocol layer (chat streaming/non-streaming, images, videos, models) | ✅ Implemented | Multi-turn chat, system prompts, image input, model aliases |
 | Account pool (scheduling / cooldown / invalidation / failover) | ✅ Implemented | `lru`, `round_robin` and `affinity` strategies |
 | Background tasks (video) | ✅ Implemented | Create a task, then poll for the result; unfinished tasks are marked interrupted after a restart |
-| Admin API (account CRUD, renewal, reset, status) | ✅ Implemented | |
+| Admin API (account CRUD, renewal, reset, status) | ✅ Implemented | Accepts cookie dicts, raw `Cookie` header strings and EditThisCookie JSON, plus bulk import via `/admin/accounts/import`; per-account quota snapshot at `/admin/accounts/{id}/quota` |
 | Mock driver | ✅ Implemented | Offline fake data |
 | Browser driver (Chromium + CDP) | 🧪 Needs live testing | Full chat, image and video flows are written |
 | Session renewal / keepalive | 🧪 Needs live testing | Plain HTTP, disabled by default |
 | Direct HTTP protocol driver | 🚧 Reserved | Returns 501 |
 | `/v1/images/edits` (reference images) | ✅ Implemented | Images are references for a new image; `mask` is rejected |
 | `/v1/responses` | 🚧 Reserved | Returns 501 |
-| Web console, cookie import extension, quota lookup | 🚧 Reserved | |
+| Streaming heartbeats (SSE keepalive) | ✅ Implemented | Opt-in with `MUSE2API_STREAM_HEARTBEAT_INTERVAL`; sends `: keepalive` comments while waiting for the first token |
+| Automatic media cleanup | ✅ Implemented | `MUSE2API_MEDIA_RETENTION_DAYS` (default 14, `0` disables); hourly background pruning |
+| SSRF guard for server-side image fetches | ✅ Implemented | Private and loopback URLs are rejected |
+| Web dashboard, request log, multiple API keys | ✅ Implemented | Dashboard at `/dashboard`; key CRUD at `/admin/keys`; per-request log and aggregates |
+| Quota lookup | 🧪 Needs real driver | Mock driver returns a fake snapshot; browser/http drivers are not wired up yet |
+| Cookie import browser extension | 🚧 Reserved | |
+| Storage backends (SQLite / Redis) | 🚧 Reserved | Accounts still use a JSON store; the request log is SQLite |
+| Prometheus metrics | 🚧 Reserved | Basic aggregates exist at `/admin/stats` |
 
 ## Architecture
 
@@ -264,6 +275,7 @@ curl http://localhost:18610/admin/accounts \
 | POST | `/v1/videos` · GET `/v1/videos/{id}` | Create a video task · query a task |
 | GET | `/v1/media/{name}` | Download generated media |
 | GET/POST/PATCH/DELETE | `/admin/accounts[/{id}]` | Account CRUD |
+| POST | `/admin/accounts/import` | Bulk account import with per-entry error reporting |
 | POST | `/admin/accounts/{id}/renew` · `/reset` | Renew session · reset account state |
 | GET | `/admin/status` · `/admin/tasks` | Service status · task list |
 | GET/POST/PATCH/DELETE | `/admin/keys[/{id}]` | Client API keys (create returns the key once; PATCH renames / revokes) |
@@ -288,6 +300,8 @@ All settings come from environment variables (prefix `MUSE2API_`) or a `.env` fi
 | `MUSE2API_API_KEY` | auto-generated | Key for `/v1/*` endpoints |
 | `MUSE2API_ADMIN_KEY` | same as API key | Key for `/admin/*` endpoints |
 | `MUSE2API_REQUEST_LOG_RETENTION_DAYS` | `14` | Days of request history kept in `data/requests.db` |
+| `MUSE2API_MEDIA_RETENTION_DAYS` | `14` | Days generated media files are kept in `data/media`; `0` disables automatic cleanup |
+| `MUSE2API_STREAM_HEARTBEAT_INTERVAL` | `0` | SSE `: keepalive` comment interval (seconds) while waiting for the first stream token; `0` disables |
 | `MUSE2API_PUBLIC_BASE` | empty | Public base URL used in media links; derived from the request when empty |
 | `MUSE2API_POOL_STRATEGY` | `lru` | Account scheduling: `lru` / `round_robin` / `affinity` |
 | `MUSE2API_MAX_FAILOVER` | `2` | Maximum number of retries on another account |
@@ -302,8 +316,8 @@ All reserved modules and outstanding work are tracked in **[TODO.md](TODO.md)**,
 
 - **Verification and live testing (do first)**: get the tests passing, test the browser driver against real accounts, and verify image/video generation and session renewal.
 - **Drivers**: direct HTTP protocol driver, conversation thread reuse, quota lookup.
-- **Protocol**: `/v1/responses`, mask-based inpainting, emulated tool calling, streaming heartbeats.
-- **Accounts, admin and operations**: more cookie import formats, browser extension, storage backends, media cleanup, per-key rate limits, Prometheus metrics.
+- **Protocol**: `/v1/responses`, mask-based inpainting, emulated tool calling.
+- **Accounts, admin and operations**: cookie import browser extension, storage backends, per-key rate limits, Prometheus metrics.
 
 Each task lists its location, approach and definition of done. Places marked `TODO(contributors)` in the code are the reserved extension points.
 
