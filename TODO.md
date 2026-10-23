@@ -21,7 +21,7 @@ Priorities: **P0** must be done first · **P1** core feature · **P2** better ex
 | B1 | Direct HTTP protocol driver | P1 | `drivers/http/` | | Not started |
 | B2 | Reuse conversation threads to cut first-token latency | P2 | `drivers/browser/` | | Done |
 | B3 | Quota lookup | P2 | `MuseDriver.quota` | | Partial (mock done; real-driver lookup open) |
-| C1 | `/v1/responses` endpoint | P1 | `api/routes/responses.py` | | Not started |
+| C1 | `/v1/responses` endpoint | P1 | `api/routes/responses.py` | | Done (local; verified with the official OpenAI SDK streaming + non-streaming against the mock driver; real-account check pending) |
 | C2 | `/v1/images/edits` endpoint | P1 | `api/routes/images.py` | | Not started |
 | C3 | Emulated tool calling | P2 | `core/prompt.py` | | Not started |
 | C4 | Streaming heartbeats to avoid client timeouts | P2 | `api/routes/chat.py` | | Done |
