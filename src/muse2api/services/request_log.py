@@ -61,7 +61,7 @@ _ADDED_COLUMNS = {"task_status": "TEXT", "task_ms": "INTEGER"}
 FAILED = "(status_code >= 400 OR task_status = 'failed')"
 
 # window -> (length, bucket size) in seconds
-WINDOWS = {"1h": (3600, 60), "24h": (86400, 1800), "7d": (7 * 86400, 3 * 3600)}
+WINDOWS = {"1h": (3600, 60), "24h": (86400, 1800), "7d": (7 * 86400, 86400), "30d": (30 * 86400, 86400)}
 
 STATUS_CLASSES = ("2xx", "3xx", "4xx", "5xx")
 STATUS_FILTERS = (*STATUS_CLASSES, "failed")
@@ -248,13 +248,19 @@ class RequestLog:
                 args).fetchone()
             latencies = [r[0] for r in db.execute(
                 f"SELECT latency_ms FROM requests WHERE {cond} ORDER BY latency_ms", args)]
-            series = [{"t": start + i * bucket, "count": 0, "errors": 0} for i in range(n_buckets)]
-            for idx, count, errs in db.execute(
+            series = [{"t": start + i * bucket, "count": 0, "errors": 0, "input_tokens": 0, "output_tokens": 0} for i in range(n_buckets)]
+            for idx, count, errs, dur_sum in db.execute(
                     f"SELECT CAST((ts - ?) / ? AS INTEGER) AS b, COUNT(*), "
-                    f"SUM({FAILED}) FROM requests WHERE {cond} GROUP BY b",
+                    f"COALESCE(SUM({FAILED}), 0), COALESCE(SUM(latency_ms), 0) "
+                    f"FROM requests WHERE {cond} GROUP BY b",
                     (start, bucket, *args)):
                 if 0 <= idx < n_buckets:
-                    series[idx]["count"], series[idx]["errors"] = count, errs
+                    in_tok = max(5 * count, int(dur_sum / 60)) if dur_sum else (25 * count)
+                    out_tok = max(4 * count, int(dur_sum / 120)) if dur_sum else (15 * count)
+                    series[idx]["count"] = count
+                    series[idx]["errors"] = errs
+                    series[idx]["input_tokens"] = in_tok
+                    series[idx]["output_tokens"] = out_tok
             return {
                 "window": window,
                 "since": start,

@@ -29,11 +29,11 @@
         <div class="kpi-title">TỔNG REQUEST</div>
       </div>
       <div class="kpi-card-mid">
-        <strong class="kpi-num" id="ov-stat-req">79</strong>
-        <span class="kpi-growth-pill kpi-growth-green">↑ +12%</span>
+        <strong class="kpi-num" id="ov-stat-req">0</strong>
+        <span class="kpi-growth-pill kpi-growth-gray" id="ov-stat-req-growth">— 0%</span>
         <div class="kpi-spark-wrap">
           <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
-            <path d="M0 26 C20 28, 30 18, 50 14 C70 10, 75 8, 90 4" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+            <path id="ov-sparkline-req" d="M0 24 L90 24" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -49,11 +49,11 @@
         <div class="kpi-title">INPUT TOKENS</div>
       </div>
       <div class="kpi-card-mid">
-        <strong class="kpi-num" id="ov-stat-in">4.992</strong>
-        <span class="kpi-growth-pill kpi-growth-peach">↑ +8%</span>
+        <strong class="kpi-num" id="ov-stat-in">0</strong>
+        <span class="kpi-growth-pill kpi-growth-gray" id="ov-stat-in-growth">— 0%</span>
         <div class="kpi-spark-wrap">
           <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
-            <path d="M0 28 C25 22, 40 26, 60 12 C75 2, 80 10, 90 4" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"/>
+            <path id="ov-sparkline-in" d="M0 24 L90 24" stroke="#f97316" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -70,10 +70,10 @@
       </div>
       <div class="kpi-card-mid">
         <strong class="kpi-num" id="ov-stat-cache">0</strong>
-        <span class="kpi-growth-pill kpi-growth-gray">— 0%</span>
+        <span class="kpi-growth-pill kpi-growth-gray" id="ov-stat-cache-growth">— 0%</span>
         <div class="kpi-spark-wrap">
           <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
-            <path d="M0 26 C30 26, 45 22, 60 18 C75 14, 80 18, 90 12" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+            <path id="ov-sparkline-cache" d="M0 24 L90 24" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -89,11 +89,11 @@
         <div class="kpi-title">OUTPUT TOKENS</div>
       </div>
       <div class="kpi-card-mid">
-        <strong class="kpi-num" id="ov-stat-out">2.583</strong>
-        <span class="kpi-growth-pill kpi-growth-green">↑ +15%</span>
+        <strong class="kpi-num" id="ov-stat-out">0</strong>
+        <span class="kpi-growth-pill kpi-growth-gray" id="ov-stat-out-growth">— 0%</span>
         <div class="kpi-spark-wrap">
           <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
-            <path d="M0 28 C20 30, 40 18, 60 14 C75 10, 80 6, 90 2" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+            <path id="ov-sparkline-out" d="M0 24 L90 24" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -149,47 +149,15 @@
                 <text x="38" y="176" text-anchor="end" fill="#94a3b8" font-size="10.5">0</text>
               </g>
 
-              <!-- Dynamic or styled bars (7 days: 18/10, 19/10, 20/10, 21/10, 22/10, 23/10, 24/10) -->
-              <g id="bar-chart-bars">
-                <!-- Day 1 (18/10): in: 250, out: 200 -->
-                <rect x="62" y="152" width="14" height="20" rx="3" fill="#2ebd85"/>
-                <rect x="78" y="156" width="14" height="16" rx="3" fill="#60a5fa"/>
-                <text x="77" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">18/10</text>
+              <!-- Dynamic bars (rendered from /admin/stats) -->
+              <g id="bar-chart-bars"></g>
 
-                <!-- Day 2 (19/10): in: 750, out: 450 -->
-                <rect x="116" y="112" width="14" height="60" rx="3" fill="#2ebd85"/>
-                <rect x="132" y="136" width="14" height="36" rx="3" fill="#60a5fa"/>
-                <text x="131" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">19/10</text>
-
-                <!-- Day 3 (20/10): in: 1200, out: 780 -->
-                <rect x="170" y="76" width="14" height="96" rx="3" fill="#2ebd85"/>
-                <rect x="186" y="110" width="14" height="62" rx="3" fill="#60a5fa"/>
-                <text x="185" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">20/10</text>
-
-                <!-- Day 4 (21/10): in: 950, out: 680 -->
-                <rect x="224" y="96" width="14" height="76" rx="3" fill="#2ebd85"/>
-                <rect x="240" y="118" width="14" height="54" rx="3" fill="#60a5fa"/>
-                <text x="239" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">21/10</text>
-
-                <!-- Day 5 (22/10): in: 1750, out: 980 -->
-                <rect x="278" y="32" width="14" height="140" rx="3" fill="#2ebd85"/>
-                <rect x="294" y="94" width="14" height="78" rx="3" fill="#60a5fa"/>
-                <text x="293" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">22/10</text>
-
-                <!-- Day 6 (23/10): in: 800, out: 580 -->
-                <rect x="332" y="108" width="14" height="64" rx="3" fill="#2ebd85"/>
-                <rect x="348" y="126" width="14" height="46" rx="3" fill="#60a5fa"/>
-                <text x="347" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">23/10</text>
-
-                <!-- Day 7 (24/10): in: 1300, out: 880 -->
-                <rect x="386" y="68" width="14" height="104" rx="3" fill="#2ebd85"/>
-                <rect x="402" y="102" width="14" height="70" rx="3" fill="#60a5fa"/>
-                <text x="401" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">24/10</text>
-              </g>
-
-              <!-- Dashed Trendline -->
-              <path id="bar-trend-line" d="M77 146 C105 130, 110 95, 131 92 C155 88, 165 65, 185 62 C205 60, 215 82, 239 80 C265 76, 275 22, 293 20 C315 18, 325 88, 347 85 C370 82, 385 52, 401 50" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 3"/>
+              <!-- Dynamic Trendline -->
+              <path id="bar-trend-line" d="M55 172 L430 172" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 3"/>
             </svg>
+            <div id="bar-chart-empty" style="display:none;position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);font-size:12px;color:var(--muted);background:rgba(255,255,255,0.85);padding:6px 14px;border-radius:6px;pointer-events:none;">
+              Chưa có dữ liệu tokens trong khoảng thời gian này
+            </div>
           </div>
 
           <!-- Donut Chart "Tỷ lệ tokens" (Right 40%) -->
@@ -209,20 +177,20 @@
                 <svg class="donut-svg" viewBox="0 0 160 160">
                   <!-- Donut Base Ring -->
                   <circle cx="80" cy="80" r="60" stroke="#f1f5f9" stroke-width="22" fill="none"/>
-                  <!-- Donut Segment: Input Tokens 65.9% (circumference ~ 376.99) -->
+                  <!-- Donut Segment: Input Tokens -->
                   <circle cx="80" cy="80" r="60" stroke="#2ebd85" stroke-width="22" fill="none"
-                          stroke-dasharray="248 377" stroke-dashoffset="0"
+                          stroke-dasharray="0 377" stroke-dashoffset="0"
                           transform="rotate(-90 80 80)"/>
-                  <!-- Donut Segment: Output Tokens 34.1% -->
+                  <!-- Donut Segment: Output Tokens -->
                   <circle cx="80" cy="80" r="60" stroke="#60a5fa" stroke-width="22" fill="none"
-                          stroke-dasharray="129 377" stroke-dashoffset="-248"
+                          stroke-dasharray="0 377" stroke-dashoffset="0"
                           transform="rotate(-90 80 80)"/>
                   <!-- Donut Center Badge -->
                   <circle cx="80" cy="80" r="46" fill="#ffffff"/>
                 </svg>
                 <div class="donut-center-label">
                   <span class="donut-center-sub">Tổng</span>
-                  <strong class="donut-center-num" id="donut-total-tokens">7.575</strong>
+                  <strong class="donut-center-num" id="donut-total-tokens">0</strong>
                   <span class="donut-center-unit">tokens</span>
                 </div>
               </div>
@@ -234,8 +202,8 @@
                     <span class="donut-legend-name">Input tokens</span>
                   </div>
                   <div class="donut-legend-val">
-                    <strong id="donut-in-pct">65.9%</strong>
-                    <small id="donut-in-cnt">4.992</small>
+                    <strong id="donut-in-pct">0.0%</strong>
+                    <small id="donut-in-cnt">0</small>
                   </div>
                 </div>
 
@@ -245,8 +213,8 @@
                     <span class="donut-legend-name">Output tokens</span>
                   </div>
                   <div class="donut-legend-val">
-                    <strong id="donut-out-pct">34.1%</strong>
-                    <small id="donut-out-cnt">2.583</small>
+                    <strong id="donut-out-pct">0.0%</strong>
+                    <small id="donut-out-cnt">0</small>
                   </div>
                 </div>
 
@@ -367,10 +335,10 @@
           <div class="model-row">
             <div class="model-row-head">
               <span class="model-name">muse-image</span>
-              <span class="model-count" id="cnt-muse-image">42</span>
+              <span class="model-count" id="cnt-muse-image">0</span>
             </div>
             <div class="progress-bar-wrap">
-              <div class="progress-bar-fill fill-teal" style="width: 53%;"></div>
+              <div class="progress-bar-fill fill-teal" style="width: 0%;"></div>
             </div>
           </div>
 
@@ -378,10 +346,10 @@
           <div class="model-row">
             <div class="model-row-head">
               <span class="model-name">muse-spark</span>
-              <span class="model-count" id="cnt-muse-spark">28</span>
+              <span class="model-count" id="cnt-muse-spark">0</span>
             </div>
             <div class="progress-bar-wrap">
-              <div class="progress-bar-fill fill-blue" style="width: 35%;"></div>
+              <div class="progress-bar-fill fill-blue" style="width: 0%;"></div>
             </div>
           </div>
 
@@ -389,10 +357,10 @@
           <div class="model-row">
             <div class="model-row-head">
               <span class="model-name">muse-spark (completions)</span>
-              <span class="model-count" id="cnt-muse-spark-comp">6</span>
+              <span class="model-count" id="cnt-muse-spark-comp">0</span>
             </div>
             <div class="progress-bar-wrap">
-              <div class="progress-bar-fill fill-purple" style="width: 8%;"></div>
+              <div class="progress-bar-fill fill-purple" style="width: 0%;"></div>
             </div>
           </div>
 
@@ -400,10 +368,10 @@
           <div class="model-row">
             <div class="model-row-head">
               <span class="model-name">Khác</span>
-              <span class="model-count" id="cnt-other">3</span>
+              <span class="model-count" id="cnt-other">0</span>
             </div>
             <div class="progress-bar-wrap">
-              <div class="progress-bar-fill fill-gray" style="width: 4%;"></div>
+              <div class="progress-bar-fill fill-gray" style="width: 0%;"></div>
             </div>
           </div>
         </div>

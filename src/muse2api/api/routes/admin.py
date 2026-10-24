@@ -331,7 +331,7 @@ async def list_requests(
 
 
 @router.get("/stats")
-async def stats(window: Literal["1h", "24h", "7d"] = "24h",
+async def stats(window: Literal["1h", "24h", "7d", "30d"] = "24h",
                 svc: Services = Depends(get_services)) -> dict:
     return {"now": time.time(), **await svc.requests.stats(window)}
 
