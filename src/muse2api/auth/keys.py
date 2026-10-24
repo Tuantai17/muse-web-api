@@ -58,11 +58,22 @@ class KeyStore:
         self._dirty = False
 
     async def load(self) -> None:
-        if not self.path.is_file():
-            return
-        raw = await asyncio.to_thread(self.path.read_text, encoding="utf-8")
-        if raw.strip():
-            self._keys = {k.id: k for k in (ApiKey.model_validate(i) for i in json.loads(raw))}
+        if self.path.is_file():
+            raw = await asyncio.to_thread(self.path.read_text, encoding="utf-8")
+            if raw.strip():
+                try:
+                    self._keys = {k.id: k for k in (ApiKey.model_validate(i) for i in json.loads(raw))}
+                    return
+                except Exception:
+                    pass
+
+        env_keys = os.environ.get("MUSE2API_KEYS", "").strip()
+        if env_keys:
+            try:
+                self._keys = {k.id: k for k in (ApiKey.model_validate(i) for i in json.loads(env_keys))}
+                await self.save()
+            except Exception:
+                pass
 
     def all(self) -> list[ApiKey]:
         return sorted(self._keys.values(), key=lambda k: k.created_at)

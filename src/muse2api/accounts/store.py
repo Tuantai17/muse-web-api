@@ -26,12 +26,40 @@ class JsonAccountStore:
         self._lock = asyncio.Lock()
 
     async def load(self) -> list[Account]:
-        if not self.path.is_file():
-            return []
-        raw = await asyncio.to_thread(self.path.read_text, encoding="utf-8")
-        if not raw.strip():
-            return []
-        return [Account.model_validate(item) for item in json.loads(raw)]
+        if self.path.is_file():
+            raw = await asyncio.to_thread(self.path.read_text, encoding="utf-8")
+            if raw.strip():
+                try:
+                    return [Account.model_validate(item) for item in json.loads(raw)]
+                except Exception:
+                    pass
+
+        # Fallback to environment variables if no stored accounts on ephemeral disk (e.g. Render / Docker)
+        env_accounts = os.environ.get("MUSE2API_ACCOUNTS", "").strip()
+        if env_accounts:
+            try:
+                accs = [Account.model_validate(item) for item in json.loads(env_accounts)]
+                if accs:
+                    await self.save(accs)
+                    return accs
+            except Exception:
+                pass
+
+        env_sess = os.environ.get("MUSE2API_HATCH_SESS", "").strip()
+        if env_sess:
+            env_vml = os.environ.get("MUSE2API_HATCH_VML", "").strip()
+            cookies = {"hatch_sess": env_sess}
+            if env_vml:
+                cookies["hatch_vml"] = env_vml
+            acc = Account(
+                id="acc_default",
+                label=os.environ.get("MUSE2API_ACCOUNT_LABEL", "Render Default Account"),
+                cookies=cookies,
+            )
+            await self.save([acc])
+            return [acc]
+
+        return []
 
     async def save(self, accounts: list[Account]) -> None:
         payload = json.dumps(

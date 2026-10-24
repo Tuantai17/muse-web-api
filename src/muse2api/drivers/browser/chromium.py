@@ -77,7 +77,12 @@ class ChromiumProcess:
             "--disable-dev-shm-usage",
             "--disable-background-networking",
             "--autoplay-policy=no-user-gesture-required",
-            "--window-size=1440,2200",
+            "--window-size=1280,800",
+            "--renderer-process-limit=1",
+            "--disable-extensions",
+            "--disable-software-rasterizer",
+            "--mute-audio",
+            "--js-flags=--max-old-space-size=128",
             "about:blank",
         ]
         if self.proxy:

@@ -74,13 +74,13 @@ class Settings(BaseSettings):
         "Python's own calls (session renewal) follow http_proxy/https_proxy instead.",
     )
     browser_profile_dir: Path | None = None
-    page_ready_timeout: float = 45.0
+    page_ready_timeout: float = 90.0
 
     # --- timeouts (seconds) ---
     chat_timeout: float = 300.0
-    first_token_timeout: float = 45.0
+    first_token_timeout: float = 90.0
     stream_heartbeat_interval: float = Field(
-        default=0.0,
+        default=5.0,
         description="SSE ': keepalive' comment interval while waiting for the first "
         "stream token; 0 disables. Keeps idle clients/proxies from timing out.",
     )

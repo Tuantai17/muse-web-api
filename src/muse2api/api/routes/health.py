@@ -7,6 +7,7 @@ from ..deps import get_services
 router = APIRouter(tags=["health"])
 
 
+@router.get("/health")
 @router.get("/healthz")
 async def healthz() -> dict:
     return {"ok": True, "version": __version__}

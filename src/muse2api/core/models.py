@@ -49,6 +49,30 @@ ALIASES: dict[str, str] = {
     "sora": "muse-video",
 }
 
+# Versatile Muse models used across chat, image and video endpoints
+KIND_ALIASES: dict[ModelKind, dict[str, str]] = {
+    "image": {
+        "muse-spark": "muse-image",
+        "muse spark": "muse-image",
+        "musespark": "muse-image",
+        "muse_spark": "muse-image",
+        "muse-wonder": "muse-image",
+        "muse wonder": "muse-image",
+        "musewonder": "muse-image",
+        "muse_wonder": "muse-image",
+    },
+    "video": {
+        "muse-spark": "muse-video",
+        "muse spark": "muse-video",
+        "musespark": "muse-video",
+        "muse_spark": "muse-video",
+        "muse-wonder": "muse-video",
+        "muse wonder": "muse-video",
+        "musewonder": "muse-video",
+        "muse_wonder": "muse-video",
+    },
+}
+
 DEFAULT_BY_KIND: dict[ModelKind, str] = {
     "chat": "muse-chat",
     "image": "muse-image",
@@ -64,7 +88,10 @@ def resolve_model(name: str | None, kind: ModelKind) -> ModelSpec:
     """
     if not name:
         return MODELS[DEFAULT_BY_KIND[kind]]
-    key = ALIASES.get(name, name)
+    if kind in KIND_ALIASES and name in KIND_ALIASES[kind]:
+        key = KIND_ALIASES[kind][name]
+    else:
+        key = ALIASES.get(name, name)
     spec = MODELS.get(key)
     if spec is None:
         return MODELS[DEFAULT_BY_KIND[kind]]

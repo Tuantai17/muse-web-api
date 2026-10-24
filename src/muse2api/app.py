@@ -92,6 +92,14 @@ def create_app(settings: Settings | None = None, driver: MuseDriver | None = Non
             status_code=400,
         )
 
+    @app.exception_handler(Exception)
+    async def _generic_error(_: Request, exc: Exception) -> JSONResponse:
+        log.exception("unhandled server exception")
+        return JSONResponse(
+            {"error": {"message": str(exc) or type(exc).__name__, "type": "server_error", "code": "internal_error"}},
+            status_code=500,
+        )
+
     app.include_router(build_router())
     app.add_middleware(RequestLogMiddleware, request_log=services.requests)
     app.add_middleware(

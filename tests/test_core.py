@@ -58,6 +58,9 @@ def test_resolve_model():
     assert resolve_model("gpt-4o", "chat").id == "muse-chat"
     assert resolve_model("unknown", "image").id == "muse-image"
     assert resolve_model(None, "video").id == "muse-video"
+    assert resolve_model("muse-spark", "image").id == "muse-image"
+    assert resolve_model("muse-spark", "video").id == "muse-video"
+    assert resolve_model("muse-spark", "chat").id == "muse-chat"
     with pytest.raises(InvalidRequest):
         resolve_model("muse-image", "chat")
 
