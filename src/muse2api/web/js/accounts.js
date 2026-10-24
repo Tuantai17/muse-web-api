@@ -29,46 +29,66 @@ function accountTableRow(a) {
 
   let statusHtml = "";
   if (!a.enabled) {
-    statusHtml = '<span class="badge b-mute" style="font-weight:650;">Đã tắt</span>';
+    statusHtml = '<span class="status-pill status-pill-mute"><span class="dot-indicator dot-mute"></span> Đã tắt</span>';
   } else if (s.key === "active") {
-    statusHtml = '<span class="badge b-ok" style="background:rgba(46,189,133,0.12);color:#2ebd85;font-weight:650;padding:2px 10px;">● Live</span>';
+    statusHtml = '<span class="status-pill status-pill-live"><span class="dot-indicator dot-live"></span> Live</span>';
   } else if (s.key === "invalid") {
-    statusHtml = '<span class="badge b-err" style="background:rgba(239,68,68,0.12);color:#ef4444;font-weight:650;padding:2px 10px;">● Lỗi phiên</span>';
+    statusHtml = '<span class="status-pill status-pill-err"><span class="dot-indicator dot-err"></span> Lỗi phiên</span>';
+  } else if (s.key === "quota") {
+    statusHtml = '<span class="status-pill status-pill-warn"><span class="dot-indicator dot-warn"></span> Hết quota</span>';
   } else {
-    statusHtml = `<span class="badge ${s.badge}">${esc(s.label)}</span>`;
+    statusHtml = `<span class="status-pill status-pill-info"><span class="dot-indicator dot-info"></span> ${esc(s.label)}</span>`;
   }
 
-  const tokensLeft = q.extra_left || "1B token";
-  const weeklyPct = 100 - (q.weekly_used_pct ?? 5);
+  const tokensLeft = q.extra_left || "1B token (Gói Muse)";
+  const weeklyPct = Math.max(0, Math.min(100, 100 - (q.weekly_used_pct ?? 5)));
 
   return `<tr data-id="${esc(a.id)}">
-    <td style="padding:14px 16px;">
-      <div style="font-weight:650;font-size:13.5px;color:var(--text);">${esc(email)}</div>
-      <div class="mono muted" style="font-size:11.5px;margin-top:2px;">${esc(a.id.slice(0, 14))}…</div>
+    <td>
+      <div class="acc-user-cell">
+        <div class="acc-avatar-icon">
+          <svg class="i"><use href="#i-accounts"/></svg>
+        </div>
+        <div>
+          <div class="acc-name">${esc(email)}</div>
+          <div class="acc-id-mono">${esc(a.id.slice(0, 16))}…</div>
+        </div>
+      </div>
     </td>
-    <td style="padding:14px 16px;">
+    <td>
       ${statusHtml}
-      <div class="small muted" style="font-size:11.5px;margin-top:3px;">Kiểm tra: ${esc(checkTime)}</div>
+      <div class="acc-meta-time">Kiểm tra: ${esc(checkTime)}</div>
     </td>
-    <td style="padding:14px 16px;line-height:1.45;">
-      <strong class="mono" style="font-size:13.5px;color:var(--text);font-weight:700;">${esc(tokensLeft)}</strong>
-      <div class="small muted" style="font-size:11.5px;margin-top:1px;">Token bổ sung</div>
-      <div class="small muted" style="font-size:11.5px;">Tuần này: ${esc(weeklyPct)}% còn</div>
-      <div class="small muted" style="font-size:11px;margin-top:1px;">${esc(checkTime)}</div>
-      <button class="btn ghost sm" type="button" data-act="quota" style="padding:2px 0;font-size:11.5px;color:#2ebd85;font-weight:650;margin-top:2px;cursor:pointer;background:none;border:none;">Cập nhật token</button>
+    <td>
+      <div class="acc-quota-block">
+        <strong class="acc-quota-title">${esc(tokensLeft)}</strong>
+        <div class="acc-quota-sub">Token bổ sung · Tuần này: <b>${esc(weeklyPct)}%</b> còn</div>
+        <div class="acc-quota-bar">
+          <div class="acc-quota-fill" style="width: ${weeklyPct}%;"></div>
+        </div>
+        <button class="acc-quota-btn" type="button" data-act="quota">
+          <svg class="i"><use href="#i-refresh"/></svg> Cập nhật token
+        </button>
+      </div>
     </td>
-    <td style="padding:14px 16px;">
-      <div style="font-size:13px;font-weight:600;color:var(--text);">${esc(expStr)}</div>
-      <div class="small muted" style="font-size:11.5px;margin-top:2px;">Theo cookie phiên</div>
+    <td>
+      <div class="acc-exp-date">${esc(expStr)}</div>
+      <div class="acc-meta-sub">Theo cookie phiên</div>
     </td>
-    <td class="num" style="padding:14px 16px;font-size:13.5px;font-weight:600;text-align:center;">
-      ${fmtNum(a.success_count || a.use_count || 10)}
+    <td class="text-center">
+      <span class="acc-use-badge">${fmtNum(a.success_count || a.use_count || 0)}</span>
     </td>
-    <td style="text-align:right;padding:14px 16px;">
-      <div class="row" style="justify-content:flex-end;gap:8px;">
-        <button class="icon-btn" type="button" data-act="renew" title="Gia hạn / Kiểm tra phiên"><svg class="i"><use href="#i-refresh"/></svg></button>
-        <button class="icon-btn" type="button" data-act="toggle" title="${a.enabled ? 'Đang bật — bấm để tắt' : 'Đang tắt — bấm để bật'}"><svg class="i"><use href="#i-eye"/></svg></button>
-        <button class="icon-btn danger" type="button" data-act="delete" title="Xoá tài khoản"><svg class="i"><use href="#i-trash"/></svg></button>
+    <td class="text-right">
+      <div class="acc-action-group">
+        <button class="tbl-action-btn" type="button" data-act="renew" title="Gia hạn / Kiểm tra phiên">
+          <svg class="i"><use href="#i-refresh"/></svg>
+        </button>
+        <button class="tbl-action-btn ${a.enabled ? 'is-active' : ''}" type="button" data-act="toggle" title="${a.enabled ? 'Đang bật — bấm để tắt' : 'Đang tắt — bấm để bật'}">
+          <svg class="i"><use href="${a.enabled ? '#i-eye' : '#i-eye-off'}"/></svg>
+        </button>
+        <button class="tbl-action-btn is-danger" type="button" data-act="delete" title="Xoá tài khoản">
+          <svg class="i"><use href="#i-trash"/></svg>
+        </button>
       </div>
     </td>
   </tr>`;
@@ -82,29 +102,46 @@ function renderAccounts() {
     || (a.meta?.email || a.label || a.id).localeCompare(b.meta?.email || b.label || b.id));
   
   if (!list.length) {
-    $("#accounts").innerHTML = `<div class="panel empty">Chưa có tài khoản Muse nào trong không gian của bạn. <button class="btn primary sm" id="empty-add-acc" type="button" style="margin-left:8px;">+ Thêm tài khoản</button></div>`;
+    $("#accounts").innerHTML = `<div class="card empty-card">
+      <div class="empty-icon-wrap"><svg class="i"><use href="#i-accounts"/></svg></div>
+      <h3>Chưa có tài khoản Muse nào</h3>
+      <p>Thêm tài khoản muse.ai để bắt đầu kết nối không gian làm việc của bạn.</p>
+      <button class="btn primary add-account-btn" id="empty-add-acc" type="button">
+        <span class="plus-symbol">+</span> Thêm tài khoản Muse
+      </button>
+    </div>`;
+    $("#empty-add-acc")?.addEventListener("click", () => accountForm().then((x) => x && guarded(loadAccountsPage)));
     return;
   }
 
-  $("#accounts").innerHTML = `<div class="panel" style="border-radius:10px;overflow:hidden;background:var(--panel);">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);">
-      <h2 style="font-size:15px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;color:var(--text);">
-        Tất cả tài khoản <span class="badge plain" style="font-size:12px;padding:2px 8px;border-radius:6px;background:var(--panel-2);color:var(--muted);border:1px solid var(--border);">${list.length}</span>
-      </h2>
-      <button class="btn sm" id="tbl-refresh" type="button" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12.5px;">
-        <svg class="i" style="width:13px;height:13px;"><use href="#i-refresh"/></svg> Làm mới
-      </button>
+  $("#accounts").innerHTML = `<div class="card table-card">
+    <div class="card-header-row">
+      <div class="card-header-left">
+        <div class="section-icon-box kpi-mint">
+          <svg class="i"><use href="#i-accounts"/></svg>
+        </div>
+        <div>
+          <h2 class="card-heading">Tất cả tài khoản</h2>
+          <p class="card-subheading">Danh sách phiên và trạng thái sẵn sàng</p>
+        </div>
+        <span class="card-count-badge">${list.length}</span>
+      </div>
+      <div class="card-header-right">
+        <button class="btn ghost icon-btn" id="tbl-refresh" type="button" aria-label="Làm mới">
+          <svg class="i"><use href="#i-refresh"/></svg>
+        </button>
+      </div>
     </div>
     <div class="tablewrap">
-      <table class="resp" style="width:100%;border-collapse:collapse;">
+      <table class="recent-requests-table accounts-table">
         <thead>
-          <tr style="border-bottom:1px solid var(--border);background:var(--panel-2);">
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TÀI KHOẢN</th>
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TRẠNG THÁI</th>
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TOKEN CÒN LẠI</th>
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">HIỆU LỰC ĐẾN</th>
-            <th class="num" style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;text-align:center;">LƯỢT SỬ DỤNG</th>
-            <th style="text-align:right;padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">THAO TÁC</th>
+          <tr>
+            <th style="min-width:180px;">TÀI KHOẢN</th>
+            <th style="min-width:140px;">TRẠNG THÁI</th>
+            <th style="min-width:200px;">TOKEN CÒN LẠI</th>
+            <th style="min-width:150px;">HIỆU LỰC ĐẾN</th>
+            <th style="min-width:110px;text-align:center;">LƯỢT SỬ DỤNG</th>
+            <th style="min-width:120px;text-align:right;">THAO TÁC</th>
           </tr>
         </thead>
         <tbody>
@@ -117,6 +154,7 @@ function renderAccounts() {
   const rBtn = $("#tbl-refresh");
   if (rBtn) rBtn.addEventListener("click", () => guarded(loadAccountsPage));
 }
+
 let lastQuotaAutoSync = 0;
 async function loadAccountsPage() {
   await loadAccounts();
@@ -138,83 +176,78 @@ async function accountForm(title = "Thêm account muse.ai") {
       <label class="f">Cookie muse.ai <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Không dùng document.cookie vì thiếu cookie bảo mật HttpOnly!</span>
       <textarea id="af-cookies" rows="6" placeholder="hatch_sess=...; hatch_gw=...; hatch_vml=...; hatch_native_auth_device=..." style="font-family:var(--mono);font-size:12px;"></textarea></label>`,
     actions: [{label: "Huỷ", value: null},
-      {label: "Lưu account", primary: true, cls: "primary",
-       collect: () => {
-         let val = $("#af-cookies").value.trim();
-         try { if (val.startsWith("[") || val.startsWith("{")) val = JSON.parse(val); } catch {}
-         return {label: $("#af-label").value.trim(), cookies: val};
-       },
-       check: (v) => {
-         if (!v.cookies || (typeof v.cookies === "string" && !v.cookies.trim())) return "Vui lòng dán cookie vào ô trên";
-         if (typeof v.cookies === "string" && v.cookies.length < 15) return "Chuỗi cookie quá ngắn, vui lòng copy đầy đủ chuỗi cookie.";
-         return "";
-       }}],
+              {label: "Lưu tài khoản", value: true, primary: true, cls: "primary"}],
+  }).then(async (ok) => {
+    if (!ok) return null;
+    const label = $("#af-label").value.trim(), cookies = $("#af-cookies").value.trim();
+    if (!cookies) throw new Error("Cookie không được để trống");
+    return api("/admin/accounts", {method: "POST", body: {label, cookies}});
   });
 }
 
-async function onNewAccount() {
-  guarded(async () => {
-    const data = await accountForm();
-    if (!data) return;
-    toast("Đang xác thực với muse.ai...");
-    const res = await api("/admin/accounts", {method: "POST", body: data});
-    if (res.info?.email) {
-      toast(`Đã kết nối tài khoản: ${res.info.email}`);
-    } else {
-      toast("Đã thêm tài khoản thành công");
-    }
-    await loadAccountsPage();
-  });
-}
+$("#acc-new").addEventListener("click", () => accountForm().then((x) => x && guarded(loadAccountsPage)));
 
-$("#acc-new")?.addEventListener("click", onNewAccount);
-$("#accounts")?.addEventListener("click", (e) => {
-  if (e.target && e.target.id === "empty-add-acc") onNewAccount();
-});
-$("#acc-refresh")?.addEventListener("click", () => guarded(loadAccountsPage));
+$("#accounts").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  const tr = b.closest("tr[data-id]");
+  if (!tr) return;
+  const id = tr.dataset.id;
+  const act = b.dataset.act;
+  const acc = state.accounts.find((x) => x.id === id);
+  if (!acc) return;
 
-$("#accounts")?.addEventListener("change", (e) => {
-  const input = e.target.closest("input[data-act=toggle]");
-  if (!input) return;
-  const id = input.closest("[data-id]").dataset.id;
-  guarded(async () => {
-    await api(`/admin/accounts/${encodeURIComponent(id)}`, {method: "PATCH", body: {enabled: input.checked}});
-    toast(input.checked ? "Đã bật account" : "Đã tắt account");
-    await loadAccountsPage();
-  });
-});
-$("#accounts")?.addEventListener("click", (e) => {
-  const btn = e.target.closest("button[data-act]");
-  if (!btn) return;
-  const id = btn.closest("[data-id]").dataset.id;
-  const a = state.accounts.find((x) => x.id === id);
-  const act = btn.dataset.act;
-  if (act === "requests") return go("requests", {account: id});
-  guarded(async () => {
-    const path = `/admin/accounts/${encodeURIComponent(id)}`;
-    if (act === "delete") {
-      const name = a ? (a.label || a.id) : id;
-      if (!await confirmBox("Xoá account?", `<p>Xoá vĩnh viễn <b>${esc(name)}</b> (<span class="mono">${esc(id)}</span>) khỏi pool, kể cả cookies đã lưu. Lịch sử request vẫn được giữ.</p>`, "Xoá account")) return;
-      await api(path, {method: "DELETE"});
-      toast("Đã xoá account");
-    } else {
-      btn.disabled = true;
-      try {
-        if (act === "test") toast("Đang gửi lệnh test tới muse.ai...");
-        else if (act === "quota") toast("Đang cập nhật token từ muse.ai...");
-        if (act === "toggle") {
-          const nextEnabled = !a.enabled;
-          await api(path, {method: "PATCH", body: {enabled: nextEnabled}});
-          toast(nextEnabled ? "Đã bật account" : "Đã tắt account");
-        } else {
-          const res = await api(`${path}/${act}`, {method: "POST"});
-          if (act === "test") toast(res.ok ? `Kết nối thành công! Phản hồi: ${res.reply}` : `Lỗi: ${res.error}`);
-          else if (act === "quota") toast(res.ok ? "Đã cập nhật token từ Muse thành công" : `Cập nhật thất bại: ${res.error || "lỗi không rõ"}`);
-          else if (act === "renew") toast(res.ok ? "Đã gia hạn phiên" : `Gia hạn thất bại: ${res.error || "lỗi không rõ"}`);
-          else toast("Đã đặt lại account");
-        }
-      } finally { btn.disabled = false; }
+  if (act === "renew") {
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}/renew`, {method: "POST"});
+      toast("Đã kiểm tra lại phiên tài khoản.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi làm mới: " + err.message);
+    } finally {
+      b.disabled = false;
     }
-    await loadAccountsPage();
-  });
+  } else if (act === "quota") {
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}/quota`, {method: "POST"});
+      toast("Đã cập nhật số liệu token.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi cập nhật token: " + err.message);
+    } finally {
+      b.disabled = false;
+    }
+  } else if (act === "toggle") {
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: {enabled: !acc.enabled}
+      });
+      toast(acc.enabled ? "Đã tắt tài khoản." : "Đã bật tài khoản.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi: " + err.message);
+    } finally {
+      b.disabled = false;
+    }
+  } else if (act === "delete") {
+    const ok = await confirmBox(
+      "Xoá tài khoản Muse",
+      `Bạn có chắc chắn muốn xoá tài khoản <b>${esc(acc.label || acc.id)}</b> không? Thao tác này không thể hoàn tác.`
+    );
+    if (!ok) return;
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}`, {method: "DELETE"});
+      toast("Đã xoá tài khoản.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi xoá tài khoản: " + err.message);
+    } finally {
+      b.disabled = false;
+    }
+  }
 });

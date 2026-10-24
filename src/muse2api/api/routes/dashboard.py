@@ -53,7 +53,7 @@ async def static_file(file_path: str) -> Response:
     p = (_WEB_DIR / file_path).resolve()
     if not str(p).startswith(str(_WEB_DIR.resolve())) or not p.is_file():
         return Response(status_code=404)
-    return FileResponse(p)
+    return FileResponse(p, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
 @router.get("/favicon.ico", include_in_schema=False)

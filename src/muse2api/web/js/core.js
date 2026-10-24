@@ -71,6 +71,14 @@ function keyLabel(id, fallback) {
   const k = state.keys.find((x) => x.id === id);
   return k ? k.name : (fallback || id);
 }
+function tile(k, v, s = "", cls = "") {
+  return `<div class="mini-tile ${cls}">
+    <div class="mini-tile-label">${esc(k)}</div>
+    <div class="mini-tile-val">${esc(v)}</div>
+    <div class="mini-tile-sub" title="${esc(s)}">${esc(s)}</div>
+  </div>`;
+}
+
 let toastTimer;
 function toast(msg) {
   const t = $("#toast");

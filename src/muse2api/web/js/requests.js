@@ -1,5 +1,12 @@
 "use strict";
 // ---- requests ----
+
+function methodBadge(m) {
+  const method = (m || "").toUpperCase();
+  const cls = method === "POST" ? "m-post" : method === "GET" ? "m-get" : method === "DELETE" ? "m-del" : "m-other";
+  return `<span class="method-tag ${cls}">${esc(method)}</span>`;
+}
+
 function fillFilterOptions() {
   const keySel = $("#f-key"), accSel = $("#f-account");
   const keyVal = keySel.value || state.pendingKey || "", accVal = accSel.value || state.pendingAccount || "";
@@ -20,13 +27,15 @@ function fillFilterOptions() {
   state.pendingKey = state.pendingAccount = "";
   renderChips();
 }
+
 function renderChips() {
   const chips = [];
   const k = $("#f-key").value, a = $("#f-account").value;
-  if (k) chips.push(`<span class="chip">Key: ${esc(keyLabel(k, k))}<button type="button" data-clear="f-key" aria-label="Bỏ lọc key">${icon("x")}</button></span>`);
-  if (a) chips.push(`<span class="chip">Account: ${esc(accountLabel(a))}<button type="button" data-clear="f-account" aria-label="Bỏ lọc account">${icon("x")}</button></span>`);
+  if (k) chips.push(`<span class="chip">Key: ${esc(keyLabel(k, k))}<button type="button" data-clear="f-key" aria-label="Bỏ lọc key"><svg class="i"><use href="#i-x"/></svg></button></span>`);
+  if (a) chips.push(`<span class="chip">Account: ${esc(accountLabel(a))}<button type="button" data-clear="f-account" aria-label="Bỏ lọc account"><svg class="i"><use href="#i-x"/></svg></button></span>`);
   $("#f-chips").innerHTML = chips.join("");
 }
+
 $("#f-chips").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-clear]");
   if (!b) return;
@@ -48,18 +57,22 @@ async function loadRequests() {
   const res = await api(`/admin/requests?${p}`);
   lastRows = res.data;
   $("#req-body").innerHTML = res.data.map((r, i) => `<tr class="click" data-i="${i}" tabindex="0">
-      <td class="mono" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
-      <td class="mono">${esc(r.method)}</td>
-      <td class="mono trunc" title="${esc(r.path)}">${esc(r.path)}${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}</td>
-      <td class="hide-sm">${esc(r.model || "")}</td>
-      <td>${esc(r.key_name || "")}</td>
-      <td class="hide-sm trunc">${esc(accountLabel(r.account_id))}</td>
-      <td class="num" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
-      <td class="num">${esc(fmtMs(r.latency_ms))}</td>
-      <td class="hide-sm mono">${esc(r.client_ip || "")}</td>
+      <td class="mono-time" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
+      <td class="text-center">${methodBadge(r.method)}</td>
+      <td class="path-cell">
+        <span class="path-code" title="${esc(r.path)}">${esc(r.path)}</span>
+        ${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}
+        ${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}
+      </td>
+      <td class="hide-sm">${r.model ? `<span class="model-tag">${esc(r.model)}</span>` : '<span class="text-muted">–</span>'}</td>
+      <td><span class="key-name-tag">${esc(r.key_name || (r.key_id ? r.key_id.slice(0, 8) + '…' : "–"))}</span></td>
+      <td class="hide-sm"><span class="acc-tag">${esc(accountLabel(r.account_id))}</span></td>
+      <td class="text-center" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
+      <td class="text-right num-latency">${esc(fmtMs(r.latency_ms))}</td>
+      <td class="hide-sm mono-client">${esc(r.client_ip || "–")}</td>
     </tr>`).join("") || `<tr><td colspan="9" class="empty">Không có request nào khớp bộ lọc.</td></tr>`;
   const end = state.offset + res.data.length;
-  $("#req-range").textContent = res.total ? `${state.offset + 1}–${end} / ${fmtNum(res.total)}` : "";
+  $("#req-range").textContent = res.total ? `Hiển thị ${state.offset + 1}–${end} / ${fmtNum(res.total)} request` : "";
   $("#req-prev").disabled = state.offset === 0;
   $("#req-next").disabled = end >= res.total;
 }
@@ -79,22 +92,37 @@ function showRequest(r) {
     actions: [{label: "Đóng", value: null, primary: true, cls: "primary"}],
   });
 }
+
 $("#req-body").addEventListener("click", (e) => {
   const tr = e.target.closest("tr[data-i]");
   if (tr) showRequest(lastRows[Number(tr.dataset.i)]);
 });
+
 $("#req-body").addEventListener("keydown", (e) => {
   const tr = e.target.closest("tr[data-i]");
   if (tr && e.key === "Enter") showRequest(lastRows[Number(tr.dataset.i)]);
 });
+
 for (const id of ["#f-key", "#f-account", "#f-status", "#f-polls"]) {
   $(id).addEventListener("change", () => { state.offset = 0; renderChips(); syncHash(); guarded(loadRequests); });
 }
+
 let pathTimer;
 $("#f-path").addEventListener("input", () => {
   clearTimeout(pathTimer);
   pathTimer = setTimeout(() => { state.offset = 0; guarded(loadRequests); }, 300);
 });
-$("#f-live").addEventListener("change", () => { $("#live-dot").classList.toggle("on", $("#f-live").checked); });
-$("#req-prev").addEventListener("click", () => { state.offset = Math.max(0, state.offset - state.limit); guarded(loadRequests); });
-$("#req-next").addEventListener("click", () => { state.offset += state.limit; guarded(loadRequests); });
+
+$("#f-live").addEventListener("change", () => {
+  $("#live-dot").classList.toggle("on", $("#f-live").checked);
+});
+
+$("#req-prev").addEventListener("click", () => {
+  state.offset = Math.max(0, state.offset - state.limit);
+  guarded(loadRequests);
+});
+
+$("#req-next").addEventListener("click", () => {
+  state.offset += state.limit;
+  guarded(loadRequests);
+});

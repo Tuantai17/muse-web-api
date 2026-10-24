@@ -149,6 +149,181 @@ main {
   width: 100%;
 }
 
+/* Common Page Header Row */
+.page-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.page-title-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+.page-title-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Primary Header Action Button */
+.add-account-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  padding: 8px 18px !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 4px 12px rgba(11, 107, 97, 0.28) !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  text-decoration: none !important;
+}
+
+.add-account-btn:hover {
+  background: var(--accent-hover) !important;
+  box-shadow: 0 6px 18px rgba(11, 107, 97, 0.38) !important;
+  transform: translateY(-1px);
+}
+
+.plus-symbol {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Common Card Header Row */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-heading {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.card-subheading {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+
+.section-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-icon-box svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Mini Telemetry Tiles */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.mini-tile {
+  padding: 12px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.mini-tile:hover {
+  background: #ffffff;
+  border-color: var(--border-strong);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.mini-tile-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.mini-tile-val {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: var(--sans);
+  color: var(--text);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.mini-tile-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-tile.bad .mini-tile-val {
+  color: #ef4444;
+}
+
+.mini-tile.warn .mini-tile-val {
+  color: #f59e0b;
+}
+
 /* ========================================================
    SIDEBAR (Mint-Dark Slate Palette Matching Image 2)
    ======================================================== */
@@ -2174,77 +2349,1009 @@ th {
 
 </style>
   <style>/* accounts.css */
-/* ---------- accounts ---------- */
-.summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.summary .badge { font-size: 12px; line-height: 24px; padding: 0 10px; border-radius: 12px; }
-.summary .badge b { font-family: var(--mono); }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-.acc { display: flex; flex-direction: column; position: relative; overflow: hidden; }
-.acc::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--rail, var(--border)); }
-.acc.s-active { --rail: var(--ok); } .acc.s-cooling { --rail: var(--info); } .acc.s-invalid { --rail: var(--err); } .acc.s-disabled { --rail: var(--border-strong); }
-.acc.s-quota { --rail: var(--warn-line); border-color: var(--warn-line); background: linear-gradient(180deg, var(--warn-bg), var(--panel) 90px); }
-.acc.s-disabled .acc-top, .acc.s-disabled .metrics { opacity: .65; }
-.acc-top { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 8px 16px; }
-.acc-top .name { font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.acc-top .id { color: var(--muted); font-family: var(--mono); font-size: 11.5px; }
-.acc-top .grow { flex: 1; min-width: 0; }
-.metrics { display: grid; grid-template-columns: repeat(3, 1fr); padding: 2px 14px 10px 16px; gap: 6px; }
-.metrics div { min-width: 0; }
-.metrics dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
-.metrics dd { margin: 1px 0 0; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.metrics dd .f { color: var(--err); }
-.cooldown { margin: 0 14px 10px 16px; border-radius: 8px; padding: 8px 10px; display: flex; gap: 10px; align-items: center; background: var(--info-bg); color: var(--info); }
-.cooldown .t { font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.cooldown .w { font-size: 12px; line-height: 1.35; }
-.cooldown .w b { display: block; font-size: 12.5px; }
-.s-quota .cooldown { background: var(--warn-bg); color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn-line) 55%, transparent); }
-.reason { margin: 0 14px 10px 16px; font-size: 12px; border-radius: 7px; padding: 6px 9px; overflow-wrap: anywhere; background: var(--err-bg); color: var(--err); font-family: var(--mono); line-height: 1.45; max-height: 82px; overflow-y: auto; }
-.s-quota .reason, .s-cooling .reason { background: var(--panel-2); color: var(--muted); }
-.acc-actions { display: flex; gap: 6px; padding: 9px 14px 10px 16px; border-top: 1px solid var(--border); margin-top: auto; flex-wrap: wrap; }
-.acc-actions .spacer { flex: 1; }
-.switch { position: relative; width: 34px; height: 20px; flex: none; margin-top: 1px; }
-.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-.switch span { position: absolute; inset: 0; background: var(--border-strong); border-radius: 10px; cursor: pointer; transition: background .15s; }
-.switch span::after { content: ""; position: absolute; width: 16px; height: 16px; left: 2px; top: 2px; background: #fff; border-radius: 50%; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
-.switch input:checked + span { background: var(--ok); }
-.switch input:checked + span::after { transform: translateX(14px); }
-.switch input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* ========================================================
+   ACCOUNTS PAGE STYLES (Modern SaaS Mint-Teal)
+   ======================================================== */
+
+/* Notice Banner */
+.notice-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(11, 107, 97, 0.05);
+  border: 1px solid rgba(11, 107, 97, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 22px;
+}
+
+.notice-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(11, 107, 97, 0.12);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notice-icon-circle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.notice-body {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.notice-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.notice-desc {
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0.85;
+  margin-bottom: 3px;
+}
+
+.notice-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* Header badge count */
+.card-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+/* User cell */
+.acc-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.acc-avatar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: rgba(11, 107, 97, 0.08);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.acc-avatar-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.acc-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.acc-id-mono {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Status pills with pulsating dots */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.dot-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-pill-live {
+  background: #dcfce7;
+  color: #15803d;
+}
+.dot-live {
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+.status-pill-err {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.dot-err {
+  background: #ef4444;
+}
+
+.status-pill-warn {
+  background: #fef3c7;
+  color: #b45309;
+}
+.dot-warn {
+  background: #f59e0b;
+}
+
+.status-pill-info {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.dot-info {
+  background: #38bdf8;
+}
+
+.status-pill-mute {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.dot-mute {
+  background: #94a3b8;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.acc-meta-time {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Quota block */
+.acc-quota-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.acc-quota-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+.acc-quota-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.acc-quota-sub b {
+  color: var(--text);
+}
+
+.acc-quota-bar {
+  width: 140px;
+  height: 5px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+  margin: 2px 0;
+}
+
+.acc-quota-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #0b6b61);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.acc-quota-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.acc-quota-btn:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.acc-quota-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Expiration */
+.acc-exp-date {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.acc-meta-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Use count */
+.acc-use-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* Action buttons */
+.acc-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tbl-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tbl-action-btn:hover {
+  background: #ffffff;
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.tbl-action-btn.is-active {
+  background: rgba(11, 107, 97, 0.08);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.tbl-action-btn.is-danger:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #ef4444;
+}
+
+.tbl-action-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Empty State Card */
+.empty-card {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(11, 107, 97, 0.08);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.empty-icon-wrap svg {
+  width: 28px;
+  height: 28px;
+}
+
+.empty-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.empty-card p {
+  color: var(--muted);
+  font-size: 13.5px;
+  max-width: 400px;
+  margin: 0 auto 20px;
+}
 
 </style>
   <style>/* keys.css */
-/* ---------- modern api keys layout ---------- */
-.key-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr); gap: 18px; margin-bottom: 24px; }
-@media (max-width: 980px) { .key-layout { grid-template-columns: 1fr; } }
-.stack { display: flex; flex-direction: column; gap: 18px; }
-.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.card-head h2 { font-size: 15.5px; font-weight: 700; margin: 0; color: var(--text); }
-.card-body { padding: 20px; }
-.tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(46,189,133,0.3); border-radius: 6px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-.tag.gray { background: var(--panel-2); border-color: var(--border); color: var(--muted); }
-.key-display { padding: 16px 18px; border: 1px dashed var(--border-strong); background: var(--panel-2); border-radius: 9px; margin-bottom: 14px; }
-.key-display code { font-size: 14px; font-family: var(--mono); overflow-wrap: anywhere; font-weight: 600; display: block; color: var(--text); }
-.code-block { position: relative; background: #161c20; color: #dbeef3; padding: 15px 18px; border-radius: 8px; font-size: 11.5px; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; word-break: break-all; font-family: var(--mono); margin: 0; }
-.endpoint { background: var(--panel-2); border: 1px solid var(--border); padding: 9px 12px; border-radius: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-family: var(--mono); }
-.endpoint code { overflow-wrap: anywhere; color: var(--text); font-weight: 600; }
-.endpoint-list { display: grid; gap: 0; }
-.endpoint-item { padding: 11px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; font-size: 12px; font-family: var(--mono); }
-.endpoint-item:last-child { border-bottom: 0; }
-.verb { font-size: 9.5px; font-weight: 700; color: var(--ok); background: var(--ok-bg); padding: 3px 7px; border-radius: 4px; min-width: 44px; text-align: center; }
-.btn-revoke { border: 1px solid var(--err); background: transparent; color: var(--err); border-radius: 6px; padding: 3px 12px; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all .15s ease; }
-.btn-revoke:hover { background: var(--err-bg); }
+/* ========================================================
+   API KEYS PAGE STYLES (Modern SaaS Mint-Teal)
+   ======================================================== */
+
+.key-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(340px, 1fr);
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+  .key-layout { grid-template-columns: 1fr; }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.key-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.p-compact {
+  padding: 18px 22px;
+}
+
+/* Badges */
+.tag-mint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(11, 107, 97, 0.08);
+  color: var(--accent);
+  border: 1px solid rgba(11, 107, 97, 0.2);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tag-mint svg {
+  width: 13px;
+  height: 13px;
+}
+
+.tag-gray {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Key display box */
+.key-display-box {
+  padding: 16px 18px;
+  border: 1px dashed rgba(11, 107, 97, 0.3);
+  background: var(--panel-2);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.key-display-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.key-display-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.key-display-value {
+  font-size: 15px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.key-display-meta {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.card-hint-text {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+/* Inline form block */
+.field-block {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.field-row {
+  display: flex;
+  gap: 10px;
+}
+
+.input-modern {
+  flex: 1;
+  height: 38px;
+  padding: 0 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.input-modern:focus {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(11, 107, 97, 0.12);
+}
+
+.btn-inline-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-inline-submit svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Key items list */
+.key-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+/* Terminal box (cURL) */
+.terminal-box {
+  background: #0b1a19;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terminal-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.dot-red { background: #ef4444; }
+.dot-yellow { background: #f59e0b; }
+.dot-green { background: #10b981; }
+
+.terminal-title {
+  margin-left: 8px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: #94a3b8;
+}
+
+.terminal-code {
+  color: #93c5fd;
+  padding: 14px 16px;
+  font-size: 12px;
+  line-height: 1.65;
+  font-family: var(--mono);
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.terminal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* Endpoint box */
+.endpoint-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.endpoint-box code {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.icon-btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.notice-box-compact {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(11, 107, 97, 0.06);
+  border: 1px solid rgba(11, 107, 97, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.notice-box-compact svg {
+  width: 17px;
+  height: 17px;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Endpoint modern list */
+.endpoint-list-modern {
+  display: flex;
+  flex-direction: column;
+}
+
+.endpoint-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.endpoint-row:last-child {
+  border-bottom: none;
+}
+
+.endpoint-row code {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.verb-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  min-width: 44px;
+  text-align: center;
+}
+
+.verb-post {
+  background: rgba(11, 107, 97, 0.12);
+  color: #0b6b61;
+}
+
+.verb-get {
+  background: #e0f2fe;
+  color: #0284c7;
+}
 
 </style>
   <style>/* requests.css */
-/* ---------- requests page styles ---------- */
-#page-requests .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-#page-requests .filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
-#page-requests .filter-row select, #page-requests .filter-row input { height: 36px; padding: 0 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 13px; }
-#page-requests table td { font-size: 13px; }
-#page-requests .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-weight: 600; font-size: 11px; }
-#page-requests .status-2xx { background: #dcefeb; color: #0b6b61; }
-#page-requests .status-4xx { background: #fef3c7; color: #b45309; }
-#page-requests .status-5xx { background: #fee2e2; color: #b91c1c; }
+/* ========================================================
+   REQUESTS LOG PAGE STYLES (Modern SaaS Mint-Teal)
+   ======================================================== */
+
+.mono-badge {
+  font-family: var(--mono);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* Live Toggle Pill */
+.live-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.live-toggle-pill:hover {
+  border-color: var(--accent);
+}
+
+.live-toggle-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.live-dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.live-dot-pulse.on {
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+.live-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Filter Card */
+.filter-card {
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-lg);
+}
+
+.filter-controls-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Search input in filter */
+.filter-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  height: 36px;
+  min-width: 240px;
+  flex: 1;
+  transition: all 0.15s ease;
+}
+
+.filter-search-wrap:focus-within {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(11, 107, 97, 0.12);
+}
+
+.filter-search-wrap .search-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--faint);
+}
+
+.filter-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+/* Filter select wrap */
+.filter-select-wrap {
+  flex-shrink: 0;
+}
+
+/* Checkbox pill */
+.checkbox-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.checkbox-pill:hover {
+  border-color: var(--border-strong);
+  background: #ffffff;
+}
+
+.checkbox-pill input {
+  accent-color: var(--accent);
+}
+
+/* Active Chips */
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(11, 107, 97, 0.08);
+  border: 1px solid rgba(11, 107, 97, 0.2);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.chip button {
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.chip svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Table Card for Requests */
+.tablewrap-requests {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.requests-log-table tr.click {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.requests-log-table tr.click:hover td {
+  background: rgba(11, 107, 97, 0.03);
+}
+
+.mono-time {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Method tags */
+.method-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 800;
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+  min-width: 44px;
+  text-align: center;
+}
+
+.method-tag.m-post {
+  background: rgba(11, 107, 97, 0.12);
+  color: #0b6b61;
+}
+
+.method-tag.m-get {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.method-tag.m-del {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.method-tag.m-other {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.path-cell {
+  max-width: 280px;
+}
+
+.path-code {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 220px;
+  vertical-align: middle;
+}
+
+.model-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.key-name-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.acc-tag {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.num-latency {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mono-client {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Pager row */
+.pager-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.pager-info {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.pager-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.pager-btns .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.pager-btns .btn:first-child svg {
+  transform: rotate(180deg);
+}
 
 </style>
 </head>
@@ -2511,7 +3618,7 @@ th {
         <svg class="i caret-icon"><use href="#i-chevron-down"/></svg>
       </div>
       <button class="btn primary add-account-btn" id="ov-add-acc-btn" type="button">
-        <span class="plus-symbol">+</span> + Thêm tài khoản Muse
+        <span class="plus-symbol">+</span> Thêm tài khoản Muse
       </button>
     </div>
   </div>
@@ -2961,210 +4068,344 @@ th {
 
 
       <!-- Page: Accounts -->
-      <section class="page" id="page-accounts" hidden>
-        <div class="page-head" style="align-items:center;">
-          <div class="grow">
-            <h1 style="font-size:24px;font-weight:750;letter-spacing:-.02em;">Tài khoản Muse</h1>
-            <div class="sub" style="font-size:13.5px;color:var(--muted);margin-top:4px;">Quản lý các phiên Muse thuộc không gian của bạn.</div>
-          </div>
-          <div class="tools">
-            <button class="btn primary" id="acc-new" type="button" style="background:#2ebd85;color:#fff;border-color:#2ebd85;font-weight:600;padding:8px 18px;border-radius:6px;display:inline-flex;align-items:center;gap:6px;">
-              <svg class="i" style="width:14px;height:14px;"><use href="#i-plus"/></svg>+ Thêm tài khoản
-            </button>
-            <button class="btn" id="acc-refresh" type="button" hidden></button>
-          </div>
-        </div>
-        <div class="notice" style="margin-bottom:20px;background:rgba(46,189,133,0.08);color:var(--text);border:1px solid rgba(46,189,133,0.3);border-radius:8px;padding:14px 18px;font-size:13px;display:flex;align-items:flex-start;gap:12px;">
-          <svg class="i" style="width:20px;height:20px;flex:none;color:#2ebd85;margin-top:2px;"><use href="#i-check-circle"/></svg>
-          <div style="line-height:1.5;">
-            <strong style="color:var(--text);font-size:13.5px;">Tài khoản riêng, quyền truy cập riêng.</strong><br>
-            <span style="color:var(--text);opacity:0.9;">Chỉ API key của bạn gọi được các tài khoản này. Luân chuyển và thử lại luôn nằm trong kho của bạn.</span><br>
-            <span class="muted" style="font-size:12px;">Tự cập nhật trạng thái và token mỗi 1 phút khi mở trang.</span>
-          </div>
-        </div>
-        <div id="accounts"></div>
-      </section>
+      <!-- Page: Accounts -->
+<section class="page" id="page-accounts" hidden>
+  <!-- Page Header Row -->
+  <div class="page-title-row">
+    <div class="page-title-left">
+      <h1 class="page-title">Tài khoản Muse</h1>
+      <p class="page-subtitle">Quản lý các phiên Muse thuộc không gian của bạn.</p>
+    </div>
+    <div class="page-title-right">
+      <button class="btn primary add-account-btn" id="acc-new" type="button">
+        <span class="plus-symbol">+</span> Thêm tài khoản
+      </button>
+      <button class="btn" id="acc-refresh" type="button" hidden></button>
+    </div>
+  </div>
 
-      <!-- keys -->
+  <!-- Security Notice Banner -->
+  <div class="notice-banner">
+    <div class="notice-icon-circle">
+      <svg class="i"><use href="#i-shield-check"/></svg>
+    </div>
+    <div class="notice-body">
+      <div class="notice-title">Tài khoản riêng, quyền truy cập riêng.</div>
+      <div class="notice-desc">Chỉ API key của bạn gọi được các tài khoản này. Luân chuyển và thử lại luôn nằm trong kho của bạn.</div>
+      <div class="notice-sub">Tự cập nhật trạng thái và token mỗi 1 phút khi mở trang.</div>
+    </div>
+  </div>
+
+  <!-- Accounts Table Container -->
+  <div id="accounts"></div>
+</section>
 
 
       <!-- Page: Keys -->
-      <section class="page" id="page-keys" hidden>
-        <div class="page-head" style="margin-bottom: 22px;">
-          <div class="grow">
-            <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px;">API key</h1>
-            <div class="sub" style="font-size: 13.5px; color: var(--muted);">Kết nối ứng dụng của bạn với một key cá nhân.</div>
+      <!-- Page: API Keys -->
+<section class="page" id="page-keys" hidden>
+  <!-- Page Header Row -->
+  <div class="page-title-row">
+    <div class="page-title-left">
+      <h1 class="page-title">API key</h1>
+      <p class="page-subtitle">Kết nối ứng dụng của bạn với một key cá nhân.</p>
+    </div>
+    <div class="page-title-right">
+      <button class="btn primary add-account-btn" id="key-new" type="button">
+        <span class="plus-symbol">+</span> Cấp API key
+      </button>
+    </div>
+  </div>
+
+  <div class="key-layout">
+    <!-- Left Column -->
+    <div class="stack">
+      <!-- Card 1: API key cá nhân -->
+      <section class="card key-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-mint">
+              <svg class="i"><use href="#i-keys"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">API key cá nhân</h2>
+              <p class="card-subheading">Khóa xác thực dịch vụ của bạn</p>
+            </div>
           </div>
-          <div class="tools">
-            <button class="btn primary big" id="key-new" type="button"><svg class="i"><use href="#i-plus"/></svg>Cấp API key</button>
+          <span class="tag tag-mint">
+            <svg class="i"><use href="#i-shield"/></svg>
+            Chỉ quyền của bạn
+          </span>
+        </div>
+
+        <div class="card-body">
+          <!-- KEY HIỆN TẠI DISPLAY BOX -->
+          <div class="key-display-box" id="key-current-display">
+            <div class="key-display-top">
+              <span class="key-display-label">KEY HIỆN TẠI</span>
+              <span id="key-current-action"></span>
+            </div>
+            <code class="key-display-value" id="key-current-val">m2a-••••••••••••••••••••••</code>
+            <div class="key-display-meta" id="key-current-meta"></div>
+          </div>
+
+          <p class="card-hint-text">
+            Key đầy đủ chỉ hiển thị khi tạo. Máy chủ lưu mã băm SHA-256, không lưu key gốc.
+          </p>
+
+          <!-- Form tạo key mới inline -->
+          <div class="field-block">
+            <label class="field-label" for="inline-key-name">Tên key (không bắt buộc)</label>
+            <div class="field-row">
+              <input type="text" class="input-modern" id="inline-key-name" placeholder="API key cá nhân" maxlength="100" autocomplete="off">
+              <button class="btn primary btn-inline-submit" id="btn-inline-create" type="button">
+                <svg class="i"><use href="#i-plus"/></svg>
+                <span>Tạo key mới</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Danh sách key dạng cards / rows -->
+          <div id="key-rows-list" class="key-items-list"></div>
+        </div>
+      </section>
+
+      <!-- Card 2: Thử một yêu cầu -->
+      <section class="card key-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-peach">
+              <svg class="i"><use href="#i-code"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Thử một yêu cầu</h2>
+              <p class="card-subheading">Lệnh mẫu cURL gọi tới endpoint</p>
+            </div>
+          </div>
+          <span class="tag tag-gray">cURL</span>
+        </div>
+
+        <div class="card-body">
+          <div class="terminal-box">
+            <div class="terminal-bar">
+              <span class="terminal-dot dot-red"></span>
+              <span class="terminal-dot dot-yellow"></span>
+              <span class="terminal-dot dot-green"></span>
+              <span class="terminal-title">bash — curl sample</span>
+            </div>
+            <pre class="terminal-code" id="curl-code-snippet"></pre>
+          </div>
+          <div class="terminal-actions">
+            <p class="card-hint-text m-0">Thay YOUR_API_KEY bằng key cá nhân của bạn.</p>
+            <button class="btn sm" id="btn-copy-curl" type="button">
+              <svg class="i"><use href="#i-copy"/></svg> Chép cURL
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column -->
+    <div class="stack">
+      <!-- Card 3: Cấu hình kết nối -->
+      <section class="card key-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-blue">
+              <svg class="i"><use href="#i-database"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Cấu hình kết nối</h2>
+              <p class="card-subheading">Địa chỉ Base URL cho các client</p>
+            </div>
           </div>
         </div>
 
-        <div class="key-layout">
-          <!-- Left Column -->
-          <div class="stack">
-            <!-- Card 1: API key cá nhân -->
-            <section class="card">
-              <div class="card-head">
-                <h2>API key cá nhân</h2>
-                <span class="tag">
-                  <svg class="i" style="width:13px;height:13px;"><use href="#i-shield"/></svg>
-                  Chỉ quyền của bạn
-                </span>
-              </div>
-              <div class="card-body">
-                <!-- KEY HIỆN TẠI -->
-                <div class="key-display" id="key-current-display">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <span class="muted small" style="font-weight:700; letter-spacing:0.6px; font-size:10.5px;">KEY HIỆN TẠI</span>
-                    <span id="key-current-action"></span>
-                  </div>
-                  <code id="key-current-val" style="font-size:14px; font-weight:600; letter-spacing:0.5px; color:var(--text);">m2a-••••••••••••••••••••••</code>
-                  <div class="muted small" id="key-current-meta" style="margin-top:8px; font-size:11.5px;"></div>
-                </div>
-
-                <p class="muted small" style="margin-bottom:18px; line-height:1.5;">
-                  Key đầy đủ chỉ hiển thị khi tạo. Máy chủ lưu mã băm SHA-256, không lưu key gốc.
-                </p>
-
-                <!-- Form tạo key mới inline -->
-                <div class="field" style="margin-bottom:18px;">
-                  <label for="inline-key-name" style="font-weight:600; font-size:12.5px; margin-bottom:6px; display:block;">Tên key (không bắt buộc)</label>
-                  <div style="display:flex; gap:10px;">
-                    <input type="text" id="inline-key-name" placeholder="API key cá nhân" maxlength="100" autocomplete="off" style="flex:1;">
-                    <button class="btn primary" id="btn-inline-create" type="button" style="white-space:nowrap; display:inline-flex; align-items:center; gap:6px;">
-                      <svg class="i"><use href="#i-refresh"/></svg> Tạo key mới
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Danh sách key dạng cards / rows -->
-                <div id="key-rows-list" style="display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border); padding-top:14px;"></div>
-              </div>
-            </section>
-
-            <!-- Card 2: Thử một yêu cầu -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Thử một yêu cầu</h2>
-                <span class="tag gray">cURL</span>
-              </div>
-              <div class="card-body">
-                <pre class="code-block" id="curl-code-snippet"></pre>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; flex-wrap:wrap; gap:10px;">
-                  <p class="muted small" style="margin:0;">Thay YOUR_API_KEY bằng key cá nhân của bạn.</p>
-                  <button class="btn sm" id="btn-copy-curl" type="button" style="padding:6px 14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                    <svg class="i"><use href="#i-copy"/></svg> Chép cURL
-                  </button>
-                </div>
-              </div>
-            </section>
+        <div class="card-body">
+          <div class="field-block">
+            <label class="field-label">Base URL</label>
+            <div class="endpoint-box">
+              <code id="endpoint-base-url">http://127.0.0.1:18610/v1</code>
+              <button class="btn ghost icon-btn-text" id="btn-copy-base-url" type="button" aria-label="Sao chép Base URL">
+                <svg class="i"><use href="#i-copy"/></svg> Chép
+              </button>
+            </div>
           </div>
 
-          <!-- Right Column -->
-          <div class="stack">
-            <!-- Card 3: Cấu hình kết nối -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Cấu hình kết nối</h2>
-              </div>
-              <div class="card-body">
-                <div class="field" style="margin-bottom:16px;">
-                  <label style="font-weight:600; font-size:12.5px; margin-bottom:6px; display:block;">Base URL</label>
-                  <div class="endpoint">
-                    <code id="endpoint-base-url">http://127.0.0.1:18610/v1</code>
-                    <button class="btn ghost icon" id="btn-copy-base-url" type="button" aria-label="Sao chép Base URL" style="display:inline-flex; align-items:center; gap:5px; padding:4px 8px; font-size:12px;">
-                      <svg class="i"><use href="#i-copy"/></svg> Chép
-                    </button>
-                  </div>
-                </div>
-                <div class="notice" style="background:var(--ok-bg); border:1px solid rgba(46,189,133,0.3); border-radius:8px; padding:12px 14px; font-size:12px; display:flex; gap:10px; color:var(--text); line-height:1.5;">
-                  <svg class="i" style="width:18px; height:18px; flex:none; color:var(--ok); margin-top:2px;"><use href="#i-info"/></svg>
-                  <span>Tên GPT/Claude chỉ là alias. Chat dùng Muse Spark; Responses hỗ trợ văn bản. Tool calling mặc định tắt.</span>
-                </div>
-              </div>
-            </section>
-
-            <!-- Card 4: Endpoint khả dụng -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Endpoint khả dụng</h2>
-              </div>
-              <div class="card-body endpoint-list" style="padding:6px 20px;">
-                <div class="endpoint-item"><span class="verb">POST</span><code>/chat/completions</code></div>
-                <div class="endpoint-item"><span class="verb">POST</span><code>/responses</code></div>
-                <div class="endpoint-item"><span class="verb">POST</span><code>/images/generations</code></div>
-                <div class="endpoint-item"><span class="verb">POST</span><code>/images/tasks</code></div>
-                <div class="endpoint-item"><span class="verb">POST</span><code>/videos</code></div>
-                <div class="endpoint-item"><span class="verb" style="color:var(--info);background:var(--info-bg);">GET</span><code>/models</code></div>
-              </div>
-            </section>
-
-            <!-- Card 5: Thống kê & Quản trị chi tiết -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Thống kê &amp; Quản trị</h2>
-                <span class="muted small">Lưu lượng 24h</span>
-              </div>
-              <div class="card-body" style="padding:16px 20px;">
-                <div class="tiles" id="key-tiles" style="margin-bottom:12px;"></div>
-                <div class="tablewrap" style="max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:8px;">
-                  <table class="resp">
-                    <thead><tr>
-                      <th>Name</th><th class="hide-sm">Key</th><th>Status</th><th class="num">Total</th><th class="num">24h</th><th class="num">Errors</th><th>Last request</th><th></th>
-                    </tr></thead>
-                    <tbody id="keys-body"></tbody>
-                  </table>
-                </div>
-                <p class="muted small" style="margin-top:8px; font-size:11px;">
-                  Bấm một dòng để lọc nhật ký requests theo key đó.
-                </p>
-              </div>
-            </section>
+          <div class="notice-box-compact">
+            <svg class="i"><use href="#i-info"/></svg>
+            <span>Tên GPT/Claude chỉ là alias. Chat dùng Muse Spark; Responses hỗ trợ văn bản. Tool calling mặc định tắt.</span>
           </div>
         </div>
       </section>
 
-      <!-- requests -->
+      <!-- Card 4: Endpoint khả dụng -->
+      <section class="card key-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-mint">
+              <svg class="i"><use href="#i-zap"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Endpoint khả dụng</h2>
+              <p class="card-subheading">Các tuyến API được hỗ trợ</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-compact">
+          <div class="endpoint-list-modern">
+            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/chat/completions</code></div>
+            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/responses</code></div>
+            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/images/generations</code></div>
+            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/images/tasks</code></div>
+            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/videos</code></div>
+            <div class="endpoint-row"><span class="verb-tag verb-get">GET</span><code>/models</code></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 5: Thống kê & Quản trị chi tiết -->
+      <section class="card key-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-mint">
+              <svg class="i"><use href="#i-chart-bar"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Thống kê &amp; Quản trị</h2>
+              <p class="card-subheading">Lưu lượng request 24h theo từng key</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-compact">
+          <div class="tiles" id="key-tiles" style="margin-bottom:14px;"></div>
+          <div class="tablewrap" style="max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-md);">
+            <table class="recent-requests-table">
+              <thead>
+                <tr>
+                  <th>TÊN</th>
+                  <th class="hide-sm">KEY</th>
+                  <th>TRẠNG THÁI</th>
+                  <th class="text-right">TỔNG</th>
+                  <th class="text-right">24H</th>
+                  <th class="text-right">LỖI</th>
+                  <th>GẦN NHẤT</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="keys-body"></tbody>
+            </table>
+          </div>
+          <p class="card-hint-text" style="margin-top:10px;">
+            Bấm một dòng để lọc nhật ký requests theo key đó.
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
 
 
       <!-- Page: Requests -->
-      <section class="page" id="page-requests" hidden>
-        <div class="page-head">
-          <div class="grow"><h1>Requests</h1><div class="sub">Nhật ký từng request tới <span class="mono">/v1/*</span>. Bấm một dòng để xem chi tiết.</div></div>
-          <div class="tools"><label class="chk"><input type="checkbox" id="f-live" checked> <span class="livedot on" id="live-dot"></span> Tự động làm mới</label></div>
-        </div>
-        <div class="filters">
-          <select id="f-key" aria-label="Key"></select>
-          <select id="f-account" aria-label="Account"></select>
-          <select id="f-status" aria-label="Status">
-            <option value="">Mọi status</option>
-            <option value="2xx">2xx</option>
-            <option value="4xx">4xx</option>
-            <option value="5xx">5xx</option>
-            <option value="failed">Lỗi (gồm task failed)</option>
-          </select>
-          <input type="text" id="f-path" placeholder="Path, ví dụ /v1/chat" aria-label="Path prefix">
-          <label class="chk"><input type="checkbox" id="f-polls" checked> Ẩn poll</label>
-          <span id="f-chips" class="row"></span>
-        </div>
-        <div class="panel">
-          <div class="tablewrap">
-            <table>
-              <thead><tr>
-                <th>Time</th><th>Method</th><th>Path</th><th class="hide-sm">Model</th><th>Key</th>
-                <th class="hide-sm">Account</th><th class="num">Status</th><th class="num">Latency</th><th class="hide-sm">Client</th>
-              </tr></thead>
-              <tbody id="req-body"></tbody>
-            </table>
-          </div>
-          <div class="pager">
-            <span id="req-range"></span>
-            <button class="btn sm" id="req-prev" type="button">Mới hơn</button>
-            <button class="btn sm" id="req-next" type="button">Cũ hơn</button>
-          </div>
-        </div>
-      </section>
+      <!-- Page: Requests -->
+<section class="page" id="page-requests" hidden>
+  <!-- Page Header Row -->
+  <div class="page-title-row">
+    <div class="page-title-left">
+      <h1 class="page-title">Requests</h1>
+      <p class="page-subtitle">Nhật ký từng request tới <span class="mono-badge">/v1/*</span>. Bấm một dòng để xem chi tiết.</p>
+    </div>
+    <div class="page-title-right">
+      <label class="live-toggle-pill" for="f-live">
+        <input type="checkbox" id="f-live" checked>
+        <span class="live-dot-pulse on" id="live-dot"></span>
+        <span class="live-label">Tự động làm mới</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card filter-card">
+    <div class="filter-controls-row">
+      <!-- Path Search Input -->
+      <div class="filter-search-wrap">
+        <svg class="i search-icon"><use href="#i-search"/></svg>
+        <input type="text" id="f-path" class="filter-input" placeholder="Tìm kiếm path (ví dụ /v1/chat...)" aria-label="Path prefix">
+      </div>
+
+      <!-- Key Select -->
+      <div class="filter-select-wrap">
+        <select id="f-key" class="select-pill" aria-label="Key"></select>
+      </div>
+
+      <!-- Account Select -->
+      <div class="filter-select-wrap">
+        <select id="f-account" class="select-pill" aria-label="Account"></select>
+      </div>
+
+      <!-- Status Select -->
+      <div class="filter-select-wrap">
+        <select id="f-status" class="select-pill" aria-label="Status">
+          <option value="">Mọi status</option>
+          <option value="2xx">2xx Thành công</option>
+          <option value="4xx">4xx Client Error</option>
+          <option value="5xx">5xx Server Error</option>
+          <option value="failed">Lỗi tác vụ (failed)</option>
+        </select>
+      </div>
+
+      <!-- Hide Polls Checkbox -->
+      <label class="checkbox-pill" for="f-polls">
+        <input type="checkbox" id="f-polls" checked>
+        <span>Ẩn poll requests</span>
+      </label>
+    </div>
+
+    <!-- Active filter chips -->
+    <div id="f-chips" class="chips-container"></div>
+  </div>
+
+  <!-- Requests Table Card -->
+  <div class="card table-card">
+    <div class="tablewrap tablewrap-requests">
+      <table class="recent-requests-table requests-log-table">
+        <thead>
+          <tr>
+            <th style="min-width:90px;">THỜI GIAN</th>
+            <th style="min-width:70px;">METHOD</th>
+            <th style="min-width:180px;">PATH</th>
+            <th style="min-width:130px;" class="hide-sm">MODEL</th>
+            <th style="min-width:100px;">KEY</th>
+            <th style="min-width:120px;" class="hide-sm">ACCOUNT</th>
+            <th style="min-width:85px;text-align:center;">STATUS</th>
+            <th style="min-width:85px;text-align:right;">LATENCY</th>
+            <th style="min-width:100px;" class="hide-sm">CLIENT</th>
+          </tr>
+        </thead>
+        <tbody id="req-body">
+          <tr>
+            <td colspan="9" class="empty">Đang tải nhật ký requests…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pager / Footer -->
+    <div class="pager-row">
+      <div class="pager-info" id="req-range"></div>
+      <div class="pager-btns">
+        <button class="btn sm" id="req-prev" type="button">
+          <svg class="i"><use href="#i-arrow-right"/></svg> Mới hơn
+        </button>
+        <button class="btn sm" id="req-next" type="button">
+          Cũ hơn <svg class="i"><use href="#i-arrow-right"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
 
 
       <!-- Footer -->
@@ -3264,6 +4505,14 @@ function keyLabel(id, fallback) {
   const k = state.keys.find((x) => x.id === id);
   return k ? k.name : (fallback || id);
 }
+function tile(k, v, s = "", cls = "") {
+  return `<div class="mini-tile ${cls}">
+    <div class="mini-tile-label">${esc(k)}</div>
+    <div class="mini-tile-val">${esc(v)}</div>
+    <div class="mini-tile-sub" title="${esc(s)}">${esc(s)}</div>
+  </div>`;
+}
+
 let toastTimer;
 function toast(msg) {
   const t = $("#toast");
@@ -3439,46 +4688,66 @@ function accountTableRow(a) {
 
   let statusHtml = "";
   if (!a.enabled) {
-    statusHtml = '<span class="badge b-mute" style="font-weight:650;">Đã tắt</span>';
+    statusHtml = '<span class="status-pill status-pill-mute"><span class="dot-indicator dot-mute"></span> Đã tắt</span>';
   } else if (s.key === "active") {
-    statusHtml = '<span class="badge b-ok" style="background:rgba(46,189,133,0.12);color:#2ebd85;font-weight:650;padding:2px 10px;">● Live</span>';
+    statusHtml = '<span class="status-pill status-pill-live"><span class="dot-indicator dot-live"></span> Live</span>';
   } else if (s.key === "invalid") {
-    statusHtml = '<span class="badge b-err" style="background:rgba(239,68,68,0.12);color:#ef4444;font-weight:650;padding:2px 10px;">● Lỗi phiên</span>';
+    statusHtml = '<span class="status-pill status-pill-err"><span class="dot-indicator dot-err"></span> Lỗi phiên</span>';
+  } else if (s.key === "quota") {
+    statusHtml = '<span class="status-pill status-pill-warn"><span class="dot-indicator dot-warn"></span> Hết quota</span>';
   } else {
-    statusHtml = `<span class="badge ${s.badge}">${esc(s.label)}</span>`;
+    statusHtml = `<span class="status-pill status-pill-info"><span class="dot-indicator dot-info"></span> ${esc(s.label)}</span>`;
   }
 
-  const tokensLeft = q.extra_left || "1B token";
-  const weeklyPct = 100 - (q.weekly_used_pct ?? 5);
+  const tokensLeft = q.extra_left || "1B token (Gói Muse)";
+  const weeklyPct = Math.max(0, Math.min(100, 100 - (q.weekly_used_pct ?? 5)));
 
   return `<tr data-id="${esc(a.id)}">
-    <td style="padding:14px 16px;">
-      <div style="font-weight:650;font-size:13.5px;color:var(--text);">${esc(email)}</div>
-      <div class="mono muted" style="font-size:11.5px;margin-top:2px;">${esc(a.id.slice(0, 14))}…</div>
+    <td>
+      <div class="acc-user-cell">
+        <div class="acc-avatar-icon">
+          <svg class="i"><use href="#i-accounts"/></svg>
+        </div>
+        <div>
+          <div class="acc-name">${esc(email)}</div>
+          <div class="acc-id-mono">${esc(a.id.slice(0, 16))}…</div>
+        </div>
+      </div>
     </td>
-    <td style="padding:14px 16px;">
+    <td>
       ${statusHtml}
-      <div class="small muted" style="font-size:11.5px;margin-top:3px;">Kiểm tra: ${esc(checkTime)}</div>
+      <div class="acc-meta-time">Kiểm tra: ${esc(checkTime)}</div>
     </td>
-    <td style="padding:14px 16px;line-height:1.45;">
-      <strong class="mono" style="font-size:13.5px;color:var(--text);font-weight:700;">${esc(tokensLeft)}</strong>
-      <div class="small muted" style="font-size:11.5px;margin-top:1px;">Token bổ sung</div>
-      <div class="small muted" style="font-size:11.5px;">Tuần này: ${esc(weeklyPct)}% còn</div>
-      <div class="small muted" style="font-size:11px;margin-top:1px;">${esc(checkTime)}</div>
-      <button class="btn ghost sm" type="button" data-act="quota" style="padding:2px 0;font-size:11.5px;color:#2ebd85;font-weight:650;margin-top:2px;cursor:pointer;background:none;border:none;">Cập nhật token</button>
+    <td>
+      <div class="acc-quota-block">
+        <strong class="acc-quota-title">${esc(tokensLeft)}</strong>
+        <div class="acc-quota-sub">Token bổ sung · Tuần này: <b>${esc(weeklyPct)}%</b> còn</div>
+        <div class="acc-quota-bar">
+          <div class="acc-quota-fill" style="width: ${weeklyPct}%;"></div>
+        </div>
+        <button class="acc-quota-btn" type="button" data-act="quota">
+          <svg class="i"><use href="#i-refresh"/></svg> Cập nhật token
+        </button>
+      </div>
     </td>
-    <td style="padding:14px 16px;">
-      <div style="font-size:13px;font-weight:600;color:var(--text);">${esc(expStr)}</div>
-      <div class="small muted" style="font-size:11.5px;margin-top:2px;">Theo cookie phiên</div>
+    <td>
+      <div class="acc-exp-date">${esc(expStr)}</div>
+      <div class="acc-meta-sub">Theo cookie phiên</div>
     </td>
-    <td class="num" style="padding:14px 16px;font-size:13.5px;font-weight:600;text-align:center;">
-      ${fmtNum(a.success_count || a.use_count || 10)}
+    <td class="text-center">
+      <span class="acc-use-badge">${fmtNum(a.success_count || a.use_count || 0)}</span>
     </td>
-    <td style="text-align:right;padding:14px 16px;">
-      <div class="row" style="justify-content:flex-end;gap:8px;">
-        <button class="icon-btn" type="button" data-act="renew" title="Gia hạn / Kiểm tra phiên"><svg class="i"><use href="#i-refresh"/></svg></button>
-        <button class="icon-btn" type="button" data-act="toggle" title="${a.enabled ? 'Đang bật — bấm để tắt' : 'Đang tắt — bấm để bật'}"><svg class="i"><use href="#i-eye"/></svg></button>
-        <button class="icon-btn danger" type="button" data-act="delete" title="Xoá tài khoản"><svg class="i"><use href="#i-trash"/></svg></button>
+    <td class="text-right">
+      <div class="acc-action-group">
+        <button class="tbl-action-btn" type="button" data-act="renew" title="Gia hạn / Kiểm tra phiên">
+          <svg class="i"><use href="#i-refresh"/></svg>
+        </button>
+        <button class="tbl-action-btn ${a.enabled ? 'is-active' : ''}" type="button" data-act="toggle" title="${a.enabled ? 'Đang bật — bấm để tắt' : 'Đang tắt — bấm để bật'}">
+          <svg class="i"><use href="${a.enabled ? '#i-eye' : '#i-eye-off'}"/></svg>
+        </button>
+        <button class="tbl-action-btn is-danger" type="button" data-act="delete" title="Xoá tài khoản">
+          <svg class="i"><use href="#i-trash"/></svg>
+        </button>
       </div>
     </td>
   </tr>`;
@@ -3492,29 +4761,46 @@ function renderAccounts() {
     || (a.meta?.email || a.label || a.id).localeCompare(b.meta?.email || b.label || b.id));
   
   if (!list.length) {
-    $("#accounts").innerHTML = `<div class="panel empty">Chưa có tài khoản Muse nào trong không gian của bạn. <button class="btn primary sm" id="empty-add-acc" type="button" style="margin-left:8px;">+ Thêm tài khoản</button></div>`;
+    $("#accounts").innerHTML = `<div class="card empty-card">
+      <div class="empty-icon-wrap"><svg class="i"><use href="#i-accounts"/></svg></div>
+      <h3>Chưa có tài khoản Muse nào</h3>
+      <p>Thêm tài khoản muse.ai để bắt đầu kết nối không gian làm việc của bạn.</p>
+      <button class="btn primary add-account-btn" id="empty-add-acc" type="button">
+        <span class="plus-symbol">+</span> Thêm tài khoản Muse
+      </button>
+    </div>`;
+    $("#empty-add-acc")?.addEventListener("click", () => accountForm().then((x) => x && guarded(loadAccountsPage)));
     return;
   }
 
-  $("#accounts").innerHTML = `<div class="panel" style="border-radius:10px;overflow:hidden;background:var(--panel);">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);">
-      <h2 style="font-size:15px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;color:var(--text);">
-        Tất cả tài khoản <span class="badge plain" style="font-size:12px;padding:2px 8px;border-radius:6px;background:var(--panel-2);color:var(--muted);border:1px solid var(--border);">${list.length}</span>
-      </h2>
-      <button class="btn sm" id="tbl-refresh" type="button" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12.5px;">
-        <svg class="i" style="width:13px;height:13px;"><use href="#i-refresh"/></svg> Làm mới
-      </button>
+  $("#accounts").innerHTML = `<div class="card table-card">
+    <div class="card-header-row">
+      <div class="card-header-left">
+        <div class="section-icon-box kpi-mint">
+          <svg class="i"><use href="#i-accounts"/></svg>
+        </div>
+        <div>
+          <h2 class="card-heading">Tất cả tài khoản</h2>
+          <p class="card-subheading">Danh sách phiên và trạng thái sẵn sàng</p>
+        </div>
+        <span class="card-count-badge">${list.length}</span>
+      </div>
+      <div class="card-header-right">
+        <button class="btn ghost icon-btn" id="tbl-refresh" type="button" aria-label="Làm mới">
+          <svg class="i"><use href="#i-refresh"/></svg>
+        </button>
+      </div>
     </div>
     <div class="tablewrap">
-      <table class="resp" style="width:100%;border-collapse:collapse;">
+      <table class="recent-requests-table accounts-table">
         <thead>
-          <tr style="border-bottom:1px solid var(--border);background:var(--panel-2);">
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TÀI KHOẢN</th>
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TRẠNG THÁI</th>
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TOKEN CÒN LẠI</th>
-            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">HIỆU LỰC ĐẾN</th>
-            <th class="num" style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;text-align:center;">LƯỢT SỬ DỤNG</th>
-            <th style="text-align:right;padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">THAO TÁC</th>
+          <tr>
+            <th style="min-width:180px;">TÀI KHOẢN</th>
+            <th style="min-width:140px;">TRẠNG THÁI</th>
+            <th style="min-width:200px;">TOKEN CÒN LẠI</th>
+            <th style="min-width:150px;">HIỆU LỰC ĐẾN</th>
+            <th style="min-width:110px;text-align:center;">LƯỢT SỬ DỤNG</th>
+            <th style="min-width:120px;text-align:right;">THAO TÁC</th>
           </tr>
         </thead>
         <tbody>
@@ -3527,6 +4813,7 @@ function renderAccounts() {
   const rBtn = $("#tbl-refresh");
   if (rBtn) rBtn.addEventListener("click", () => guarded(loadAccountsPage));
 }
+
 let lastQuotaAutoSync = 0;
 async function loadAccountsPage() {
   await loadAccounts();
@@ -3548,85 +4835,80 @@ async function accountForm(title = "Thêm account muse.ai") {
       <label class="f">Cookie muse.ai <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Không dùng document.cookie vì thiếu cookie bảo mật HttpOnly!</span>
       <textarea id="af-cookies" rows="6" placeholder="hatch_sess=...; hatch_gw=...; hatch_vml=...; hatch_native_auth_device=..." style="font-family:var(--mono);font-size:12px;"></textarea></label>`,
     actions: [{label: "Huỷ", value: null},
-      {label: "Lưu account", primary: true, cls: "primary",
-       collect: () => {
-         let val = $("#af-cookies").value.trim();
-         try { if (val.startsWith("[") || val.startsWith("{")) val = JSON.parse(val); } catch {}
-         return {label: $("#af-label").value.trim(), cookies: val};
-       },
-       check: (v) => {
-         if (!v.cookies || (typeof v.cookies === "string" && !v.cookies.trim())) return "Vui lòng dán cookie vào ô trên";
-         if (typeof v.cookies === "string" && v.cookies.length < 15) return "Chuỗi cookie quá ngắn, vui lòng copy đầy đủ chuỗi cookie.";
-         return "";
-       }}],
+              {label: "Lưu tài khoản", value: true, primary: true, cls: "primary"}],
+  }).then(async (ok) => {
+    if (!ok) return null;
+    const label = $("#af-label").value.trim(), cookies = $("#af-cookies").value.trim();
+    if (!cookies) throw new Error("Cookie không được để trống");
+    return api("/admin/accounts", {method: "POST", body: {label, cookies}});
   });
 }
 
-async function onNewAccount() {
-  guarded(async () => {
-    const data = await accountForm();
-    if (!data) return;
-    toast("Đang xác thực với muse.ai...");
-    const res = await api("/admin/accounts", {method: "POST", body: data});
-    if (res.info?.email) {
-      toast(`Đã kết nối tài khoản: ${res.info.email}`);
-    } else {
-      toast("Đã thêm tài khoản thành công");
-    }
-    await loadAccountsPage();
-  });
-}
+$("#acc-new").addEventListener("click", () => accountForm().then((x) => x && guarded(loadAccountsPage)));
 
-$("#acc-new")?.addEventListener("click", onNewAccount);
-$("#accounts")?.addEventListener("click", (e) => {
-  if (e.target && e.target.id === "empty-add-acc") onNewAccount();
-});
-$("#acc-refresh")?.addEventListener("click", () => guarded(loadAccountsPage));
+$("#accounts").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  const tr = b.closest("tr[data-id]");
+  if (!tr) return;
+  const id = tr.dataset.id;
+  const act = b.dataset.act;
+  const acc = state.accounts.find((x) => x.id === id);
+  if (!acc) return;
 
-$("#accounts")?.addEventListener("change", (e) => {
-  const input = e.target.closest("input[data-act=toggle]");
-  if (!input) return;
-  const id = input.closest("[data-id]").dataset.id;
-  guarded(async () => {
-    await api(`/admin/accounts/${encodeURIComponent(id)}`, {method: "PATCH", body: {enabled: input.checked}});
-    toast(input.checked ? "Đã bật account" : "Đã tắt account");
-    await loadAccountsPage();
-  });
-});
-$("#accounts")?.addEventListener("click", (e) => {
-  const btn = e.target.closest("button[data-act]");
-  if (!btn) return;
-  const id = btn.closest("[data-id]").dataset.id;
-  const a = state.accounts.find((x) => x.id === id);
-  const act = btn.dataset.act;
-  if (act === "requests") return go("requests", {account: id});
-  guarded(async () => {
-    const path = `/admin/accounts/${encodeURIComponent(id)}`;
-    if (act === "delete") {
-      const name = a ? (a.label || a.id) : id;
-      if (!await confirmBox("Xoá account?", `<p>Xoá vĩnh viễn <b>${esc(name)}</b> (<span class="mono">${esc(id)}</span>) khỏi pool, kể cả cookies đã lưu. Lịch sử request vẫn được giữ.</p>`, "Xoá account")) return;
-      await api(path, {method: "DELETE"});
-      toast("Đã xoá account");
-    } else {
-      btn.disabled = true;
-      try {
-        if (act === "test") toast("Đang gửi lệnh test tới muse.ai...");
-        else if (act === "quota") toast("Đang cập nhật token từ muse.ai...");
-        if (act === "toggle") {
-          const nextEnabled = !a.enabled;
-          await api(path, {method: "PATCH", body: {enabled: nextEnabled}});
-          toast(nextEnabled ? "Đã bật account" : "Đã tắt account");
-        } else {
-          const res = await api(`${path}/${act}`, {method: "POST"});
-          if (act === "test") toast(res.ok ? `Kết nối thành công! Phản hồi: ${res.reply}` : `Lỗi: ${res.error}`);
-          else if (act === "quota") toast(res.ok ? "Đã cập nhật token từ Muse thành công" : `Cập nhật thất bại: ${res.error || "lỗi không rõ"}`);
-          else if (act === "renew") toast(res.ok ? "Đã gia hạn phiên" : `Gia hạn thất bại: ${res.error || "lỗi không rõ"}`);
-          else toast("Đã đặt lại account");
-        }
-      } finally { btn.disabled = false; }
+  if (act === "renew") {
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}/renew`, {method: "POST"});
+      toast("Đã kiểm tra lại phiên tài khoản.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi làm mới: " + err.message);
+    } finally {
+      b.disabled = false;
     }
-    await loadAccountsPage();
-  });
+  } else if (act === "quota") {
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}/quota`, {method: "POST"});
+      toast("Đã cập nhật số liệu token.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi cập nhật token: " + err.message);
+    } finally {
+      b.disabled = false;
+    }
+  } else if (act === "toggle") {
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: {enabled: !acc.enabled}
+      });
+      toast(acc.enabled ? "Đã tắt tài khoản." : "Đã bật tài khoản.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi: " + err.message);
+    } finally {
+      b.disabled = false;
+    }
+  } else if (act === "delete") {
+    const ok = await confirmBox(
+      "Xoá tài khoản Muse",
+      `Bạn có chắc chắn muốn xoá tài khoản <b>${esc(acc.label || acc.id)}</b> không? Thao tác này không thể hoàn tác.`
+    );
+    if (!ok) return;
+    b.disabled = true;
+    try {
+      await api(`/admin/accounts/${encodeURIComponent(id)}`, {method: "DELETE"});
+      toast("Đã xoá tài khoản.");
+      await loadAccountsPage();
+    } catch (err) {
+      toast("Lỗi xoá tài khoản: " + err.message);
+    } finally {
+      b.disabled = false;
+    }
+  }
 });
 
 
@@ -3931,6 +5213,13 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==================== keys.js ====================
 // ---- keys ----
 const BUILTIN_NOTE = {legacy: "MUSE2API_API_KEY (key đơn cũ)", admin: "MUSE2API_ADMIN_KEY"};
+function tile(k, v, s = "", cls = "") {
+  return `<div class="mini-tile ${cls}">
+    <div class="mini-tile-label">${esc(k)}</div>
+    <div class="mini-tile-val">${esc(v)}</div>
+    <div class="mini-tile-sub" title="${esc(s)}">${esc(s)}</div>
+  </div>`;
+}
 async function fetchKeys() {
   const res = await api("/admin/keys");
   // Active keys first; the server already orders by creation time.
@@ -4235,6 +5524,13 @@ $("#keys-body")?.addEventListener("click", (e) => {
 
 // ==================== requests.js ====================
 // ---- requests ----
+
+function methodBadge(m) {
+  const method = (m || "").toUpperCase();
+  const cls = method === "POST" ? "m-post" : method === "GET" ? "m-get" : method === "DELETE" ? "m-del" : "m-other";
+  return `<span class="method-tag ${cls}">${esc(method)}</span>`;
+}
+
 function fillFilterOptions() {
   const keySel = $("#f-key"), accSel = $("#f-account");
   const keyVal = keySel.value || state.pendingKey || "", accVal = accSel.value || state.pendingAccount || "";
@@ -4255,13 +5551,15 @@ function fillFilterOptions() {
   state.pendingKey = state.pendingAccount = "";
   renderChips();
 }
+
 function renderChips() {
   const chips = [];
   const k = $("#f-key").value, a = $("#f-account").value;
-  if (k) chips.push(`<span class="chip">Key: ${esc(keyLabel(k, k))}<button type="button" data-clear="f-key" aria-label="Bỏ lọc key">${icon("x")}</button></span>`);
-  if (a) chips.push(`<span class="chip">Account: ${esc(accountLabel(a))}<button type="button" data-clear="f-account" aria-label="Bỏ lọc account">${icon("x")}</button></span>`);
+  if (k) chips.push(`<span class="chip">Key: ${esc(keyLabel(k, k))}<button type="button" data-clear="f-key" aria-label="Bỏ lọc key"><svg class="i"><use href="#i-x"/></svg></button></span>`);
+  if (a) chips.push(`<span class="chip">Account: ${esc(accountLabel(a))}<button type="button" data-clear="f-account" aria-label="Bỏ lọc account"><svg class="i"><use href="#i-x"/></svg></button></span>`);
   $("#f-chips").innerHTML = chips.join("");
 }
+
 $("#f-chips").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-clear]");
   if (!b) return;
@@ -4283,18 +5581,22 @@ async function loadRequests() {
   const res = await api(`/admin/requests?${p}`);
   lastRows = res.data;
   $("#req-body").innerHTML = res.data.map((r, i) => `<tr class="click" data-i="${i}" tabindex="0">
-      <td class="mono" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
-      <td class="mono">${esc(r.method)}</td>
-      <td class="mono trunc" title="${esc(r.path)}">${esc(r.path)}${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}</td>
-      <td class="hide-sm">${esc(r.model || "")}</td>
-      <td>${esc(r.key_name || "")}</td>
-      <td class="hide-sm trunc">${esc(accountLabel(r.account_id))}</td>
-      <td class="num" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
-      <td class="num">${esc(fmtMs(r.latency_ms))}</td>
-      <td class="hide-sm mono">${esc(r.client_ip || "")}</td>
+      <td class="mono-time" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
+      <td class="text-center">${methodBadge(r.method)}</td>
+      <td class="path-cell">
+        <span class="path-code" title="${esc(r.path)}">${esc(r.path)}</span>
+        ${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}
+        ${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}
+      </td>
+      <td class="hide-sm">${r.model ? `<span class="model-tag">${esc(r.model)}</span>` : '<span class="text-muted">–</span>'}</td>
+      <td><span class="key-name-tag">${esc(r.key_name || (r.key_id ? r.key_id.slice(0, 8) + '…' : "–"))}</span></td>
+      <td class="hide-sm"><span class="acc-tag">${esc(accountLabel(r.account_id))}</span></td>
+      <td class="text-center" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
+      <td class="text-right num-latency">${esc(fmtMs(r.latency_ms))}</td>
+      <td class="hide-sm mono-client">${esc(r.client_ip || "–")}</td>
     </tr>`).join("") || `<tr><td colspan="9" class="empty">Không có request nào khớp bộ lọc.</td></tr>`;
   const end = state.offset + res.data.length;
-  $("#req-range").textContent = res.total ? `${state.offset + 1}–${end} / ${fmtNum(res.total)}` : "";
+  $("#req-range").textContent = res.total ? `Hiển thị ${state.offset + 1}–${end} / ${fmtNum(res.total)} request` : "";
   $("#req-prev").disabled = state.offset === 0;
   $("#req-next").disabled = end >= res.total;
 }
@@ -4314,25 +5616,40 @@ function showRequest(r) {
     actions: [{label: "Đóng", value: null, primary: true, cls: "primary"}],
   });
 }
+
 $("#req-body").addEventListener("click", (e) => {
   const tr = e.target.closest("tr[data-i]");
   if (tr) showRequest(lastRows[Number(tr.dataset.i)]);
 });
+
 $("#req-body").addEventListener("keydown", (e) => {
   const tr = e.target.closest("tr[data-i]");
   if (tr && e.key === "Enter") showRequest(lastRows[Number(tr.dataset.i)]);
 });
+
 for (const id of ["#f-key", "#f-account", "#f-status", "#f-polls"]) {
   $(id).addEventListener("change", () => { state.offset = 0; renderChips(); syncHash(); guarded(loadRequests); });
 }
+
 let pathTimer;
 $("#f-path").addEventListener("input", () => {
   clearTimeout(pathTimer);
   pathTimer = setTimeout(() => { state.offset = 0; guarded(loadRequests); }, 300);
 });
-$("#f-live").addEventListener("change", () => { $("#live-dot").classList.toggle("on", $("#f-live").checked); });
-$("#req-prev").addEventListener("click", () => { state.offset = Math.max(0, state.offset - state.limit); guarded(loadRequests); });
-$("#req-next").addEventListener("click", () => { state.offset += state.limit; guarded(loadRequests); });
+
+$("#f-live").addEventListener("change", () => {
+  $("#live-dot").classList.toggle("on", $("#f-live").checked);
+});
+
+$("#req-prev").addEventListener("click", () => {
+  state.offset = Math.max(0, state.offset - state.limit);
+  guarded(loadRequests);
+});
+
+$("#req-next").addEventListener("click", () => {
+  state.offset += state.limit;
+  guarded(loadRequests);
+});
 
 
 // ==================== login.js ====================

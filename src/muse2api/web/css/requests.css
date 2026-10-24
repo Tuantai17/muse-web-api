@@ -1,9 +1,318 @@
-/* ---------- requests page styles ---------- */
-#page-requests .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-#page-requests .filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
-#page-requests .filter-row select, #page-requests .filter-row input { height: 36px; padding: 0 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 13px; }
-#page-requests table td { font-size: 13px; }
-#page-requests .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-weight: 600; font-size: 11px; }
-#page-requests .status-2xx { background: #dcefeb; color: #0b6b61; }
-#page-requests .status-4xx { background: #fef3c7; color: #b45309; }
-#page-requests .status-5xx { background: #fee2e2; color: #b91c1c; }
+/* ========================================================
+   REQUESTS LOG PAGE STYLES (Modern SaaS Mint-Teal)
+   ======================================================== */
+
+.mono-badge {
+  font-family: var(--mono);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* Live Toggle Pill */
+.live-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.live-toggle-pill:hover {
+  border-color: var(--accent);
+}
+
+.live-toggle-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.live-dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.live-dot-pulse.on {
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+.live-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Filter Card */
+.filter-card {
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-lg);
+}
+
+.filter-controls-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Search input in filter */
+.filter-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  height: 36px;
+  min-width: 240px;
+  flex: 1;
+  transition: all 0.15s ease;
+}
+
+.filter-search-wrap:focus-within {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(11, 107, 97, 0.12);
+}
+
+.filter-search-wrap .search-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--faint);
+}
+
+.filter-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+/* Filter select wrap */
+.filter-select-wrap {
+  flex-shrink: 0;
+}
+
+/* Checkbox pill */
+.checkbox-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.checkbox-pill:hover {
+  border-color: var(--border-strong);
+  background: #ffffff;
+}
+
+.checkbox-pill input {
+  accent-color: var(--accent);
+}
+
+/* Active Chips */
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(11, 107, 97, 0.08);
+  border: 1px solid rgba(11, 107, 97, 0.2);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.chip button {
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.chip svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Table Card for Requests */
+.tablewrap-requests {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.requests-log-table tr.click {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.requests-log-table tr.click:hover td {
+  background: rgba(11, 107, 97, 0.03);
+}
+
+.mono-time {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Method tags */
+.method-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 800;
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+  min-width: 44px;
+  text-align: center;
+}
+
+.method-tag.m-post {
+  background: rgba(11, 107, 97, 0.12);
+  color: #0b6b61;
+}
+
+.method-tag.m-get {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.method-tag.m-del {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.method-tag.m-other {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.path-cell {
+  max-width: 280px;
+}
+
+.path-code {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 220px;
+  vertical-align: middle;
+}
+
+.model-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.key-name-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.acc-tag {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.num-latency {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mono-client {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Pager row */
+.pager-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.pager-info {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.pager-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.pager-btns .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.pager-btns .btn:first-child svg {
+  transform: rotate(180deg);
+}

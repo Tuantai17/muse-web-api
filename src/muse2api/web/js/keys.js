@@ -1,6 +1,13 @@
 "use strict";
 // ---- keys ----
 const BUILTIN_NOTE = {legacy: "MUSE2API_API_KEY (key đơn cũ)", admin: "MUSE2API_ADMIN_KEY"};
+function tile(k, v, s = "", cls = "") {
+  return `<div class="mini-tile ${cls}">
+    <div class="mini-tile-label">${esc(k)}</div>
+    <div class="mini-tile-val">${esc(v)}</div>
+    <div class="mini-tile-sub" title="${esc(s)}">${esc(s)}</div>
+  </div>`;
+}
 async function fetchKeys() {
   const res = await api("/admin/keys");
   // Active keys first; the server already orders by creation time.

@@ -1,36 +1,97 @@
+<!-- Page: Requests -->
 <section class="page" id="page-requests" hidden>
-        <div class="page-head">
-          <div class="grow"><h1>Requests</h1><div class="sub">Nhật ký từng request tới <span class="mono">/v1/*</span>. Bấm một dòng để xem chi tiết.</div></div>
-          <div class="tools"><label class="chk"><input type="checkbox" id="f-live" checked> <span class="livedot on" id="live-dot"></span> Tự động làm mới</label></div>
-        </div>
-        <div class="filters">
-          <select id="f-key" aria-label="Key"></select>
-          <select id="f-account" aria-label="Account"></select>
-          <select id="f-status" aria-label="Status">
-            <option value="">Mọi status</option>
-            <option value="2xx">2xx</option>
-            <option value="4xx">4xx</option>
-            <option value="5xx">5xx</option>
-            <option value="failed">Lỗi (gồm task failed)</option>
-          </select>
-          <input type="text" id="f-path" placeholder="Path, ví dụ /v1/chat" aria-label="Path prefix">
-          <label class="chk"><input type="checkbox" id="f-polls" checked> Ẩn poll</label>
-          <span id="f-chips" class="row"></span>
-        </div>
-        <div class="panel">
-          <div class="tablewrap">
-            <table>
-              <thead><tr>
-                <th>Time</th><th>Method</th><th>Path</th><th class="hide-sm">Model</th><th>Key</th>
-                <th class="hide-sm">Account</th><th class="num">Status</th><th class="num">Latency</th><th class="hide-sm">Client</th>
-              </tr></thead>
-              <tbody id="req-body"></tbody>
-            </table>
-          </div>
-          <div class="pager">
-            <span id="req-range"></span>
-            <button class="btn sm" id="req-prev" type="button">Mới hơn</button>
-            <button class="btn sm" id="req-next" type="button">Cũ hơn</button>
-          </div>
-        </div>
-      </section>
+  <!-- Page Header Row -->
+  <div class="page-title-row">
+    <div class="page-title-left">
+      <h1 class="page-title">Requests</h1>
+      <p class="page-subtitle">Nhật ký từng request tới <span class="mono-badge">/v1/*</span>. Bấm một dòng để xem chi tiết.</p>
+    </div>
+    <div class="page-title-right">
+      <label class="live-toggle-pill" for="f-live">
+        <input type="checkbox" id="f-live" checked>
+        <span class="live-dot-pulse on" id="live-dot"></span>
+        <span class="live-label">Tự động làm mới</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card filter-card">
+    <div class="filter-controls-row">
+      <!-- Path Search Input -->
+      <div class="filter-search-wrap">
+        <svg class="i search-icon"><use href="#i-search"/></svg>
+        <input type="text" id="f-path" class="filter-input" placeholder="Tìm kiếm path (ví dụ /v1/chat...)" aria-label="Path prefix">
+      </div>
+
+      <!-- Key Select -->
+      <div class="filter-select-wrap">
+        <select id="f-key" class="select-pill" aria-label="Key"></select>
+      </div>
+
+      <!-- Account Select -->
+      <div class="filter-select-wrap">
+        <select id="f-account" class="select-pill" aria-label="Account"></select>
+      </div>
+
+      <!-- Status Select -->
+      <div class="filter-select-wrap">
+        <select id="f-status" class="select-pill" aria-label="Status">
+          <option value="">Mọi status</option>
+          <option value="2xx">2xx Thành công</option>
+          <option value="4xx">4xx Client Error</option>
+          <option value="5xx">5xx Server Error</option>
+          <option value="failed">Lỗi tác vụ (failed)</option>
+        </select>
+      </div>
+
+      <!-- Hide Polls Checkbox -->
+      <label class="checkbox-pill" for="f-polls">
+        <input type="checkbox" id="f-polls" checked>
+        <span>Ẩn poll requests</span>
+      </label>
+    </div>
+
+    <!-- Active filter chips -->
+    <div id="f-chips" class="chips-container"></div>
+  </div>
+
+  <!-- Requests Table Card -->
+  <div class="card table-card">
+    <div class="tablewrap tablewrap-requests">
+      <table class="recent-requests-table requests-log-table">
+        <thead>
+          <tr>
+            <th style="min-width:90px;">THỜI GIAN</th>
+            <th style="min-width:70px;">METHOD</th>
+            <th style="min-width:180px;">PATH</th>
+            <th style="min-width:130px;" class="hide-sm">MODEL</th>
+            <th style="min-width:100px;">KEY</th>
+            <th style="min-width:120px;" class="hide-sm">ACCOUNT</th>
+            <th style="min-width:85px;text-align:center;">STATUS</th>
+            <th style="min-width:85px;text-align:right;">LATENCY</th>
+            <th style="min-width:100px;" class="hide-sm">CLIENT</th>
+          </tr>
+        </thead>
+        <tbody id="req-body">
+          <tr>
+            <td colspan="9" class="empty">Đang tải nhật ký requests…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pager / Footer -->
+    <div class="pager-row">
+      <div class="pager-info" id="req-range"></div>
+      <div class="pager-btns">
+        <button class="btn sm" id="req-prev" type="button">
+          <svg class="i"><use href="#i-arrow-right"/></svg> Mới hơn
+        </button>
+        <button class="btn sm" id="req-next" type="button">
+          Cũ hơn <svg class="i"><use href="#i-arrow-right"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
