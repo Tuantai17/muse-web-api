@@ -43,9 +43,16 @@ def _html() -> str:
 
 @router.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
 async def dashboard() -> HTMLResponse:
-    return HTMLResponse(_html(), headers={"Cache-Control": "no-cache",
-                                          "X-Frame-Options": "DENY",
-                                          "Referrer-Policy": "no-referrer"})
+    return HTMLResponse(
+        _html(),
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "X-Frame-Options": "DENY",
+            "Referrer-Policy": "no-referrer",
+        },
+    )
 
 
 @router.get("/static/{file_path:path}", include_in_schema=False)

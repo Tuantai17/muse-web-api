@@ -1,30 +1,17 @@
 "use strict";
 // ---- keys ----
+
 const BUILTIN_NOTE = {legacy: "MUSE2API_API_KEY (key đơn cũ)", admin: "MUSE2API_ADMIN_KEY"};
-function tile(k, v, s = "", cls = "") {
-  return `<div class="mini-tile ${cls}">
-    <div class="mini-tile-label">${esc(k)}</div>
-    <div class="mini-tile-val">${esc(v)}</div>
-    <div class="mini-tile-sub" title="${esc(s)}">${esc(s)}</div>
-  </div>`;
-}
+let activeLang = "curl";
+let keysFilterQuery = "";
+
 async function fetchKeys() {
   const res = await api("/admin/keys");
-  // Active keys first; the server already orders by creation time.
   state.keys = (res.data || []).sort((a, b) => Number(a.revoked) - Number(b.revoked));
   state.builtin = res.builtin || [];
   const active = state.keys.filter((k) => !k.revoked).length;
   $("#nav-keys").textContent = state.keys.length ? active : "";
   fillFilterOptions();
-}
-
-function usageCells(u) {
-  u = u || {};
-  const n = (v, cls = "") => `<td class="num ${v ? cls : "zero"}"`;
-  return `${n(u.total)} data-label="Total">${fmtNum(u.total || 0)}</td>
-    ${n(u.requests_24h)} data-label="24h">${fmtNum(u.requests_24h || 0)}</td>
-    ${n(u.errors_24h, "hot")} data-label="Errors 24h">${fmtNum(u.errors_24h || 0)}</td>
-    <td data-label="Last request" title="${esc(fullTime(u.last_request_at))}">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>`;
 }
 
 function formatVnDate(ts) {
@@ -33,11 +20,63 @@ function formatVnDate(ts) {
   const pad = (n) => String(n).padStart(2, "0");
   return `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
 }
-function formatVnDay(ts) {
-  if (!ts) return "–";
-  const d = new Date(ts * 1000);
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+
+function renderCodeSnippet() {
+  const base = `${location.protocol}//${location.host}/v1`;
+  const curlKey = state.lastCreatedKey || (state.keys.find(k => !k.revoked)?.prefix ? `${state.keys.find(k => !k.revoked).prefix}...` : "YOUR_API_KEY");
+  const el = $("#curl-code-snippet");
+  const titleEl = $("#terminal-tab-title");
+  if (!el) return;
+
+  if (activeLang === "python") {
+    if (titleEl) titleEl.textContent = "python — openai sdk";
+    el.textContent = `from openai import OpenAI
+
+client = OpenAI(
+    base_url="${base}",
+    api_key="${curlKey}"
+)
+
+response = client.chat.completions.create(
+    model="muse-spark",
+    messages=[{"role": "user", "content": "Xin chào Muse!"}]
+)
+print(response.choices[0].message.content)`;
+  } else if (activeLang === "node") {
+    if (titleEl) titleEl.textContent = "javascript — node.js openai";
+    el.textContent = `import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: "${base}",
+  apiKey: "${curlKey}"
+});
+
+const response = await openai.chat.completions.create({
+  model: "muse-spark",
+  messages: [{ role: "user", content: "Xin chào Muse!" }],
+});
+console.log(response.choices[0].message.content);`;
+  } else if (activeLang === "cursor") {
+    if (titleEl) titleEl.textContent = "settings — cursor / continue.dev";
+    el.textContent = `// Cài đặt trong Cursor IDE hoặc Continue.dev:
+// Vào Settings > Models > OpenAI API:
+Override OpenAI Base URL: ${base}
+OpenAI API Key:          ${curlKey}
+
+// Danh sách Model hỗ trợ nhập vào Cursor:
+- muse-spark            (Khuyên dùng: Chat nhanh & Reasoning)
+- gpt-4o                (Alias trỏ tới Muse Spark)
+- claude-3-5-sonnet     (Alias trỏ tới Muse Spark)`;
+  } else {
+    if (titleEl) titleEl.textContent = "bash — curl request";
+    el.textContent = `curl ${base}/chat/completions \\
+  -H "Authorization: Bearer ${curlKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "muse-spark",
+    "messages": [{"role": "user", "content": "Xin chào!"}]
+  }'`;
+  }
 }
 
 async function loadKeys() {
@@ -45,118 +84,124 @@ async function loadKeys() {
   const all = [...state.keys, ...state.builtin].map((k) => k.usage || {});
   const sum = (f) => all.reduce((s, u) => s + (u[f] || 0), 0);
   const active = state.keys.filter((k) => !k.revoked).length;
+  const revoked = state.keys.length - active;
   const req24 = sum("requests_24h"), err24 = sum("errors_24h");
-  $("#key-tiles").innerHTML = [
-    tile("Keys hoạt động", fmtNum(active), `${fmtNum(state.keys.length - active)} đã thu hồi`),
-    tile("Requests 24h", fmtNum(req24), "mọi key, không tính poll"),
-    tile("Lỗi 24h", fmtNum(err24), req24 ? `${fmtPct(err24 / req24)} số request` : "–", err24 && err24 / req24 >= 0.1 ? "bad" : ""),
-  ].join("");
+  const errPct = req24 ? ((err24 / req24) * 100).toFixed(1) + "%" : "0%";
 
-  // Update Base URL & cURL
+  // Update KPI Tiles
+  const kpiAct = $("#kpi-key-active");
+  if (kpiAct) kpiAct.textContent = fmtNum(active);
+  const kpiSub = $("#kpi-key-sub");
+  if (kpiSub) kpiSub.textContent = `${fmtNum(revoked)} đã thu hồi`;
+
+  const kpiReq = $("#kpi-req-24");
+  if (kpiReq) kpiReq.textContent = fmtNum(req24);
+
+  const kpiErr = $("#kpi-err-24");
+  if (kpiErr) kpiErr.textContent = fmtNum(err24);
+  const kpiErrPct = $("#kpi-err-pct");
+  if (kpiErrPct) kpiErrPct.textContent = errPct;
+
+  // Update Base URL
   const base = `${location.protocol}//${location.host}/v1`;
   const baseEl = $("#endpoint-base-url");
   if (baseEl) baseEl.textContent = base;
 
-  const curlKey = state.lastCreatedKey || (state.keys.find(k => !k.revoked)?.prefix ? `${state.keys.find(k => !k.revoked).prefix}...` : "YOUR_API_KEY");
-  const curlEl = $("#curl-code-snippet");
-  if (curlEl) {
-    curlEl.textContent = `curl ${base}/chat/completions \\\n  -H "Authorization: Bearer ${curlKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model":"muse-spark","messages":[{"role":"user","content":"Xin chào!"}]}'`;
-  }
+  // Update Badge count
+  const badge = $("#keys-count-badge");
+  if (badge) badge.textContent = state.keys.length;
 
-  // Update Current Key Highlight Box
-  const latestKey = state.keys.find((k) => !k.revoked) || state.keys[0];
-  const keyValEl = $("#key-current-val");
-  const keyActionEl = $("#key-current-action");
-  const keyMetaEl = $("#key-current-meta");
+  // Render Code Snippet
+  renderCodeSnippet();
 
-  if (state.lastCreatedKey) {
-    if (keyValEl) {
-      keyValEl.textContent = state.lastCreatedKey;
-      keyValEl.style.color = "var(--ok)";
-    }
-    if (keyActionEl) {
-      keyActionEl.innerHTML = `<button class="btn sm" id="btn-copy-active-key" type="button" style="padding:2px 8px;font-size:11.5px;font-weight:600;"><svg class="i"><use href="#i-copy"/></svg> Sao chép</button>`;
-    }
-    if (keyMetaEl) {
-      keyMetaEl.innerHTML = `<span style="color:var(--ok);font-weight:600;">Vừa tạo xong!</span> Hãy lưu ngay vì server chỉ lưu bản băm.`;
-    }
-  } else if (latestKey) {
-    const lastUsed = latestKey.last_used_at || (latestKey.usage && latestKey.usage.last_request_at) || 0;
-    if (keyValEl) {
-      keyValEl.textContent = `${latestKey.prefix}••••••••••••••••••••••`;
-      keyValEl.style.color = "var(--text)";
-    }
-    if (keyActionEl) {
-      keyActionEl.innerHTML = latestKey.revoked ? `<span class="badge b-err">đã thu hồi</span>` : `<span class="badge b-ok">hoạt động</span>`;
-    }
-    if (keyMetaEl) {
-      keyMetaEl.textContent = `Tạo ${formatVnDate(latestKey.created_at)} · Dùng gần nhất ${lastUsed ? formatVnDate(lastUsed) : 'chưa có'}`;
-    }
-  } else {
-    if (keyValEl) {
-      keyValEl.textContent = "Chưa có key nào";
-      keyValEl.style.color = "var(--muted)";
-    }
-    if (keyActionEl) keyActionEl.innerHTML = "";
-    if (keyMetaEl) keyMetaEl.textContent = 'Nhập tên bên dưới và bấm "Tạo key mới" để bắt đầu.';
-  }
+  // Filter keys by query
+  const q = keysFilterQuery.toLowerCase().trim();
+  const filteredKeys = state.keys.filter(k => {
+    if (!q) return true;
+    return (k.name && k.name.toLowerCase().includes(q)) ||
+           (k.prefix && k.prefix.toLowerCase().includes(q)) ||
+           (k.id && k.id.toLowerCase().includes(q));
+  });
 
-  // Update Active Keys List
-  const rowsListEl = $("#key-rows-list");
-  if (rowsListEl) {
-    if (!state.keys.length) {
-      rowsListEl.innerHTML = `<div class="empty" style="padding:12px;font-size:12.5px;">Chưa có key nào. Nhập tên và bấm "Tạo key mới".</div>`;
-    } else {
-      rowsListEl.innerHTML = state.keys.map((k) => `
-        <div class="active-key-item" style="padding:8px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-          <div style="min-width:0; flex:1;">
-            <code style="font-size:13.5px; font-weight:600; font-family:var(--mono); color:var(--text); letter-spacing:0.5px;">
-              ${esc(k.prefix)}••••••••••••••••••••••
-            </code>
-            <div class="muted small" style="margin-top:3px; font-size:11.5px;">
-              ${esc(k.name || 'API key cá nhân')} · ${formatVnDay(k.created_at)}
-              ${k.revoked ? ' <span class="badge b-err" style="font-size:10px;padding:0 5px;line-height:16px;">đã thu hồi</span>' : ''}
-            </div>
-          </div>
-          <div style="flex:none; margin-left:12px;">
-            ${k.revoked ?
-              `<button class="btn sm" data-id="${esc(k.id)}" data-act="unrevoke" style="font-size:11.5px;">Khôi phục</button>` :
-              `<button class="btn-revoke" data-id="${esc(k.id)}" data-act="revoke">Thu hồi</button>`
-            }
-          </div>
+  // Render Table
+  const statusBadgeK = (k) => k.revoked
+    ? `<span class="status-pill status-pill-mute"><span class="dot-indicator dot-mute"></span> Đã thu hồi</span>`
+    : `<span class="status-pill status-pill-live"><span class="dot-indicator dot-live"></span> Hoạt động</span>`;
+
+  let rows = filteredKeys.map((k) => {
+    const u = k.usage || {};
+    const hasErr = (u.errors_24h || 0) > 0;
+    return `<tr class="click" data-id="${esc(k.id)}" tabindex="0" title="Xem requests của ${esc(k.name)}">
+      <td>
+        <div class="key-name-block">
+          <strong class="key-name-title">${esc(k.name)}</strong>
+          ${k.note ? `<div class="key-note-sub">${esc(k.note)}</div>` : ""}
         </div>
-      `).join("");
-    }
+      </td>
+      <td>
+        <div class="key-prefix-wrap">
+          <code class="key-prefix-badge">${esc(k.prefix)}••••••••</code>
+          <button class="tbl-action-btn copy-prefix-btn" type="button" data-act="copy-prefix" data-prefix="${esc(k.prefix)}" title="Sao chép tiền tố key">
+            <svg class="i"><use href="#i-copy"/></svg>
+          </button>
+        </div>
+      </td>
+      <td>${statusBadgeK(k)}</td>
+      <td class="text-right num font-mono">${fmtNum(u.total || 0)}</td>
+      <td class="text-right num font-mono font-bold">${fmtNum(u.requests_24h || 0)}</td>
+      <td class="text-right num font-mono">
+        ${hasErr ? `<span class="err-count-badge">${fmtNum(u.errors_24h)}</span>` : `<span class="text-muted">0</span>`}
+      </td>
+      <td class="text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
+      <td class="text-right">
+        <div class="acc-action-group" style="justify-content:flex-end;">
+          <button class="tbl-action-btn" type="button" data-act="edit" title="Đổi tên">
+            <svg class="i"><use href="#i-keys"/></svg>
+          </button>
+          <button class="tbl-action-btn" type="button" data-act="${k.revoked ? "unrevoke" : "revoke"}" title="${k.revoked ? "Khôi phục key" : "Thu hồi key"}">
+            <svg class="i"><use href="${k.revoked ? "#i-check-circle" : "#i-eye-off"}"/></svg>
+          </button>
+          <button class="tbl-action-btn is-danger" type="button" data-act="delete" title="Xoá key">
+            <svg class="i"><use href="#i-trash"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+
+  if (!filteredKeys.length) {
+    rows = `<tr><td colspan="8" class="empty">Không tìm thấy key nào khớp bộ lọc.</td></tr>`;
   }
 
-  // Detailed Table for Management & Stats
-  const statusBadgeK = (k) => k.revoked ? `<span class="badge b-err">đã thu hồi</span>` : `<span class="badge b-ok">hoạt động</span>`;
-  const rows = state.keys.map((k) => `<tr class="click" data-id="${esc(k.id)}" tabindex="0" title="Xem requests của ${esc(k.name)}">
-      <td class="cell-name"><div><b>${esc(k.name)}</b>${k.note ? `<div class="sub" title="${esc(k.note)}">${esc(k.note)}</div>` : ""}</div><span class="m-status">${statusBadgeK(k)}</span></td>
-      <td class="mono hide-sm" data-label="Key">${esc(k.prefix)}…</td>
-      <td class="cell-status" data-label="Status">${statusBadgeK(k)}</td>
-      ${usageCells(k.usage)}
-      <td class="actions"><div class="row">
-        <button class="btn sm" type="button" data-act="edit">Đổi tên</button>
-        <button class="btn sm" type="button" data-act="${k.revoked ? "unrevoke" : "revoke"}">${k.revoked ? "Khôi phục" : "Thu hồi"}</button>
-        <button class="btn sm danger" type="button" data-act="delete">Xoá</button>
-      </div></td>
-    </tr>`).join("") || `<tr><td colspan="8" class="empty" style="grid-column:1/-1">Chưa có key nào.</td></tr>`;
-  const builtin = state.builtin.map((b) => `<tr class="click builtin" data-id="${esc(b.id)}" tabindex="0" title="Xem requests của ${esc(b.name)}">
-      <td class="cell-name"><div><b>${esc(b.name)}</b><div class="sub">${esc(BUILTIN_NOTE[b.id] || "")}</div></div><span class="m-status"><span class="badge b-mute">có sẵn</span></span></td>
-      <td class="mono hide-sm muted" data-label="Key">env</td>
-      <td class="cell-status" data-label="Status"><span class="badge b-mute">có sẵn</span></td>
-      ${usageCells(b.usage)}
-      <td class="actions muted" style="font-size:12px">chỉ đọc</td>
-    </tr>`).join("");
-  $("#keys-body").innerHTML = rows + (builtin ? `<tr class="sep"><td colspan="8">Định danh có sẵn</td></tr>${builtin}` : "");
+  const builtinRows = state.builtin.map((b) => {
+    const u = b.usage || {};
+    return `<tr class="click builtin-row" data-id="${esc(b.id)}" tabindex="0" title="Xem requests của ${esc(b.name)}">
+      <td>
+        <div class="key-name-block">
+          <strong class="key-name-title">${esc(b.name)}</strong>
+          <div class="key-note-sub">${esc(BUILTIN_NOTE[b.id] || "Biến môi trường hệ thống")}</div>
+        </div>
+      </td>
+      <td><code class="key-prefix-badge env-badge">env</code></td>
+      <td><span class="status-pill status-pill-info"><span class="dot-indicator dot-info"></span> Có sẵn</span></td>
+      <td class="text-right num font-mono">${fmtNum(u.total || 0)}</td>
+      <td class="text-right num font-mono font-bold">${fmtNum(u.requests_24h || 0)}</td>
+      <td class="text-right num font-mono"><span class="text-muted">${fmtNum(u.errors_24h || 0)}</span></td>
+      <td class="text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
+      <td class="text-right text-muted small" style="padding-right:16px;">Chỉ đọc</td>
+    </tr>`;
+  }).join("");
+
+  const separator = state.builtin.length ? `<tr class="table-section-divider"><td colspan="8"><span>ĐỊNH DANH MẶC ĐỊNH HỆ THỐNG</span></td></tr>` : "";
+  const body = $("#keys-body");
+  if (body) body.innerHTML = rows + separator + builtinRows;
 }
 
-async function keyForm(title, k = {}, submit = "Lưu") {
+async function keyForm(title, k = {}, submit = "Cấp key") {
   return modal({
     title,
-    body: `<label class="f">Tên<input type="text" id="kf-name" maxlength="100" value="${esc(k.name || "")}" placeholder="vd. alice-laptop, n8n-prod" autocomplete="off"></label>
-      <label class="f">Ghi chú <span class="hint">không bắt buộc — ai dùng, dùng cho việc gì</span><input type="text" id="kf-note" maxlength="500" value="${esc(k.note || "")}" autocomplete="off"></label>`,
+    body: `<label class="f">Tên khóa (Key Name)<input type="text" id="kf-name" maxlength="100" value="${esc(k.name || "")}" placeholder="vd. Production Server, App N8N, Alice Dev" autocomplete="off"></label>
+      <label class="f">Ghi chú (không bắt buộc)<input type="text" id="kf-note" maxlength="500" value="${esc(k.note || "")}" placeholder="Dùng cho ứng dụng hoặc server nào..." autocomplete="off"></label>`,
     actions: [{label: "Huỷ", value: null},
       {label: submit, primary: true, cls: "primary",
        collect: () => ({name: $("#kf-name").value.trim(), note: $("#kf-note").value.trim()}),
@@ -164,141 +209,138 @@ async function keyForm(title, k = {}, submit = "Lưu") {
   });
 }
 
+// Language Switcher Tabs
+document.addEventListener("click", (e) => {
+  const tab = e.target.closest(".lang-tab");
+  if (!tab) return;
+  for (const t of $$(".lang-tab")) t.classList.toggle("active", t === tab);
+  activeLang = tab.dataset.lang;
+  renderCodeSnippet();
+});
+
+// Create Key Action
 $("#key-new")?.addEventListener("click", () => guarded(async () => {
-  const form = await keyForm("Cấp API key mới", {}, "Cấp key");
+  const form = await keyForm("Cấp API key mới", {}, "Tạo key");
   if (!form) return;
   const res = await api("/admin/keys", {method: "POST", body: form});
   state.lastCreatedKey = res.api_key;
   await loadKeys();
   await modal({
-    title: `Đã cấp key “${res.key.name}”`,
-    body: `<div class="warnbox"><b>Sao chép key ngay bây giờ.</b> Đây là lần duy nhất key được hiển thị — server chỉ lưu bản băm, không thể xem lại.</div>
-      <div class="secret"><input type="text" id="new-key" readonly value="${esc(res.api_key)}" aria-label="API key mới" spellcheck="false">
-      <button class="btn primary" type="button" id="copy-key">${icon("copy")}Sao chép</button></div>
-      <div class="usage-hint">Authorization: Bearer ${esc(res.api_key.slice(0, 12))}…</div>`,
-    actions: [{label: "Tôi đã lưu key", value: null, primary: true, cls: ""}],
+    title: `Đã cấp key “${res.key.name}” thành công`,
+    body: `<div class="notice-banner" style="margin-bottom:14px;background:#fef3c7;border-color:#f59e0b;color:#92400e;">
+        <svg class="i" style="color:#b45309;"><use href="#i-shield"/></svg>
+        <div style="font-size:12.5px;line-height:1.5;">
+          <strong>Lưu ý quan trọng:</strong> Đây là lần duy nhất key đầy đủ được hiển thị. Server chỉ lưu mã băm SHA-256 nên không thể xem lại sau khi đóng cửa sổ này.
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <input type="text" id="new-key" readonly value="${esc(res.api_key)}" style="flex:1;height:40px;font-family:var(--mono);font-size:13px;padding:0 12px;background:var(--panel-2);border:1px solid var(--border-strong);border-radius:6px;" spellcheck="false">
+        <button class="btn primary" type="button" id="copy-key" style="white-space:nowrap;padding:0 16px;">
+          <svg class="i"><use href="#i-copy"/></svg> Sao chép
+        </button>
+      </div>
+      <div class="text-muted small">Authorization Header: <code>Bearer ${esc(res.api_key.slice(0, 14))}…</code></div>`,
+    actions: [{label: "Tôi đã lưu key", value: null, primary: true, cls: "primary"}],
   });
 }));
 
-// Inline Key Creation Handler
-async function handleInlineCreateKey() {
-  const input = $("#inline-key-name");
-  const name = (input.value || "").trim() || "API key cá nhân";
-  const btn = $("#btn-inline-create");
-  btn.disabled = true;
-  try {
-    const res = await api("/admin/keys", {method: "POST", body: {name, note: ""}});
-    state.lastCreatedKey = res.api_key;
-    input.value = "";
-    toast(`Đã cấp key “${res.key.name}”!`);
-    await loadKeys();
-  } catch (err) {
-    toast(err.message || "Tạo key thất bại");
-  } finally {
-    btn.disabled = false;
-  }
-}
-$("#btn-inline-create")?.addEventListener("click", () => guarded(handleInlineCreateKey));
-$("#inline-key-name")?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    guarded(handleInlineCreateKey);
-  }
+// Quick Search
+$("#keys-search-input")?.addEventListener("input", (e) => {
+  keysFilterQuery = e.target.value;
+  loadKeys();
 });
 
-// Copy Buttons
+// Refresh Button
+$("#keys-refresh-btn")?.addEventListener("click", () => guarded(loadKeys));
+
+// Copy Base URL
 $("#btn-copy-base-url")?.addEventListener("click", async () => {
   const base = `${location.protocol}//${location.host}/v1`;
-  try { await navigator.clipboard.writeText(base); toast("Đã sao chép Base URL"); }
-  catch { toast("Không thể tự động sao chép"); }
-});
-
-$("#btn-copy-curl")?.addEventListener("click", async () => {
-  const base = `${location.protocol}//${location.host}/v1`;
-  const curlKey = state.lastCreatedKey || (state.keys.find(k => !k.revoked)?.prefix ? `${state.keys.find(k => !k.revoked).prefix}...` : "YOUR_API_KEY");
-  const cmd = `curl ${base}/chat/completions \\\n  -H "Authorization: Bearer ${curlKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model":"muse-spark","messages":[{"role":"user","content":"Xin chào!"}]}'`;
-  try { await navigator.clipboard.writeText(cmd); toast("Đã sao chép cURL"); }
-  catch { toast("Không thể tự động sao chép"); }
-});
-
-$("#key-current-display")?.addEventListener("click", async (e) => {
-  const btn = e.target.closest("#btn-copy-active-key");
-  if (!btn || !state.lastCreatedKey) return;
-  try { await navigator.clipboard.writeText(state.lastCreatedKey); toast("Đã sao chép API key"); }
-  catch { toast("Không thể tự động sao chép"); }
-});
-
-// Active Keys List Actions (Revoke / Unrevoke)
-$("#key-rows-list")?.addEventListener("click", (e) => {
-  const btn = e.target.closest("button[data-act]");
-  if (!btn) return;
-  const k = state.keys.find((x) => x.id === btn.dataset.id);
-  if (!k) return;
-  guarded(async () => {
-    const path = `/admin/keys/${encodeURIComponent(k.id)}`;
-    const ident = `<b>${esc(k.name)}</b> (<span class="mono">${esc(k.prefix)}…</span>)`;
-    if (btn.dataset.act === "revoke") {
-      if (!await confirmBox("Thu hồi key?", `<p>Mọi request dùng ${ident} sẽ nhận 401 cho tới khi key được khôi phục.</p>`, "Thu hồi")) return;
-      await api(path, {method: "PATCH", body: {revoked: true}});
-      toast("Đã thu hồi key");
-    } else if (btn.dataset.act === "unrevoke") {
-      await api(path, {method: "PATCH", body: {revoked: false}});
-      toast("Đã khôi phục key");
+  const textEl = $("#btn-copy-base-text");
+  try {
+    await navigator.clipboard.writeText(base);
+    toast("Đã sao chép Base URL!");
+    if (textEl) {
+      const orig = textEl.textContent;
+      textEl.textContent = "Đã chép!";
+      setTimeout(() => { textEl.textContent = orig; }, 1800);
     }
-    await loadKeys();
-  });
+  } catch {
+    toast("Không thể tự động sao chép.");
+  }
 });
 
-// Modal body copy
-$("#modal-body")?.addEventListener("click", async (e) => {
-  const btn = e.target.closest("#copy-key");
-  if (!btn) return;
-  const input = $("#new-key");
-  input.select();
-  let ok = false;
-  try { await navigator.clipboard.writeText(input.value); ok = true; }
-  catch { try { ok = document.execCommand("copy"); } catch {} }
-  btn.innerHTML = ok ? `${icon("copy")}Đã sao chép` : "Hãy copy thủ công";
+// Copy Code Snippet
+$("#btn-copy-curl")?.addEventListener("click", async () => {
+  const code = $("#curl-code-snippet")?.textContent || "";
+  const btn = $("#btn-copy-curl");
+  if (!code) return;
+  try {
+    await navigator.clipboard.writeText(code);
+    toast("Đã sao chép đoạn mã kết nối!");
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<svg class="i"><use href="#i-check-circle"/></svg> Đã sao chép!`;
+      setTimeout(() => { btn.innerHTML = orig; }, 1800);
+    }
+  } catch {
+    toast("Không thể tự động sao chép.");
+  }
 });
 
-function openKeyRequests(id) { go("requests", {key: id}); }
-$("#keys-body")?.addEventListener("keydown", (e) => {
-  const tr = e.target.closest("tr[data-id]");
-  if (tr && e.key === "Enter" && e.target === tr) openKeyRequests(tr.dataset.id);
-});
+// Table row clicks & Action buttons
 $("#keys-body")?.addEventListener("click", (e) => {
-  const tr = e.target.closest("tr[data-id]");
-  if (!tr) return;
-  const btn = e.target.closest("button[data-act]");
-  if (!btn) return openKeyRequests(tr.dataset.id);
-  const k = state.keys.find((x) => x.id === tr.dataset.id);
-  if (!k) return;
-  guarded(async () => {
-    const path = `/admin/keys/${encodeURIComponent(k.id)}`;
-    const ident = `<b>${esc(k.name)}</b> (<span class="mono">${esc(k.prefix)}…</span>)`;
-    switch (btn.dataset.act) {
-      case "edit": {
-        const form = await keyForm("Đổi tên key", k);
+  const copyBtn = e.target.closest("button[data-act='copy-prefix']");
+  if (copyBtn) {
+    e.stopPropagation();
+    const pfx = copyBtn.dataset.prefix;
+    if (pfx) {
+      navigator.clipboard.writeText(pfx).then(() => toast(`Đã chép tiền tố: ${pfx}`)).catch(() => {});
+    }
+    return;
+  }
+
+  const actBtn = e.target.closest("button[data-act]");
+  if (actBtn) {
+    e.stopPropagation();
+    const tr = actBtn.closest("tr[data-id]");
+    if (!tr) return;
+    const k = state.keys.find((x) => x.id === tr.dataset.id);
+    if (!k) return;
+    const act = actBtn.dataset.act;
+
+    guarded(async () => {
+      const path = `/admin/keys/${encodeURIComponent(k.id)}`;
+      const ident = `<b>${esc(k.name)}</b> (<span class="mono">${esc(k.prefix)}…</span>)`;
+
+      if (act === "edit") {
+        const form = await keyForm(`Đổi tên key`, {name: k.name, note: k.note}, "Lưu");
         if (!form) return;
         await api(path, {method: "PATCH", body: form});
-        toast("Đã cập nhật key");
-        break;
-      }
-      case "revoke":
+        toast("Đã cập nhật thông tin key.");
+        await loadKeys();
+      } else if (act === "revoke") {
         if (!await confirmBox("Thu hồi key?", `<p>Mọi request dùng ${ident} sẽ nhận 401 cho tới khi key được khôi phục.</p>`, "Thu hồi")) return;
         await api(path, {method: "PATCH", body: {revoked: true}});
-        toast("Đã thu hồi key");
-        break;
-      case "unrevoke":
+        toast("Đã thu hồi key.");
+        await loadKeys();
+      } else if (act === "unrevoke") {
         await api(path, {method: "PATCH", body: {revoked: false}});
-        toast("Đã khôi phục key");
-        break;
-      case "delete":
-        if (!await confirmBox("Xoá key?", `<p>Xoá vĩnh viễn ${ident}? Client đang dùng key sẽ nhận 401. Lịch sử request vẫn được giữ trong log.</p>`, "Xoá key")) return;
-        await api(path, {method: "DELETE"});
-        toast("Đã xoá key");
-        break;
-    }
-    await loadKeys();
-  });
+        toast("Đã khôi phục key.");
+        await loadKeys();
+      } else if (act === "delete") {
+        if (!await confirmBox("Xoá vĩnh viễn key?", `<p>Key ${ident} sẽ bị xoá hoàn toàn khỏi hệ thống. Thao tác này không thể hoàn tác.</p>`, "Xoá vĩnh viễn")) return;
+        await api(`${path}/purge`, {method: "DELETE"});
+        toast("Đã xoá vĩnh viễn key.");
+        await loadKeys();
+      }
+    });
+    return;
+  }
+
+  // Row click: view requests for this key
+  const tr = e.target.closest("tr[data-id]");
+  if (tr) {
+    go("requests", {key: tr.dataset.id});
+  }
 });

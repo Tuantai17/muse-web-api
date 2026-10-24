@@ -3,202 +3,252 @@
   <!-- Page Header Row -->
   <div class="page-title-row">
     <div class="page-title-left">
-      <h1 class="page-title">API key</h1>
-      <p class="page-subtitle">Kết nối ứng dụng của bạn với một key cá nhân.</p>
+      <div class="page-title-badge-row">
+        <h1 class="page-title">API key</h1>
+        <span class="title-status-badge"><span class="dot-indicator dot-live"></span> OpenAI v1 Ready</span>
+      </div>
+      <p class="page-subtitle">Kết nối ứng dụng của bạn với một key cá nhân. Tương thích chuẩn thư viện OpenAI cho Cursor, Next.js, Python.</p>
     </div>
     <div class="page-title-right">
-      <button class="btn primary add-account-btn" id="key-new" type="button">
-        <span class="plus-symbol">+</span> Cấp API key
+      <button class="btn primary add-key-btn" id="key-new" type="button">
+        <span class="plus-symbol">+</span> Cấp API key mới
       </button>
     </div>
   </div>
 
-  <div class="key-layout">
-    <!-- Left Column -->
-    <div class="stack">
-      <!-- Card 1: API key cá nhân -->
-      <section class="card key-card">
-        <div class="card-header-row">
-          <div class="card-header-left">
-            <div class="section-icon-box kpi-mint">
-              <svg class="i"><use href="#i-keys"/></svg>
-            </div>
-            <div>
-              <h2 class="card-heading">API key cá nhân</h2>
-              <p class="card-subheading">Khóa xác thực dịch vụ của bạn</p>
-            </div>
-          </div>
-          <span class="tag tag-mint">
-            <svg class="i"><use href="#i-shield"/></svg>
-            Chỉ quyền của bạn
-          </span>
-        </div>
-
-        <div class="card-body">
-          <!-- KEY HIỆN TẠI DISPLAY BOX -->
-          <div class="key-display-box" id="key-current-display">
-            <div class="key-display-top">
-              <span class="key-display-label">KEY HIỆN TẠI</span>
-              <span id="key-current-action"></span>
-            </div>
-            <code class="key-display-value" id="key-current-val">m2a-••••••••••••••••••••••</code>
-            <div class="key-display-meta" id="key-current-meta"></div>
-          </div>
-
-          <p class="card-hint-text">
-            Key đầy đủ chỉ hiển thị khi tạo. Máy chủ lưu mã băm SHA-256, không lưu key gốc.
-          </p>
-
-          <!-- Form tạo key mới inline -->
-          <div class="field-block">
-            <label class="field-label" for="inline-key-name">Tên key (không bắt buộc)</label>
-            <div class="field-row">
-              <input type="text" class="input-modern" id="inline-key-name" placeholder="API key cá nhân" maxlength="100" autocomplete="off">
-              <button class="btn primary btn-inline-submit" id="btn-inline-create" type="button">
-                <svg class="i"><use href="#i-plus"/></svg>
-                <span>Tạo key mới</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Danh sách key dạng cards / rows -->
-          <div id="key-rows-list" class="key-items-list"></div>
-        </div>
-      </section>
-
-      <!-- Card 2: Thử một yêu cầu -->
-      <section class="card key-card">
-        <div class="card-header-row">
-          <div class="card-header-left">
-            <div class="section-icon-box kpi-peach">
-              <svg class="i"><use href="#i-code"/></svg>
-            </div>
-            <div>
-              <h2 class="card-heading">Thử một yêu cầu</h2>
-              <p class="card-subheading">Lệnh mẫu cURL gọi tới endpoint</p>
-            </div>
-          </div>
-          <span class="tag tag-gray">cURL</span>
-        </div>
-
-        <div class="card-body">
-          <div class="terminal-box">
-            <div class="terminal-bar">
-              <span class="terminal-dot dot-red"></span>
-              <span class="terminal-dot dot-yellow"></span>
-              <span class="terminal-dot dot-green"></span>
-              <span class="terminal-title">bash — curl sample</span>
-            </div>
-            <pre class="terminal-code" id="curl-code-snippet"></pre>
-          </div>
-          <div class="terminal-actions">
-            <p class="card-hint-text m-0">Thay YOUR_API_KEY bằng key cá nhân của bạn.</p>
-            <button class="btn sm" id="btn-copy-curl" type="button">
-              <svg class="i"><use href="#i-copy"/></svg> Chép cURL
-            </button>
-          </div>
-        </div>
-      </section>
+  <!-- Row 1: KPI / Metrics Tiles -->
+  <div class="kpi-grid keys-kpi-grid" id="key-tiles-container">
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-mint"><svg class="i"><use href="#i-keys"/></svg></div>
+        <div class="kpi-title">KEYS HOẠT ĐỘNG</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="kpi-key-active">1</strong>
+        <span class="kpi-growth-pill kpi-growth-green">Live</span>
+      </div>
+      <div class="kpi-card-sub" id="kpi-key-sub">0 đã thu hồi</div>
     </div>
 
-    <!-- Right Column -->
-    <div class="stack">
-      <!-- Card 3: Cấu hình kết nối -->
-      <section class="card key-card">
-        <div class="card-header-row">
-          <div class="card-header-left">
-            <div class="section-icon-box kpi-blue">
-              <svg class="i"><use href="#i-database"/></svg>
-            </div>
-            <div>
-              <h2 class="card-heading">Cấu hình kết nối</h2>
-              <p class="card-subheading">Địa chỉ Base URL cho các client</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body">
-          <div class="field-block">
-            <label class="field-label">Base URL</label>
-            <div class="endpoint-box">
-              <code id="endpoint-base-url">http://127.0.0.1:18610/v1</code>
-              <button class="btn ghost icon-btn-text" id="btn-copy-base-url" type="button" aria-label="Sao chép Base URL">
-                <svg class="i"><use href="#i-copy"/></svg> Chép
-              </button>
-            </div>
-          </div>
-
-          <div class="notice-box-compact">
-            <svg class="i"><use href="#i-info"/></svg>
-            <span>Tên GPT/Claude chỉ là alias. Chat dùng Muse Spark; Responses hỗ trợ văn bản. Tool calling mặc định tắt.</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Card 4: Endpoint khả dụng -->
-      <section class="card key-card">
-        <div class="card-header-row">
-          <div class="card-header-left">
-            <div class="section-icon-box kpi-mint">
-              <svg class="i"><use href="#i-zap"/></svg>
-            </div>
-            <div>
-              <h2 class="card-heading">Endpoint khả dụng</h2>
-              <p class="card-subheading">Các tuyến API được hỗ trợ</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body p-compact">
-          <div class="endpoint-list-modern">
-            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/chat/completions</code></div>
-            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/responses</code></div>
-            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/images/generations</code></div>
-            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/images/tasks</code></div>
-            <div class="endpoint-row"><span class="verb-tag verb-post">POST</span><code>/videos</code></div>
-            <div class="endpoint-row"><span class="verb-tag verb-get">GET</span><code>/models</code></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Card 5: Thống kê & Quản trị chi tiết -->
-      <section class="card key-card">
-        <div class="card-header-row">
-          <div class="card-header-left">
-            <div class="section-icon-box kpi-mint">
-              <svg class="i"><use href="#i-chart-bar"/></svg>
-            </div>
-            <div>
-              <h2 class="card-heading">Thống kê &amp; Quản trị</h2>
-              <p class="card-subheading">Lưu lượng request 24h theo từng key</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body p-compact">
-          <div class="tiles" id="key-tiles" style="margin-bottom:14px;"></div>
-          <div class="tablewrap" style="max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-md);">
-            <table class="recent-requests-table">
-              <thead>
-                <tr>
-                  <th>TÊN</th>
-                  <th class="hide-sm">KEY</th>
-                  <th>TRẠNG THÁI</th>
-                  <th class="text-right">TỔNG</th>
-                  <th class="text-right">24H</th>
-                  <th class="text-right">LỖI</th>
-                  <th>GẦN NHẤT</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="keys-body"></tbody>
-            </table>
-          </div>
-          <p class="card-hint-text" style="margin-top:10px;">
-            Bấm một dòng để lọc nhật ký requests theo key đó.
-          </p>
-        </div>
-      </section>
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-blue"><svg class="i"><use href="#i-chart-bar"/></svg></div>
+        <div class="kpi-title">REQUESTS (24H)</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="kpi-req-24">26</strong>
+        <span class="kpi-growth-pill kpi-growth-gray">24 giờ</span>
+      </div>
+      <div class="kpi-card-sub">Lưu lượng qua API keys</div>
     </div>
+
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-peach"><svg class="i"><use href="#i-shield"/></svg></div>
+        <div class="kpi-title">LỖI (24H)</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="kpi-err-24">6</strong>
+        <span class="kpi-growth-pill kpi-growth-peach" id="kpi-err-pct">23.1%</span>
+      </div>
+      <div class="kpi-card-sub">Tỷ lệ lỗi trên tổng request</div>
+    </div>
+
+    <div class="card kpi-card base-url-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-mint"><svg class="i"><use href="#i-database"/></svg></div>
+        <div class="kpi-title">BASE URL (v1)</div>
+      </div>
+      <div class="base-url-display-wrap">
+        <code class="base-url-code" id="endpoint-base-url">http://127.0.0.1:18610/v1</code>
+        <button class="btn sm copy-base-btn" id="btn-copy-base-url" type="button" title="Sao chép Base URL">
+          <svg class="i"><use href="#i-copy"/></svg> <span id="btn-copy-base-text">Chép</span>
+        </button>
+      </div>
+      <div class="kpi-card-sub">Tương thích hoàn toàn OpenAI SDK</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Main Keys Table Card -->
+  <section class="card table-card keys-main-card">
+    <div class="card-header-row">
+      <div class="card-header-left">
+        <div class="section-icon-box kpi-mint">
+          <svg class="i"><use href="#i-keys"/></svg>
+        </div>
+        <div>
+          <h2 class="card-heading">Danh sách API Keys</h2>
+          <p class="card-subheading">Các khóa API đang được phân quyền gọi dịch vụ cá nhân và hệ thống</p>
+        </div>
+        <span class="card-count-badge" id="keys-count-badge">1</span>
+      </div>
+      <div class="card-header-right">
+        <div class="table-search-box">
+          <svg class="i search-icon"><use href="#i-search"/></svg>
+          <input type="text" id="keys-search-input" placeholder="Tìm kiếm key..." autocomplete="off">
+        </div>
+        <button class="btn ghost icon-btn" id="keys-refresh-btn" type="button" aria-label="Làm mới">
+          <svg class="i"><use href="#i-refresh"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="tablewrap tablewrap-keys">
+      <table class="recent-requests-table keys-table">
+        <thead>
+          <tr>
+            <th style="min-width:160px;">TÊN KHÓA</th>
+            <th style="min-width:140px;">TIỀN TỐ (KEY)</th>
+            <th style="min-width:110px;">TRẠNG THÁI</th>
+            <th style="min-width:90px;text-align:right;">TỔNG GỌI</th>
+            <th style="min-width:90px;text-align:right;">24H QUA</th>
+            <th style="min-width:80px;text-align:right;">LỖI 24H</th>
+            <th style="min-width:120px;">GẦN NHẤT</th>
+            <th style="min-width:130px;text-align:right;">THAO TÁC</th>
+          </tr>
+        </thead>
+        <tbody id="keys-body">
+          <tr>
+            <td colspan="8" class="empty">Đang tải danh sách key…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer-hint">
+      <svg class="i"><use href="#i-info"/></svg>
+      <span>Bấm vào một dòng để lọc nhanh nhật ký request tương ứng của key đó.</span>
+    </div>
+  </section>
+
+  <!-- Row 3: Developer Integration & Endpoints (2 Columns) -->
+  <div class="keys-bottom-grid">
+    <!-- Left Column: Quickstart Guide & Snippet -->
+    <section class="card quickstart-card">
+      <div class="card-header-row">
+        <div class="card-header-left">
+          <div class="section-icon-box kpi-peach">
+            <svg class="i"><use href="#i-code"/></svg>
+          </div>
+          <div>
+            <h2 class="card-heading">Hướng dẫn kết nối</h2>
+            <p class="card-subheading">Mẫu gọi API trực tiếp và cấu hình công cụ</p>
+          </div>
+        </div>
+        <div class="code-lang-tabs">
+          <button class="lang-tab active" data-lang="curl" type="button">cURL</button>
+          <button class="lang-tab" data-lang="python" type="button">Python</button>
+          <button class="lang-tab" data-lang="node" type="button">Node.js</button>
+          <button class="lang-tab" data-lang="cursor" type="button">Cursor IDE</button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="terminal-box">
+          <div class="terminal-bar">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span class="terminal-title" id="terminal-tab-title">bash — curl request</span>
+          </div>
+          <pre class="terminal-code" id="curl-code-snippet"></pre>
+        </div>
+        <div class="terminal-actions">
+          <p class="card-hint-text m-0">
+            <svg class="i" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"><use href="#i-shield"/></svg>
+            Tương thích 100% thư viện OpenAI: chỉ cần đổi <code>base_url</code> và <code>api_key</code>.
+          </p>
+          <button class="btn sm" id="btn-copy-curl" type="button">
+            <svg class="i"><use href="#i-copy"/></svg> Chép mã
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Endpoints & Security -->
+    <section class="card endpoints-card">
+      <div class="card-header-row">
+        <div class="card-header-left">
+          <div class="section-icon-box kpi-mint">
+            <svg class="i"><use href="#i-zap"/></svg>
+          </div>
+          <div>
+            <h2 class="card-heading">Endpoint khả dụng</h2>
+            <p class="card-subheading">Các tuyến API chính thức hỗ trợ</p>
+          </div>
+        </div>
+        <span class="tag tag-mint">v1 Ready</span>
+      </div>
+
+      <div class="card-body p-0">
+        <div class="endpoint-items-container">
+          <div class="endpoint-item-card">
+            <div class="endpoint-badge-col">
+              <span class="verb-tag verb-post">POST</span>
+            </div>
+            <div class="endpoint-detail-col">
+              <code>/chat/completions</code>
+              <span class="endpoint-desc">Chat hoàn tất hội thoại &amp; hình ảnh (Muse Spark)</span>
+            </div>
+          </div>
+
+          <div class="endpoint-item-card">
+            <div class="endpoint-badge-col">
+              <span class="verb-tag verb-post">POST</span>
+            </div>
+            <div class="endpoint-detail-col">
+              <code>/responses</code>
+              <span class="endpoint-desc">Sinh câu trả lời nhanh định dạng văn bản</span>
+            </div>
+          </div>
+
+          <div class="endpoint-item-card">
+            <div class="endpoint-badge-col">
+              <span class="verb-tag verb-post">POST</span>
+            </div>
+            <div class="endpoint-detail-col">
+              <code>/images/generations</code>
+              <span class="endpoint-desc">Sinh ảnh AI chất lượng cao qua Muse Image</span>
+            </div>
+          </div>
+
+          <div class="endpoint-item-card">
+            <div class="endpoint-badge-col">
+              <span class="verb-tag verb-post">POST</span>
+            </div>
+            <div class="endpoint-detail-col">
+              <code>/images/tasks</code>
+              <span class="endpoint-desc">Kiểm tra tiến độ tác vụ sinh ảnh bất đồng bộ</span>
+            </div>
+          </div>
+
+          <div class="endpoint-item-card">
+            <div class="endpoint-badge-col">
+              <span class="verb-tag verb-post">POST</span>
+            </div>
+            <div class="endpoint-detail-col">
+              <code>/videos</code>
+              <span class="endpoint-desc">Tạo video sinh từ AI theo prompt</span>
+            </div>
+          </div>
+
+          <div class="endpoint-item-card">
+            <div class="endpoint-badge-col">
+              <span class="verb-tag verb-get">GET</span>
+            </div>
+            <div class="endpoint-detail-col">
+              <code>/models</code>
+              <span class="endpoint-desc">Liệt kê danh sách các model khả dụng</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="security-footer-box">
+          <svg class="i"><use href="#i-shield-check"/></svg>
+          <div class="security-footer-text">
+            <strong>Bảo mật chuẩn SHA-256:</strong> Server chỉ lưu mã băm, không lưu key gốc. Key đầy đủ chỉ hiển thị một lần duy nhất khi tạo mới.
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </section>
