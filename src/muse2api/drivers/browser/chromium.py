@@ -71,7 +71,7 @@ class ChromiumProcess:
             self.executable,
             f"--remote-debugging-port={self.port}",
             "--remote-allow-origins=*",
-            f"--user-data-dir={self.profile_dir}",
+            f"--user-data-dir={self.profile_dir.resolve()}",
             "--no-first-run",
             "--no-default-browser-check",
             "--disable-dev-shm-usage",

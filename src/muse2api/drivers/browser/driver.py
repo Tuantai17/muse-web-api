@@ -332,6 +332,7 @@ class BrowserDriver(MuseDriver):
     async def _new_thread(self, tab: _Tab) -> None:
         self._forget(tab)
         await tab.session.send("Page.navigate", {"url": muse.NEW_THREAD_URL})
+        await asyncio.sleep(0.5)
         deadline = time.monotonic() + self.settings.page_ready_timeout
         state: dict = {}
         while time.monotonic() < deadline:
@@ -339,7 +340,10 @@ class BrowserDriver(MuseDriver):
             # A busy page can leave Runtime.evaluate unanswered while it loads; poll again.
             with contextlib.suppress(CDPError, TimeoutError):
                 state = await tab.session.evaluate(dom.PAGE_STATE, timeout=5.0) or {}
-                if state.get("ready"):
+                path = state.get("path") or ""
+                if state.get("ready") and path in ("/thread/new", "/thread/new/"):
+                    # Wait for websocket connection to settle before sending
+                    await asyncio.sleep(0.5)
                     return
         head = (state.get("head") or "").lower()
         if any(h in head for h in dom.LOGIN_HINTS):
@@ -507,7 +511,10 @@ class BrowserDriver(MuseDriver):
                 text = st.get("lastText", "")
                 is_new = st.get("agentCount", 0) > base_count or (text and text != base_text)
                 if not is_new or not text:
-                    if elapsed > 15 and any(h in st.get("tail", "") for h in dom.STALL_HINTS):
+                    tail = st.get("tail", "")
+                    if "Delivery not confirmed" in tail:
+                        raise UpstreamError("muse.ai message delivery failed (Delivery not confirmed). Please retry.")
+                    if elapsed > 15 and any(h in tail for h in dom.STALL_HINTS):
                         raise UpstreamTimeout("upstream workspace is stuck connecting")
                     continue
                 got_first = True

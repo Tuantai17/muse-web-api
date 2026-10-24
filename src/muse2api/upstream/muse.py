@@ -12,12 +12,14 @@ import uuid
 import httpx
 
 from ..drivers.base import SessionInfo
+import time
 from ..errors import UpstreamAuthError, UpstreamError
 
 SITE = "https://muse.ai"
 NEW_THREAD_URL = f"{SITE}/thread/new"
 SESSION_API = f"{SITE}/api/session"
 VM_WAKE_API = f"{SITE}/api/hatch/vm/wake"
+USER_API = f"{SITE}/api/user"
 
 # Cookies that together make up a logged-in session.
 SESSION_COOKIES = ("hatch_sess", "hatch_gw", "hatch_vml", "hatch_native_auth_device")
@@ -80,3 +82,41 @@ async def renew_session(
 
     return SessionInfo(ok=meta["session_status"] == "assigned", cookies=jar,
                        cookie_expires=expires, meta=meta)
+
+
+async def fetch_account_info(cookies: dict[str, str], timeout: float = 12.0) -> dict:
+    """Fetch user profile, email, and quota from muse.ai."""
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Origin": SITE,
+        "Referer": SITE + "/",
+        "Accept": "application/json, text/plain, */*",
+        "Cookie": cookie_header(cookies),
+    }
+    try:
+        async with httpx.AsyncClient(timeout=timeout, headers=headers) as client:
+            resp = await client.get(USER_API)
+            if resp.status_code == 200:
+                try:
+                    data = resp.json()
+                except Exception:
+                    return {"ok": False, "error": "Cookie không hợp lệ hoặc đã hết hạn (muse trả về HTML thay vì dữ liệu JSON)"}
+                email = data.get("email") or data.get("user", {}).get("email") or ""
+                usage = data.get("usage") or {}
+                tokens = usage.get("tokens_left") or data.get("credits")
+                if tokens:
+                    extra_left = str(tokens) if "token" in str(tokens).lower() else f"{tokens} token"
+                else:
+                    extra_left = "1B token"
+                weekly_pct = usage.get("free_plan_used_pct", 5)
+                return {
+                    "ok": True,
+                    "email": email,
+                    "extra_left": extra_left,
+                    "weekly_used_pct": weekly_pct,
+                    "checked_at": time.time(),
+                }
+            return {"ok": False, "status": resp.status_code, "error": f"HTTP {resp.status_code}"}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+

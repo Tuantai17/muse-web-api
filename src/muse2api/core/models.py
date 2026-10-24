@@ -30,6 +30,14 @@ MODELS: dict[str, ModelSpec] = {
 # Popular client-side model names are routed to the closest muse model so that
 # existing OpenAI tooling works without reconfiguration.
 ALIASES: dict[str, str] = {
+    "muse-spark": "muse-chat",
+    "muse spark": "muse-chat",
+    "musespark": "muse-chat",
+    "muse_spark": "muse-chat",
+    "muse-wonder": "muse-chat",
+    "muse wonder": "muse-chat",
+    "musewonder": "muse-chat",
+    "muse_wonder": "muse-chat",
     "gpt-4o": "muse-chat",
     "gpt-4o-mini": "muse-chat",
     "gpt-4.1": "muse-chat",
