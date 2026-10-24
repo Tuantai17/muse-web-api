@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import contextlib
+import os
 import secrets
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DriverName = Literal["mock", "browser", "http"]
@@ -25,6 +27,15 @@ class Settings(BaseSettings):
     # --- server ---
     host: str = "127.0.0.1"
     port: int = 18610
+
+    @model_validator(mode="before")
+    @classmethod
+    def _read_cloud_port(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "port" not in data and "PORT" in os.environ and "MUSE2API_PORT" not in os.environ:
+                with contextlib.suppress(ValueError):
+                    data["port"] = int(os.environ["PORT"])
+        return data
     log_level: str = "INFO"
     public_base: str = Field(
         default="",

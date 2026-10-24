@@ -84,7 +84,11 @@ class ChromiumProcess:
             args.insert(1, f"--proxy-server={self.proxy}")
         if self.headless:
             args[1:1] = ["--headless=new", "--disable-gpu"]
-        if hasattr(os, "geteuid") and os.geteuid() == 0:
+        if (
+            (hasattr(os, "geteuid") and os.geteuid() == 0)
+            or os.path.exists("/.dockerenv")
+            or os.environ.get("CHROME_NO_SANDBOX") == "1"
+        ):
             args.insert(1, "--no-sandbox")
 
         log.info("launching Chromium: %s", self.executable)
