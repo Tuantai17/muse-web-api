@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from fastapi import APIRouter
-from fastapi.responses import HTMLResponse, FileResponse, Response
+from fastapi.responses import HTMLResponse, FileResponse, Response, RedirectResponse
 
 router = APIRouter(tags=["dashboard"])
 
@@ -39,6 +39,11 @@ def _html() -> str:
 
     composed = re.sub(r"<!--\s*INCLUDE:([^\s>]+)\s*-->", _replace_include, template)
     return composed
+
+
+@router.get("/", include_in_schema=False)
+async def root_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/dashboard", status_code=307)
 
 
 @router.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
