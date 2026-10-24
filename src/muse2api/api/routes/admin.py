@@ -305,6 +305,7 @@ async def update_key(key_id: str, body: KeyUpdate, svc: Services = Depends(get_s
 
 
 @router.delete("/keys/{key_id}")
+@router.delete("/keys/{key_id}/purge")
 async def delete_key(key_id: str, svc: Services = Depends(get_services)) -> dict:
     if not await svc.keys.remove(key_id):
         raise NotFound(f"key '{key_id}' not found")

@@ -2290,7 +2290,7 @@ $("#keys-body")?.addEventListener("click", (e) => {
         await loadKeys();
       } else if (act === "delete") {
         if (!await confirmBox("Xoá vĩnh viễn key?", `<p>Key ${ident} sẽ bị xoá hoàn toàn khỏi hệ thống. Thao tác này không thể hoàn tác.</p>`, "Xoá vĩnh viễn")) return;
-        await api(`${path}/purge`, {method: "DELETE"});
+        await api(path, {method: "DELETE"});
         toast("Đã xoá vĩnh viễn key.");
         await loadKeys();
       }
