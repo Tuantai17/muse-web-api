@@ -404,6 +404,18 @@ def test_admin_accounts_bulk_import(client, admin):
     assert client.get("/admin/status", headers=admin).json()["accounts"]["total"] == 2
 
 
+def test_admin_account_verify(client, admin):
+    r = client.post("/admin/accounts/verify", headers=admin, json={"label": "v1", "cookies": "foo=bar"})
+    assert r.status_code == 200
+    assert r.json()["ok"] is False
+    assert "Thiếu cookie bắt buộc" in r.json()["error"]
+
+    r = client.post("/admin/accounts/verify", headers=admin,
+                    json={"label": "v2", "cookies": "hatch_sess=sess1; hatch_vml=vml1"})
+    assert r.status_code == 200
+    assert r.json()["ok"] is True
+
+
 def test_chat_stream_heartbeat(settings, auth):
     # C4: with stream_heartbeat_interval set, the 200 goes out immediately and
     # ': keepalive' SSE comments precede the first data chunk.

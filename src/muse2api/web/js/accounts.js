@@ -170,22 +170,170 @@ async function loadAccountsPage() {
 }
 
 async function accountForm(title = "Thêm account muse.ai") {
-  return modal({
+  let isVerified = false;
+  let lastVerifiedCookie = "";
+
+  const bodyHtml = `
+    <label class="f">Tên gợi nhớ (Label)
+      <input type="text" id="af-label" placeholder="vd. Tài khoản chính, Account #1" autocomplete="off">
+    </label>
+    
+    <label class="f">Cookie muse.ai 
+      <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Cần có cookie <code>hatch_sess</code> và <code>hatch_vml</code>!</span>
+      <textarea id="af-cookies" rows="5" placeholder="hatch_sess=...; hatch_gw=...; hatch_vml=...; hatch_native_auth_device=..." style="font-family:var(--mono);font-size:12px;"></textarea>
+    </label>
+
+    <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+      <button class="btn secondary" id="af-verify-btn" type="button" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:7px 14px;border-radius:6px;cursor:pointer;">
+        <svg class="i" style="width:15px;height:15px;"><use href="#i-shield-check"/></svg>
+        <span id="af-verify-btn-text">Kiểm tra kết nối Cookie</span>
+      </button>
+      <span id="af-verify-spinner" style="display:none;font-size:12px;color:var(--muted);align-items:center;gap:5px;">
+        <svg class="i spin" style="width:14px;height:14px;"><use href="#i-refresh"/></svg> Đang kiểm tra kết nối muse.ai...
+      </span>
+    </div>
+
+    <div id="af-status-banner" style="display:none;margin-top:12px;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.5;"></div>
+  `;
+
+  async function runVerification() {
+    const cookies = ($("#af-cookies")?.value || "").trim();
+    const label = ($("#af-label")?.value || "").trim();
+    const banner = $("#af-status-banner");
+    const vBtn = $("#af-verify-btn");
+    const spinner = $("#af-verify-spinner");
+
+    if (!cookies) {
+      if (banner) {
+        banner.style.display = "block";
+        banner.style.background = "#fef2f2";
+        banner.style.border = "1px solid #fca5a5";
+        banner.style.color = "#991b1b";
+        banner.innerHTML = "<b>✕ Vui lòng dán Cookie</b> trước khi kiểm tra hoặc lưu.";
+      }
+      return false;
+    }
+
+    if (vBtn) vBtn.disabled = true;
+    if (spinner) spinner.style.display = "inline-flex";
+    if (banner) banner.style.display = "none";
+
+    try {
+      const res = await api("/admin/accounts/verify", {
+        method: "POST",
+        body: { label, cookies }
+      });
+
+      if (res && res.ok) {
+        isVerified = true;
+        lastVerifiedCookie = cookies;
+
+        const labelInput = $("#af-label");
+        if (labelInput && !labelInput.value.trim() && res.email && res.email !== "muse.ai member") {
+          labelInput.value = res.email;
+        }
+
+        if (banner) {
+          banner.style.display = "block";
+          banner.style.background = "#f0fdf4";
+          banner.style.border = "1px solid #86efac";
+          banner.style.color = "#166534";
+          banner.innerHTML = `
+            <div style="font-weight:600;display:flex;align-items:center;gap:6px;">
+              <span style="display:inline-grid;place-items:center;width:18px;height:18px;background:#22c55e;color:#fff;border-radius:50%;font-size:11px;">✓</span>
+              Xác nhận kết nối thành công tới muse.ai!
+            </div>
+            <div style="margin-top:6px;font-size:12px;color:#15803d;">
+              Tài khoản: <b>${esc(res.email || "muse.ai member")}</b> · Trạng thái phiên: <b>Sẵn sàng (Live)</b>
+            </div>
+          `;
+        }
+        return true;
+      } else {
+        isVerified = false;
+        if (banner) {
+          banner.style.display = "block";
+          banner.style.background = "#fef2f2";
+          banner.style.border = "1px solid #fca5a5";
+          banner.style.color = "#991b1b";
+          banner.innerHTML = `
+            <div style="font-weight:600;display:flex;align-items:center;gap:6px;">
+              <span style="display:inline-grid;place-items:center;width:18px;height:18px;background:#ef4444;color:#fff;border-radius:50%;font-size:11px;">✕</span>
+              Kết nối thất bại: ${esc(res?.error || "Cookie không hợp lệ hoặc đã hết hạn")}
+            </div>
+            <div style="margin-top:6px;font-size:12px;color:#b91c1c;">
+              Vui lòng copy lại từ tab <b>Network</b> trong F12 (Headers → cookie:) trên trang muse.ai.
+            </div>
+          `;
+        }
+        return false;
+      }
+    } catch (err) {
+      isVerified = false;
+      if (banner) {
+        banner.style.display = "block";
+        banner.style.background = "#fef2f2";
+        banner.style.border = "1px solid #fca5a5";
+        banner.style.color = "#991b1b";
+        banner.innerHTML = `<b>✕ Lỗi kiểm tra:</b> ${esc(err.message)}`;
+      }
+      return false;
+    } finally {
+      if (vBtn) vBtn.disabled = false;
+      if (spinner) spinner.style.display = "none";
+    }
+  }
+
+  const p = modal({
     title,
-    body: `<label class="f">Tên gợi nhớ (Label)<input type="text" id="af-label" placeholder="vd. Tài khoản chính, Account #1" autocomplete="off"></label>
-      <label class="f">Cookie muse.ai <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Không dùng document.cookie vì thiếu cookie bảo mật HttpOnly!</span>
-      <textarea id="af-cookies" rows="6" placeholder="hatch_sess=...; hatch_gw=...; hatch_vml=...; hatch_native_auth_device=..." style="font-family:var(--mono);font-size:12px;"></textarea></label>`,
-    actions: [{label: "Huỷ", value: null},
-              {label: "Lưu tài khoản", value: true, primary: true, cls: "primary"}],
-  }).then(async (ok) => {
+    body: bodyHtml,
+    actions: [
+      { label: "Huỷ", value: null },
+      {
+        label: "Lưu tài khoản",
+        value: true,
+        primary: true,
+        cls: "primary",
+        check: async () => {
+          const cookies = ($("#af-cookies")?.value || "").trim();
+          if (!cookies) return "Cookie không được để trống";
+
+          // If not verified or modified after verification, verify first before saving
+          if (!isVerified || cookies !== lastVerifiedCookie) {
+            toast("Đang kiểm tra kết nối Cookie tới muse.ai trước khi lưu...");
+            const ok = await runVerification();
+            if (!ok) {
+              return "Chưa thể lưu: Kết nối Cookie tới muse.ai chưa thành công. Vui lòng kiểm tra lại.";
+            }
+          }
+          return null;
+        }
+      }
+    ]
+  });
+
+  setTimeout(() => {
+    $("#af-verify-btn")?.addEventListener("click", () => runVerification());
+    $("#af-cookies")?.addEventListener("input", () => {
+      isVerified = false;
+      const banner = $("#af-status-banner");
+      if (banner) banner.style.display = "none";
+    });
+  }, 20);
+
+  return p.then(async (ok) => {
     if (!ok) return null;
-    const label = $("#af-label").value.trim(), cookies = $("#af-cookies").value.trim();
-    if (!cookies) throw new Error("Cookie không được để trống");
-    return api("/admin/accounts", {method: "POST", body: {label, cookies}});
+    const label = ($("#af-label")?.value || "").trim();
+    const cookies = ($("#af-cookies")?.value || "").trim();
+    const saved = await api("/admin/accounts", { method: "POST", body: { label, cookies } });
+    toast("✓ Đã kết nối và lưu tài khoản Muse thành công!");
+    return saved;
   });
 }
 
-$("#acc-new").addEventListener("click", () => accountForm().then((x) => x && guarded(loadAccountsPage)));
+window.openAccountModal = () => accountForm().then((x) => x && guarded(loadAccountsPage));
+
+$("#acc-new").addEventListener("click", () => window.openAccountModal());
 
 $("#accounts").addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-act]");

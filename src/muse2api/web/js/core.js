@@ -141,9 +141,10 @@ function modal({title, body, actions, wide}) {
       if (opener && opener.focus && document.contains(opener)) opener.focus();
       resolve(v);
     };
-    const fire = (a) => {
+    const fire = async (a) => {
       const v = a.collect ? a.collect() : a.value;
-      const err = a.check && a.check(v);
+      let err = a.check ? a.check(v) : null;
+      if (err && typeof err.then === "function") err = await err;
       if (err) {
         let el = $("#modal-err");
         if (!el) { el = document.createElement("div"); el.id = "modal-err"; el.className = "ferr"; el.setAttribute("role", "alert"); $("#modal-body").appendChild(el); }

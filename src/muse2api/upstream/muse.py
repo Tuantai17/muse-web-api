@@ -106,9 +106,17 @@ async def fetch_account_info(cookies: dict[str, str], timeout: float = 12.0) -> 
                     for c in resp.cookies.jar:
                         if c.value:
                             new_cookies[c.name] = c.value
+                    email = "muse.ai member"
+                    try:
+                        u_resp = await client.get(USER_API)
+                        if u_resp.status_code == 200:
+                            u_data = u_resp.json()
+                            email = u_data.get("email") or u_data.get("name") or u_data.get("username") or email
+                    except Exception:
+                        pass
                     return {
                         "ok": True,
-                        "email": "muse.ai member",
+                        "email": email,
                         "extra_left": "1B token (Gói Muse)",
                         "weekly_used_pct": 5,
                         "vm_id": data.get("vm_id") or "",

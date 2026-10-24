@@ -94,6 +94,45 @@ async def list_accounts(svc: Services = Depends(get_services)) -> dict:
     return {"data": [a.public() for a in svc.pool.all()]}
 
 
+@router.post("/accounts/verify")
+async def verify_account(body: AccountCreate, svc: Services = Depends(get_services)) -> dict:
+    """Verify that the supplied cookies can authenticate and establish a session on muse.ai."""
+    try:
+        acc = _build_account(body)
+    except InvalidRequest as e:
+        return {"ok": False, "error": e.message}
+
+    missing = missing_session_cookies(acc.cookies)
+    if missing:
+        return {
+            "ok": False,
+            "error": f"Thiếu cookie bắt buộc: {', '.join(missing)}. Vui lòng copy đầy đủ cookie từ tab Network trong F12.",
+            "missing_cookies": missing,
+        }
+
+    if not svc.driver.requires_account:
+        return {
+            "ok": True,
+            "message": "Cookie hợp lệ (chế độ kiểm thử / mock driver)",
+            "email": acc.label or "mock.user@muse.ai",
+            "info": {"extra_left": "1B token (Mock)", "weekly_used_pct": 5},
+        }
+
+    info = await fetch_account_info(acc.cookies)
+    if info.get("ok"):
+        return {
+            "ok": True,
+            "message": "Kết nối tới muse.ai thành công!",
+            "email": info.get("email") or acc.label or "muse.ai member",
+            "info": info,
+        }
+    return {
+        "ok": False,
+        "error": info.get("error") or "Không thể xác thực phiên với muse.ai. Cookie có thể đã hết hạn hoặc không hợp lệ.",
+        "info": info,
+    }
+
+
 @router.post("/accounts")
 async def create_account(body: AccountCreate, svc: Services = Depends(get_services)) -> dict:
     acc = _build_account(body)
