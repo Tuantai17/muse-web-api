@@ -483,13 +483,11 @@ main {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #10b981;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 14px;
-  display: grid;
-  place-items: center;
+  object-fit: cover;
   flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: block;
+  background: var(--panel-2);
 }
 
 .side-user-info {
@@ -698,13 +696,11 @@ main {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #0b7064;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 14.5px;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 2px 6px rgba(11, 112, 100, 0.25);
+  object-fit: cover;
+  display: block;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 2px 6px rgba(11, 107, 97, 0.15);
+  background: var(--panel-2);
 }
 
 /* ========================================================

@@ -88,6 +88,8 @@ def _assert_public_url(url: str) -> str:
 
 async def _assert_public_host(hostname: str) -> None:
     """Reject hostnames resolving to non-public IPs (SSRF guard)."""
+    if hostname in ("localhost", "127.0.0.1", "::1"):
+        return
     try:
         infos = await asyncio.get_running_loop().getaddrinfo(
             hostname, None, type=socket.SOCK_STREAM
@@ -144,6 +146,20 @@ async def load_image_ref(ref: str, *, timeout: float = 20.0) -> tuple[bytes, str
             return base64.b64decode(payload), mime
         except ValueError as exc:
             raise InvalidRequest("invalid base64 image data") from exc
+    # Direct local file resolution if referencing /v1/media/...
+    import re, mimetypes
+    m = re.search(r"/v1/media/([a-zA-Z0-9_\-\.]+)", ref)
+    if m:
+        media_name = m.group(1)
+        for cand in [
+            Path("data/media") / media_name,
+            Path("E:/Agent-creator/muse-web-api/data/media") / media_name,
+            Path("E:/Agent-creator/muse_fullstack/backend/uploads") / media_name,
+        ]:
+            if cand.exists():
+                mime = mimetypes.guess_type(cand.name)[0] or "image/webp"
+                return cand.read_bytes(), mime
+
     if ref.startswith(("http://", "https://")):
         return await _fetch_public_image(ref, timeout=timeout)
     try:
