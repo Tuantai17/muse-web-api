@@ -170,42 +170,44 @@ async function loadKeys() {
   }).join("");
 
   if (!filteredKeys.length) {
-    rows = `<tr><td colspan="8" class="empty">Không tìm thấy key nào khớp bộ lọc.</td></tr>`;
+    rows = `<tr><td colspan="8" class="empty">Chưa có API key cá nhân nào. Hãy bấm “Cấp API key mới” để bắt đầu.</td></tr>`;
   }
 
-  const builtinRows = state.builtin.map((b) => {
-    const u = b.usage || {};
-    return `<tr class="click builtin-row" data-id="${esc(b.id)}" tabindex="0" title="Xem requests của ${esc(b.name)}">
-      <td>
-        <div class="key-name-block">
-          <strong class="key-name-title">${esc(b.name)}</strong>
-          <div class="key-note-sub">${esc(BUILTIN_NOTE[b.id] || "Biến môi trường hệ thống")}</div>
-        </div>
-      </td>
-      <td><code class="key-prefix-badge env-badge">env</code></td>
-      <td><span class="status-pill status-pill-info"><span class="dot-indicator dot-info"></span> Có sẵn</span></td>
-      <td class="text-right num font-mono">${fmtNum(u.total || 0)}</td>
-      <td class="text-right num font-mono font-bold">${fmtNum(u.requests_24h || 0)}</td>
-      <td class="text-right num font-mono"><span class="text-muted">${fmtNum(u.errors_24h || 0)}</span></td>
-      <td class="text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
-      <td class="text-right text-muted small" style="padding-right:16px;">Chỉ đọc</td>
-    </tr>`;
-  }).join("");
-
-  const separator = state.builtin.length ? `<tr class="table-section-divider"><td colspan="8"><span>ĐỊNH DANH MẶC ĐỊNH HỆ THỐNG</span></td></tr>` : "";
+  // Ẩn các key định danh mặc định hệ thống theo yêu cầu, chỉ hiển thị danh sách key cá nhân
   const body = $("#keys-body");
-  if (body) body.innerHTML = rows + separator + builtinRows;
+  if (body) body.innerHTML = rows;
 }
 
-async function keyForm(title, k = {}, submit = "Cấp key") {
+async function keyForm(title = "Cấp API key mới", k = {}, submit = "Tạo key") {
+  const isEdit = !!k.name;
   return modal({
     title,
-    body: `<label class="f">Tên khóa (Key Name)<input type="text" id="kf-name" maxlength="100" value="${esc(k.name || "")}" placeholder="vd. Production Server, App N8N, Alice Dev" autocomplete="off"></label>
-      <label class="f">Ghi chú (không bắt buộc)<input type="text" id="kf-note" maxlength="500" value="${esc(k.note || "")}" placeholder="Dùng cho ứng dụng hoặc server nào..." autocomplete="off"></label>`,
-    actions: [{label: "Huỷ", value: null},
+    body: `
+      <div class="modal-security-notice">
+        <svg class="i"><use href="#i-shield"/></svg>
+        <div>
+          ${isEdit ? "Cập nhật tên định danh hoặc ghi chú cho khóa API này." : "Khóa API cá nhân dùng để kết nối an toàn các công cụ, ứng dụng (như Cursor, Next.js, Python) với <strong>muse-web-api</strong>."}
+        </div>
+      </div>
+      <div class="modal-form-stack">
+        <div class="form-group">
+          <label class="form-label" for="kf-name">Tên định danh khóa <span class="required-star">*</span></label>
+          <input type="text" id="kf-name" maxlength="100" value="${esc(k.name || "")}" placeholder="vd: Cursor IDE, Next.js Web App, Bot N8N..." autocomplete="off" spellcheck="false">
+          <span class="form-hint">Đặt tên gợi nhớ để phân biệt mục đích sử dụng hoặc ứng dụng kết nối.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="kf-note">Ghi chú mục đích sử dụng <span class="opt-label">(không bắt buộc)</span></label>
+          <input type="text" id="kf-note" maxlength="500" value="${esc(k.note || "")}" placeholder="vd: Môi trường local development..." autocomplete="off">
+          <span class="form-hint">Ghi chú hỗ trợ quản lý khi bạn có nhiều ứng dụng hoặc thiết bị cùng gọi API.</span>
+        </div>
+      </div>
+    `,
+    actions: [
+      {label: "Huỷ bỏ", value: null, cls: "ghost"},
       {label: submit, primary: true, cls: "primary",
        collect: () => ({name: $("#kf-name").value.trim(), note: $("#kf-note").value.trim()}),
-       check: (v) => v.name ? "" : "Cần nhập tên cho key."}],
+       check: (v) => v.name ? "" : "Vui lòng nhập tên định danh cho khóa API."}
+    ],
   });
 }
 
@@ -225,22 +227,54 @@ $("#key-new")?.addEventListener("click", () => guarded(async () => {
   const res = await api("/admin/keys", {method: "POST", body: form});
   state.lastCreatedKey = res.api_key;
   await loadKeys();
+
+  // Đăng ký event copy cho modal kết quả
+  const bindCopy = () => {
+    const copyBtn = $("#copy-key-modal");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(res.api_key);
+          toast("Đã sao chép khóa API đầy đủ!");
+          const txt = $("#copy-key-text");
+          if (txt) {
+            const orig = txt.textContent;
+            txt.textContent = "Đã chép!";
+            setTimeout(() => { txt.textContent = orig; }, 1800);
+          }
+        } catch {
+          toast("Không thể tự động sao chép. Vui lòng chọn và chép thủ công.");
+        }
+      });
+    }
+  };
+
+  setTimeout(bindCopy, 50);
+
   await modal({
-    title: `Đã cấp key “${res.key.name}” thành công`,
-    body: `<div class="notice-banner" style="margin-bottom:14px;background:#fef3c7;border-color:#f59e0b;color:#92400e;">
-        <svg class="i" style="color:#b45309;"><use href="#i-shield"/></svg>
-        <div style="font-size:12.5px;line-height:1.5;">
-          <strong>Lưu ý quan trọng:</strong> Đây là lần duy nhất key đầy đủ được hiển thị. Server chỉ lưu mã băm SHA-256 nên không thể xem lại sau khi đóng cửa sổ này.
+    title: `Đã tạo khóa “${esc(res.key.name)}” thành công`,
+    body: `
+      <div class="modal-alert-warn">
+        <svg class="i"><use href="#i-shield"/></svg>
+        <div>
+          <strong>Lưu ý bảo mật quan trọng:</strong> Đây là <em>lần duy nhất</em> khóa API này được hiển thị đầy đủ. Server chỉ lưu mã băm SHA-256 một chiều, vì vậy bạn sẽ không thể xem lại khóa này sau khi đóng cửa sổ.
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:14px;">
-        <input type="text" id="new-key" readonly value="${esc(res.api_key)}" style="flex:1;height:40px;font-family:var(--mono);font-size:13px;padding:0 12px;background:var(--panel-2);border:1px solid var(--border-strong);border-radius:6px;" spellcheck="false">
-        <button class="btn primary" type="button" id="copy-key" style="white-space:nowrap;padding:0 16px;">
-          <svg class="i"><use href="#i-copy"/></svg> Sao chép
-        </button>
+      <div class="form-group">
+        <label class="form-label">Khóa API đầy đủ của bạn:</label>
+        <div class="new-key-display-box">
+          <input type="text" id="new-key" readonly value="${esc(res.api_key)}" spellcheck="false">
+          <button class="btn primary" type="button" id="copy-key-modal" title="Sao chép khóa vào bộ nhớ tạm">
+            <svg class="i"><use href="#i-copy"/></svg> <span id="copy-key-text">Sao chép</span>
+          </button>
+        </div>
       </div>
-      <div class="text-muted small">Authorization Header: <code>Bearer ${esc(res.api_key.slice(0, 14))}…</code></div>`,
-    actions: [{label: "Tôi đã lưu key", value: null, primary: true, cls: "primary"}],
+      <div class="key-created-footer-info">
+        <span>Tiêu đề Authorization:</span>
+        <code>Bearer ${esc(res.api_key.slice(0, 16))}••••••••</code>
+      </div>
+    `,
+    actions: [{label: "Tôi đã lưu khóa an toàn", value: null, primary: true, cls: "primary"}],
   });
 }));
 
