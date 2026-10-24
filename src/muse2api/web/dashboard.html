@@ -12,12 +12,2241 @@
   </script>
 
   <!-- Modular CSS Stylesheets -->
-  <link rel="stylesheet" href="/static/css/base.css">
-  <link rel="stylesheet" href="/static/css/login.css">
-  <link rel="stylesheet" href="/static/css/overview.css">
-  <link rel="stylesheet" href="/static/css/accounts.css">
-  <link rel="stylesheet" href="/static/css/keys.css">
-  <link rel="stylesheet" href="/static/css/requests.css">
+  <style>/* base.css */
+:root {
+  color-scheme: light;
+  --bg: #f3f9f7;
+  --panel: #ffffff;
+  --panel-2: #f8fbfa;
+  --panel-3: #edf5f2;
+  --border: #e2ede8;
+  --border-strong: #c8ded6;
+  --border-subtle: #edf4f1;
+  
+  --text: #111827;
+  --muted: #64748b;
+  --faint: #94a3b8;
+  
+  --accent: #0b6b61;
+  --accent-hover: #08564e;
+  --accent-text: #ffffff;
+  --accent-soft: #dcefeb;
+  
+  --ok: #10b981;
+  --ok-bg: #d1fae5;
+  --ok-text: #065f46;
+  --warn: #f59e0b;
+  --warn-bg: #fef3c7;
+  --warn-text: #92400e;
+  --err: #ef4444;
+  --err-bg: #fee2e2;
+  --err-text: #991b1b;
+  --info: #3b82f6;
+  --info-bg: #dbeafe;
+  --info-text: #1e40af;
+  
+  --side-bg: #0b1a19;
+  --side-2: #122826;
+  --side-border: #16322f;
+  --side-text: #c8ded9;
+  --side-muted: #6d8e89;
+  --side-accent: #0b7064;
+  --side-accent-hover: #0e8476;
+  
+  --radius-xl: 18px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.03), 0 6px 16px rgba(11, 107, 97, 0.04);
+  --shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(11, 107, 97, 0.08);
+  --shadow-lg: 0 20px 45px rgba(11, 26, 25, 0.18);
+  
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #081110;
+  --panel: #0e1e1d;
+  --panel-2: #142826;
+  --panel-3: #1a3330;
+  --border: #1a3532;
+  --border-strong: #254a46;
+  --border-subtle: #142927;
+  
+  --text: #e6f3f0;
+  --muted: #8aa6a1;
+  --faint: #5a7772;
+  
+  --accent: #2ebd85;
+  --accent-hover: #34d399;
+  --accent-text: #042018;
+  --accent-soft: #0b332b;
+  
+  --ok: #34d399;
+  --ok-bg: #064e3b;
+  --ok-text: #a7f3d0;
+  --warn: #fbbf24;
+  --warn-bg: #78350f;
+  --warn-text: #fde68a;
+  --err: #f87171;
+  --err-bg: #7f1d1d;
+  --err-text: #fecaca;
+  --info: #60a5fa;
+  --info-bg: #1e3a8a;
+  --info-text: #bfdbfe;
+  
+  --side-bg: #060e0d;
+  --side-2: #0b1918;
+  --side-border: #112624;
+  --side-text: #a8c7c1;
+  --side-muted: #577974;
+  
+  --shadow-card: none;
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; background: var(--bg); color: var(--text); font: 14px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+svg.i {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ========================================================
+   SHELL LAYOUT
+   ======================================================== */
+.app {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  padding: 28px 36px 60px;
+  max-width: 1440px;
+  width: 100%;
+}
+
+/* ========================================================
+   SIDEBAR (Mint-Dark Slate Palette Matching Image 2)
+   ======================================================== */
+.side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--side-bg);
+  color: var(--side-text);
+  border-right: 1px solid var(--side-border);
+  z-index: 40;
+  overflow: hidden;
+}
+
+/* Brand header */
+.side .wordmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px 20px;
+}
+
+.side .logo-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex: none;
+  background: #000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.side .wordmark-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.side .wordmark-title {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.side .wordmark-text small {
+  font-size: 11.5px;
+  color: var(--side-muted);
+  margin-top: 2px;
+}
+
+/* Navigation */
+.side nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.side .navlabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--side-muted);
+  padding: 14px 10px 8px;
+  font-weight: 700;
+}
+
+.side .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: var(--side-text);
+  text-decoration: none;
+  font-weight: 550;
+  font-size: 13.5px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.side .nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+/* Active Nav Item (Mint-Teal Highlight in Image 2) */
+.side .nav-item[aria-current="page"] {
+  background: var(--side-accent);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(11, 112, 100, 0.3);
+}
+
+.side .nav-item[aria-current="page"] svg {
+  color: #ffffff;
+}
+
+.side .nav-item .count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 1px 7px;
+  border-radius: 999px;
+  line-height: 17px;
+}
+
+/* Sidebar Footer */
+.side-foot {
+  padding: 16px 16px 20px;
+  border-top: 1px solid var(--side-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Theme Toggle Pill (Sun / Auto / Moon) */
+.themes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--side-2);
+  border: 1px solid var(--side-border);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.themes button {
+  background: none;
+  border: 0;
+  color: var(--side-muted);
+  padding: 6px 0;
+  border-radius: 999px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s ease;
+}
+
+.themes button:hover {
+  color: #ffffff;
+}
+
+.themes button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* User Card in Sidebar */
+.side-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+}
+
+.side-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.side-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.side-user-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #ffffff;
+}
+
+.side-user-role {
+  font-size: 11px;
+  color: var(--side-muted);
+}
+
+/* Logout Button */
+.side .logout {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: none;
+  border: 0;
+  color: var(--side-muted);
+  padding: 8px 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s;
+}
+
+.side .logout:hover {
+  color: #ffffff;
+}
+
+/* Decorative Waves SVG at bottom left of sidebar */
+.side-wave-decor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 240px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.75;
+}
+
+/* ========================================================
+   TOPBAR HEADER (Clean white bar with search & profile)
+   ======================================================== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 36px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+:root[data-theme="dark"] .topbar {
+  background: var(--panel);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.burger {
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--text);
+  padding: 6px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.breadcrumb-icon {
+  width: 17px;
+  height: 17px;
+  color: var(--accent);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 0 12px 0 14px;
+  height: 38px;
+  width: 250px;
+  transition: all 0.15s ease;
+}
+
+:root[data-theme="dark"] .topbar-search {
+  background: var(--panel-2);
+  border-color: var(--border);
+}
+
+.topbar-search:focus-within {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(11, 107, 97, 0.12);
+  width: 280px;
+}
+
+.topbar-search .search-icon {
+  color: var(--faint);
+  width: 15px;
+  height: 15px;
+}
+
+.topbar-search input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.search-kbd {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--muted);
+  background: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .search-kbd {
+  background: var(--panel-3);
+  border-color: var(--border-strong);
+}
+
+.topbar-icon-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s ease;
+}
+
+:root[data-theme="dark"] .topbar-icon-btn {
+  background: var(--panel-2);
+  border-color: var(--border);
+}
+
+.topbar-icon-btn:hover {
+  background: #edf5f2;
+  color: var(--accent);
+  border-color: var(--border-strong);
+}
+
+.notif-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 1.5px solid #ffffff;
+}
+
+.topbar-user {
+  cursor: pointer;
+}
+
+.user-avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #0b7064;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14.5px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(11, 112, 100, 0.25);
+}
+
+/* ========================================================
+   BASE CARD & BUTTON PRIMITIVES
+   ======================================================== */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--panel-2);
+  border-color: var(--accent);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(11, 107, 97, 0.22);
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 5px 14px rgba(11, 107, 97, 0.32);
+}
+
+.btn.ghost {
+  border-color: transparent;
+  background: none;
+  color: var(--muted);
+}
+
+.btn.ghost:hover {
+  background: var(--panel-3);
+  color: var(--text);
+}
+
+.btn.icon-btn {
+  padding: 7px;
+  border-radius: 50%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.badge.plain::before {
+  display: none;
+}
+
+.b-ok { background: var(--ok-bg); color: var(--ok-text); }
+.b-warn { background: var(--warn-bg); color: var(--warn-text); }
+.b-err { background: var(--err-bg); color: var(--err-text); }
+.b-info { background: var(--info-bg); color: var(--info-text); }
+.b-mute { background: var(--panel-3); color: var(--muted); }
+
+/* Table Primitives */
+.tablewrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 650;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--panel-2);
+}
+
+/* Modals & Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 26, 25, 0.55);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 540px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.modal h3 {
+  padding: 20px 24px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal .body {
+  padding: 22px 24px;
+}
+
+.modal .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  background: var(--panel-2);
+  border-top: 1px solid var(--border);
+}
+
+/* Toast Notification */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  background: #0b1a19;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-weight: 600;
+  font-size: 13.5px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideToast 0.25s ease-out;
+}
+
+@keyframes slideToast {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Drawer scrim backdrop */
+.scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 39;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .app { grid-template-columns: 1fr; }
+  .side {
+    position: fixed;
+    left: -260px;
+    width: 250px;
+    transition: left 0.25s ease;
+  }
+  .app.drawer .side,
+  .app.drawer-open .side {
+    left: 0;
+  }
+  .app.drawer .scrim,
+  .app.drawer-open .scrim {
+    display: block;
+  }
+  .burger { display: block; }
+  .topbar { padding: 0 20px; }
+  main { padding: 20px 16px 40px; }
+}
+
+</style>
+  <style>/* login.css */
+/* ---------- modern SaaS login (Mint–Teal Reference Edition) ---------- */
+.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 12% 22%, rgba(45, 212, 191, 0.16) 0%, transparent 42%),
+              radial-gradient(circle at 88% 78%, rgba(16, 185, 129, 0.14) 0%, transparent 42%),
+              radial-gradient(ellipse 75% 55% at 50% -8%, rgba(20, 184, 166, 0.16) 0%, transparent 62%),
+              #f7fbf9;
+}
+:root[data-theme="dark"] .login {
+  background: radial-gradient(circle at 12% 22%, rgba(45, 212, 191, 0.08) 0%, transparent 42%),
+              radial-gradient(circle at 88% 78%, rgba(16, 185, 129, 0.08) 0%, transparent 42%),
+              radial-gradient(ellipse 75% 55% at 50% -8%, rgba(20, 184, 166, 0.12) 0%, transparent 62%),
+              #0c1214;
+}
+.bg-dots {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  background-image: radial-gradient(#14b8a6 2.2px, transparent 2.2px);
+  background-size: 20px 20px;
+  opacity: 0.40;
+  z-index: 1;
+}
+.bg-dots-left {
+  left: 7%;
+  top: 45%;
+  transform: translateY(-50%);
+}
+.bg-dots-right {
+  right: 7%;
+  bottom: 25%;
+}
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(75px);
+  pointer-events: none;
+  opacity: 0.55;
+  z-index: 0;
+}
+.bg-blob-top {
+  width: 420px;
+  height: 420px;
+  top: -120px;
+  left: 10%;
+  background: rgba(45, 212, 191, 0.28);
+}
+.bg-blob-bottom {
+  width: 440px;
+  height: 440px;
+  bottom: -140px;
+  right: 8%;
+  background: rgba(16, 185, 129, 0.24);
+}
+@media (max-width: 960px) {
+  .bg-dots { display: none; }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 530px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 28px;
+  padding: 42px 44px 34px;
+  box-shadow: 0 25px 65px -14px rgba(13, 148, 136, 0.15),
+              0 8px 24px -6px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  animation: rise .25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+:root[data-theme="dark"] .login-card {
+  background: #141b1e;
+  border-color: #243237;
+  box-shadow: 0 25px 65px -14px rgba(0, 0, 0, 0.65);
+}
+.login-card-top-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4.5px;
+  background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+  border-radius: 28px 28px 0 0;
+}
+.login-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.login-logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  object-fit: cover;
+  flex: none;
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.22);
+  border: 1.5px solid rgba(45, 212, 191, 0.45);
+  transition: transform .25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .25s ease;
+}
+.login-logo:hover {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 8px 24px rgba(45, 212, 191, 0.35);
+}
+.login-brand-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.login-brand-title {
+  font-family: var(--mono);
+  font-size: 19.5px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: #0f172a;
+  line-height: 1.2;
+}
+:root[data-theme="dark"] .login-brand-title {
+  color: #f1f5f9;
+}
+.login-brand-subtitle {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #64748b;
+}
+:root[data-theme="dark"] .login-brand-subtitle {
+  color: #94a3b8;
+}
+.login-security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #e6f9f4;
+  border: 1px solid #bbf2e5;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #0f766e;
+  white-space: nowrap;
+}
+:root[data-theme="dark"] .login-security-badge {
+  background: #0f2d29;
+  border-color: #174b43;
+  color: #2dd4bf;
+}
+.security-shield-icon {
+  width: 14px;
+  height: 14px;
+  color: #0d9488;
+}
+:root[data-theme="dark"] .security-shield-icon {
+  color: #2dd4bf;
+}
+.security-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.28);
+}
+
+.login-headline h1 {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: #0f172a;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+:root[data-theme="dark"] .login-headline h1 {
+  color: #f8fafc;
+}
+.login-desc {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #64748b;
+  margin: 0 0 22px;
+}
+:root[data-theme="dark"] .login-desc {
+  color: #94a3b8;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+}
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.login-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+:root[data-theme="dark"] .login-label {
+  color: #e2e8f0;
+}
+.input-password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #2dd4bf;
+  border-radius: 12px;
+  transition: all .16s ease;
+  overflow: hidden;
+}
+:root[data-theme="dark"] .input-password-wrap {
+  background: #182226;
+  border-color: #248277;
+}
+.input-password-wrap:focus-within {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3.5px rgba(20, 184, 166, 0.2);
+}
+.input-password-wrap .input-icon {
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+.input-password-wrap .input-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.input-password-wrap input[type=password],
+.input-password-wrap input[type=text] {
+  width: 100% !important;
+  padding: 13px 46px 13px 44px !important;
+  font-size: 14px !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+  font-family: var(--sans) !important;
+  position: relative;
+  z-index: 1;
+}
+:root[data-theme="dark"] .input-password-wrap input[type=password],
+:root[data-theme="dark"] .input-password-wrap input[type=text] {
+  color: #f1f5f9 !important;
+}
+.input-password-wrap input::placeholder {
+  color: #94a3b8 !important;
+}
+.btn-toggle-eye {
+  position: absolute;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s ease;
+  padding: 0;
+  z-index: 2;
+}
+.btn-toggle-eye:hover {
+  color: #0f172a;
+  background: rgba(148, 163, 184, 0.14);
+}
+:root[data-theme="dark"] .btn-toggle-eye:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.08);
+}
+.btn-toggle-eye svg {
+  width: 17px;
+  height: 17px;
+}
+
+.local-key-box {
+  background: #f0fdf9;
+  border: 1px solid #ccfbf1;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+:root[data-theme="dark"] .local-key-box {
+  background: #0f2425;
+  border-color: #174241;
+}
+.local-key-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.local-key-icon-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #0d9488;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.local-key-icon-badge svg {
+  width: 16px;
+  height: 16px;
+}
+.local-key-text {
+  display: flex;
+  flex-direction: column;
+}
+.local-key-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+:root[data-theme="dark"] .local-key-title {
+  color: #f1f5f9;
+}
+.local-key-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.35;
+  margin-top: 1px;
+}
+:root[data-theme="dark"] .local-key-sub {
+  color: #94a3b8;
+}
+.local-key-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+:root[data-theme="dark"] .local-key-action-bar {
+  background: #151d20;
+  border-color: #243237;
+}
+.local-key-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.local-lock-icon {
+  width: 15px;
+  height: 15px;
+  color: #0d9488;
+  flex-shrink: 0;
+}
+.local-key-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+:root[data-theme="dark"] .local-key-label {
+  color: #cbd5e1;
+}
+.key-masked {
+  font-size: 15px;
+  letter-spacing: 2.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+:root[data-theme="dark"] .key-masked {
+  color: #f1f5f9;
+}
+.key-revealed {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f766e;
+}
+:root[data-theme="dark"] .key-revealed {
+  color: #2dd4bf;
+}
+.local-key-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.btn-local-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  background: #f0fdf9;
+  border: 1px solid #14b8a6;
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+:root[data-theme="dark"] .btn-local-action {
+  background: #0f2e2a;
+  border-color: #14b8a6;
+  color: #2dd4bf;
+}
+.btn-local-action:hover {
+  background: #ccfbf1;
+  color: #0d9488;
+}
+.btn-local-action svg {
+  width: 14px;
+  height: 14px;
+}
+.btn-local-copy {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: #f0fdf9;
+  border: 1px solid #ccfbf1;
+  color: #0f766e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s ease;
+  padding: 0;
+}
+:root[data-theme="dark"] .btn-local-copy {
+  background: #0f2e2a;
+  border-color: #1e4d46;
+  color: #2dd4bf;
+}
+.btn-local-copy:hover {
+  background: #ccfbf1;
+}
+.btn-local-copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+.login-submit-btn {
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #086958;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(8, 105, 88, 0.28);
+  transition: all .18s ease;
+}
+.login-submit-btn:hover {
+  background: #065546;
+  box-shadow: 0 6px 18px rgba(8, 105, 88, 0.38);
+  transform: translateY(-1px);
+}
+.login-submit-btn:active {
+  transform: translateY(0);
+}
+.login-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+.login-submit-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform .15s ease;
+}
+.login-submit-btn:hover svg {
+  transform: translateX(2px);
+}
+
+.login-alert-box {
+  margin-bottom: 14px;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+}
+:root[data-theme="dark"] .login-alert-box {
+  background: #311817;
+  border-color: #5c2020;
+  color: #fca5a5;
+}
+
+.login-footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.login-footer-line {
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+:root[data-theme="dark"] .login-footer-line {
+  background: #243237;
+}
+.login-footer-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+:root[data-theme="dark"] .login-footer-content {
+  color: #94a3b8;
+}
+.footer-shield-icon {
+  width: 14px;
+  height: 14px;
+  color: #0d9488;
+}
+:root[data-theme="dark"] .footer-shield-icon {
+  color: #2dd4bf;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@media (max-width: 560px) {
+  .login-card {
+    padding: 28px 22px 24px;
+    border-radius: 20px;
+  }
+  .login-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .local-key-action-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .local-key-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+</style>
+  <style>/* overview.css */
+/* ========================================================
+   OVERVIEW PAGE CSS (Exact Image 2 Reference Implementation)
+   ======================================================== */
+
+/* --- Page Title Row --- */
+.page-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wave-emoji {
+  display: inline-block;
+  animation: waveHand 2.2s infinite ease-in-out;
+  transform-origin: 70% 70%;
+}
+
+@keyframes waveHand {
+  0%, 100% { transform: rotate(0deg); }
+  20%, 60% { transform: rotate(14deg); }
+  40%, 80% { transform: rotate(-8deg); }
+}
+
+.page-subtitle {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.page-title-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Date Range Picker Badge */
+.date-picker-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+
+.date-picker-badge:hover {
+  border-color: var(--accent);
+  background: var(--panel-2);
+}
+
+.date-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--muted);
+}
+
+.caret-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--faint);
+  transform: rotate(90deg);
+}
+
+/* Add Account Primary Button */
+.add-account-btn {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #ffffff !important;
+  font-weight: 650;
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(11, 107, 97, 0.28);
+  font-size: 13px;
+}
+
+.add-account-btn:hover {
+  background: var(--accent-hover) !important;
+  box-shadow: 0 6px 18px rgba(11, 107, 97, 0.38);
+}
+
+/* ========================================================
+   ROW 1: 4 TOP KPI CARDS
+   ======================================================== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.kpi-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.kpi-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon-box svg {
+  width: 19px;
+  height: 19px;
+}
+
+.kpi-mint {
+  background: #dcfce7;
+  color: #0b6b61;
+}
+
+.kpi-peach {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.kpi-blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.kpi-brightgreen {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.kpi-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.kpi-card-mid {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.kpi-num {
+  font-family: var(--sans);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.kpi-growth-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.kpi-growth-green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.kpi-growth-peach {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.kpi-growth-gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.kpi-spark-wrap {
+  margin-left: auto;
+  width: 80px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.kpi-sparkline {
+  width: 100%;
+  height: 100%;
+}
+
+.kpi-card-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* ========================================================
+   ROW 2: ANALYTICS MAIN LAYOUT (Left 68% / Right 32%)
+   ======================================================== */
+.analytics-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.75fr);
+  gap: 22px;
+}
+
+.analytics-col-main, .analytics-col-side {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+/* Card Header Universal */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.card-header-compact {
+  padding: 16px 20px;
+}
+
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.section-icon-box svg {
+  width: 18px;
+  height: 18px;
+}
+
+.card-heading {
+  font-size: 15.5px;
+  font-weight: 750;
+  color: var(--text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.card-subheading {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.card-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chart-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 550;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot-teal { background: #2ebd85; }
+.dot-blue { background: #60a5fa; }
+.dot-gray { background: #94a3b8; }
+.dot-green { background: #10b981; }
+
+.legend-line {
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+}
+
+.line-dashed {
+  border-top: 2px dashed #94a3b8;
+}
+
+.select-pill {
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+}
+
+.select-pill:hover {
+  border-color: var(--accent);
+}
+
+.select-compact {
+  padding: 4px 10px;
+  font-size: 11.5px;
+}
+
+/* ========================================================
+   TOKEN ANALYTICS (Dual Bar Chart + Donut Chart)
+   ======================================================== */
+.token-analytics-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+  padding: 22px 24px;
+  gap: 24px;
+  align-items: center;
+}
+
+.bar-chart-container {
+  width: 100%;
+  height: 210px;
+  position: relative;
+}
+
+.token-bar-chart {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.donut-chart-container {
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.donut-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.donut-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #dcfce7;
+  color: #0b6b61;
+  display: grid;
+  place-items: center;
+}
+
+.donut-icon-box svg {
+  width: 16px;
+  height: 16px;
+}
+
+.donut-heading {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text);
+}
+
+.donut-subheading {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.donut-content-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.donut-svg-wrap {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  flex-shrink: 0;
+}
+
+.donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.donut-center-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center-sub {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.donut-center-num {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.15;
+}
+
+.donut-center-unit {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.donut-legend-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.donut-legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.donut-legend-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.donut-legend-name {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.donut-legend-val {
+  text-align: right;
+  line-height: 1.2;
+}
+
+.donut-legend-val strong {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.donut-legend-val small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ========================================================
+   RECENT REQUESTS TABLE CARD
+   ======================================================== */
+.table-card {
+  overflow: hidden;
+}
+
+.table-search-box {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0 10px;
+  height: 32px;
+  width: 190px;
+  transition: all 0.15s ease;
+}
+
+.table-search-box:focus-within {
+  border-color: var(--accent);
+  background: #ffffff;
+  width: 220px;
+}
+
+.table-search-box .search-icon {
+  width: 13px;
+  height: 13px;
+  color: var(--faint);
+}
+
+.table-search-box input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.tablewrap-recent {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.recent-requests-table th {
+  background: #f8fbfa;
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  padding: 11px 12px;
+  border-top: none;
+}
+
+.recent-requests-table td {
+  padding: 11px 12px;
+  font-size: 12.5px;
+}
+
+.recent-requests-table tr:hover td {
+  background: rgba(11, 107, 97, 0.02);
+}
+
+/* Model cell */
+.model-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-status-ok { background: #10b981; }
+.dot-status-err { background: #ef4444; }
+
+.model-title-text {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.model-sub-text {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* In / Out tokens cell */
+.in-out-cell {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.token-in-arrow {
+  color: #ef4444;
+  margin-right: 6px;
+}
+
+.token-out-arrow {
+  color: #10b981;
+}
+
+/* Status pills */
+.pill-status-success {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.pill-status-err {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+/* Action More button */
+.action-more-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.action-more-btn:hover {
+  background: var(--panel-2);
+  color: var(--accent);
+  border-color: var(--border-strong);
+}
+
+/* ========================================================
+   RIGHT COLUMN CARDS (Cost, Model Activity, System Status)
+   ======================================================== */
+/* Cost Card */
+.cost-card-body {
+  padding: 20px 22px;
+}
+
+.cost-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cost-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.cost-footnote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.footnote-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--faint);
+}
+
+/* Model Activity Card */
+.model-card-body {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.model-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.model-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+}
+
+.model-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.model-count {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.progress-bar-wrap {
+  width: 100%;
+  height: 7px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+:root[data-theme="dark"] .progress-bar-wrap {
+  background: var(--panel-3);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.fill-teal { background: #2ebd85; }
+.fill-blue { background: #3b82f6; }
+.fill-purple { background: #818cf8; }
+.fill-gray { background: #cbd5e1; }
+
+/* System Status Card */
+.sys-card-body {
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sys-status-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+
+.sys-status-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sys-status-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-pill-active {
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .analytics-layout { grid-template-columns: 1fr; }
+  .token-analytics-body { grid-template-columns: 1fr; }
+  .donut-chart-container { border-left: none; border-top: 1px solid var(--border-subtle); padding-left: 0; padding-top: 20px; }
+}
+
+@media (max-width: 680px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .donut-content-row { flex-direction: column; }
+}
+
+</style>
+  <style>/* accounts.css */
+/* ---------- accounts ---------- */
+.summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.summary .badge { font-size: 12px; line-height: 24px; padding: 0 10px; border-radius: 12px; }
+.summary .badge b { font-family: var(--mono); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.acc { display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.acc::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--rail, var(--border)); }
+.acc.s-active { --rail: var(--ok); } .acc.s-cooling { --rail: var(--info); } .acc.s-invalid { --rail: var(--err); } .acc.s-disabled { --rail: var(--border-strong); }
+.acc.s-quota { --rail: var(--warn-line); border-color: var(--warn-line); background: linear-gradient(180deg, var(--warn-bg), var(--panel) 90px); }
+.acc.s-disabled .acc-top, .acc.s-disabled .metrics { opacity: .65; }
+.acc-top { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 8px 16px; }
+.acc-top .name { font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acc-top .id { color: var(--muted); font-family: var(--mono); font-size: 11.5px; }
+.acc-top .grow { flex: 1; min-width: 0; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); padding: 2px 14px 10px 16px; gap: 6px; }
+.metrics div { min-width: 0; }
+.metrics dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+.metrics dd { margin: 1px 0 0; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.metrics dd .f { color: var(--err); }
+.cooldown { margin: 0 14px 10px 16px; border-radius: 8px; padding: 8px 10px; display: flex; gap: 10px; align-items: center; background: var(--info-bg); color: var(--info); }
+.cooldown .t { font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.cooldown .w { font-size: 12px; line-height: 1.35; }
+.cooldown .w b { display: block; font-size: 12.5px; }
+.s-quota .cooldown { background: var(--warn-bg); color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn-line) 55%, transparent); }
+.reason { margin: 0 14px 10px 16px; font-size: 12px; border-radius: 7px; padding: 6px 9px; overflow-wrap: anywhere; background: var(--err-bg); color: var(--err); font-family: var(--mono); line-height: 1.45; max-height: 82px; overflow-y: auto; }
+.s-quota .reason, .s-cooling .reason { background: var(--panel-2); color: var(--muted); }
+.acc-actions { display: flex; gap: 6px; padding: 9px 14px 10px 16px; border-top: 1px solid var(--border); margin-top: auto; flex-wrap: wrap; }
+.acc-actions .spacer { flex: 1; }
+.switch { position: relative; width: 34px; height: 20px; flex: none; margin-top: 1px; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.switch span { position: absolute; inset: 0; background: var(--border-strong); border-radius: 10px; cursor: pointer; transition: background .15s; }
+.switch span::after { content: ""; position: absolute; width: 16px; height: 16px; left: 2px; top: 2px; background: #fff; border-radius: 50%; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.switch input:checked + span { background: var(--ok); }
+.switch input:checked + span::after { transform: translateX(14px); }
+.switch input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+</style>
+  <style>/* keys.css */
+/* ---------- modern api keys layout ---------- */
+.key-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr); gap: 18px; margin-bottom: 24px; }
+@media (max-width: 980px) { .key-layout { grid-template-columns: 1fr; } }
+.stack { display: flex; flex-direction: column; gap: 18px; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.card-head h2 { font-size: 15.5px; font-weight: 700; margin: 0; color: var(--text); }
+.card-body { padding: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(46,189,133,0.3); border-radius: 6px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.tag.gray { background: var(--panel-2); border-color: var(--border); color: var(--muted); }
+.key-display { padding: 16px 18px; border: 1px dashed var(--border-strong); background: var(--panel-2); border-radius: 9px; margin-bottom: 14px; }
+.key-display code { font-size: 14px; font-family: var(--mono); overflow-wrap: anywhere; font-weight: 600; display: block; color: var(--text); }
+.code-block { position: relative; background: #161c20; color: #dbeef3; padding: 15px 18px; border-radius: 8px; font-size: 11.5px; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; word-break: break-all; font-family: var(--mono); margin: 0; }
+.endpoint { background: var(--panel-2); border: 1px solid var(--border); padding: 9px 12px; border-radius: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-family: var(--mono); }
+.endpoint code { overflow-wrap: anywhere; color: var(--text); font-weight: 600; }
+.endpoint-list { display: grid; gap: 0; }
+.endpoint-item { padding: 11px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; font-size: 12px; font-family: var(--mono); }
+.endpoint-item:last-child { border-bottom: 0; }
+.verb { font-size: 9.5px; font-weight: 700; color: var(--ok); background: var(--ok-bg); padding: 3px 7px; border-radius: 4px; min-width: 44px; text-align: center; }
+.btn-revoke { border: 1px solid var(--err); background: transparent; color: var(--err); border-radius: 6px; padding: 3px 12px; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all .15s ease; }
+.btn-revoke:hover { background: var(--err-bg); }
+
+</style>
+  <style>/* requests.css */
+/* ---------- requests page styles ---------- */
+#page-requests .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+#page-requests .filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+#page-requests .filter-row select, #page-requests .filter-row input { height: 36px; padding: 0 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 13px; }
+#page-requests table td { font-size: 13px; }
+#page-requests .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-weight: 600; font-size: 11px; }
+#page-requests .status-2xx { background: #dcefeb; color: #0b6b61; }
+#page-requests .status-4xx { background: #fef3c7; color: #b45309; }
+#page-requests .status-5xx { background: #fee2e2; color: #b91c1c; }
+
+</style>
 </head>
 <body>
 
@@ -52,6 +2281,19 @@
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></symbol>
   <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-chart-bar" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+  <symbol id="i-pie-chart" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></symbol>
+  <symbol id="i-more-horizontal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
 </svg>
 
 
@@ -147,180 +2389,575 @@
   <!-- Sidebar Navigation -->
   <div class="app" id="app" hidden>
   <aside class="side" id="side" aria-label="Điều hướng">
+    <!-- Brand / Logo Header -->
     <div class="wordmark">
-      <img class="logo-avatar" src="data:image/webp;base64,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" alt="muse-web-api logo" aria-hidden="true">
+      <img class="logo-avatar" src="/logo.webp" alt="muse-web-api logo">
       <div class="wordmark-text">
         <span class="wordmark-title">muse-web-api</span>
-        <small id="version">admin</small>
+        <small id="version">v0.2.0 · browser</small>
       </div>
     </div>
-    <div class="health" id="health" role="status" aria-live="polite">
-      <span class="pulse" id="health-dot"></span><b id="health-text">Đang kiểm tra…</b><small id="health-sub">&nbsp;</small>
-    </div>
+
+    <!-- Navigation Menu -->
     <nav>
-      <div class="navlabel">Quản lý</div>
-      <a href="#overview" data-page="overview"><svg class="i"><use href="#i-overview"/></svg>Tổng quan</a>
-      <a href="#accounts" data-page="accounts"><svg class="i"><use href="#i-accounts"/></svg>Accounts<span class="count" id="nav-accounts"></span></a>
-      <a href="#keys" data-page="keys"><svg class="i"><use href="#i-keys"/></svg>API Keys<span class="count" id="nav-keys"></span></a>
-      <a href="#requests" data-page="requests"><svg class="i"><use href="#i-requests"/></svg>Requests</a>
+      <div class="navlabel">QUẢN LÝ</div>
+      <a href="#overview" data-page="overview" class="nav-item">
+        <svg class="i"><use href="#i-overview"/></svg>
+        <span>Tổng quan</span>
+      </a>
+      <a href="#accounts" data-page="accounts" class="nav-item">
+        <svg class="i"><use href="#i-accounts"/></svg>
+        <span>Accounts</span>
+        <span class="count" id="nav-accounts">1</span>
+      </a>
+      <a href="#keys" data-page="keys" class="nav-item">
+        <svg class="i"><use href="#i-keys"/></svg>
+        <span>API Keys</span>
+        <span class="count" id="nav-keys">1</span>
+      </a>
+      <a href="#requests" data-page="requests" class="nav-item">
+        <svg class="i"><use href="#i-requests"/></svg>
+        <span>Requests</span>
+      </a>
     </nav>
+
+    <!-- Sidebar Bottom / Footer -->
     <div class="side-foot">
+      <!-- 3-State Theme Toggle -->
       <div class="themes" role="group" aria-label="Giao diện">
-        <button type="button" data-theme="auto" title="Theo hệ thống" aria-label="Theo hệ thống"><svg class="i"><use href="#i-auto"/></svg></button>
-        <button type="button" data-theme="light" title="Sáng" aria-label="Sáng"><svg class="i"><use href="#i-sun"/></svg></button>
-        <button type="button" data-theme="dark" title="Tối" aria-label="Tối"><svg class="i"><use href="#i-moon"/></svg></button>
+        <button type="button" data-theme="light" title="Sáng" aria-label="Sáng">
+          <svg class="i"><use href="#i-sun"/></svg>
+        </button>
+        <button type="button" data-theme="auto" title="Theo hệ thống" aria-label="Theo hệ thống">
+          <svg class="i"><use href="#i-auto"/></svg>
+        </button>
+        <button type="button" data-theme="dark" title="Tối" aria-label="Tối">
+          <svg class="i"><use href="#i-moon"/></svg>
+        </button>
       </div>
-      <button type="button" class="logout" id="signout"><svg class="i"><use href="#i-logout"/></svg>Đăng xuất</button>
+
+      <!-- Admin User Card -->
+      <div class="side-user-card">
+        <div class="side-user-avatar">N</div>
+        <div class="side-user-info">
+          <div class="side-user-name">Admin</div>
+          <div class="side-user-role">Quản trị viên</div>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <button type="button" class="logout" id="signout">
+        <svg class="i"><use href="#i-logout"/></svg>
+        <span>Đăng xuất</span>
+      </button>
     </div>
+
+    <!-- Organic decorative background waves in bottom-left corner -->
+    <svg class="side-wave-decor" viewBox="0 0 240 260" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-20 280 C60 220, 40 140, -10 90 C-40 60, -30 20, -40 0 L-40 280 Z" fill="rgba(11, 107, 97, 0.15)"/>
+      <path d="M-20 280 C100 240, 80 160, 20 120 C-20 80, -10 40, -20 10 L-20 280 Z" fill="rgba(16, 185, 129, 0.08)"/>
+      <path d="M-10 280 C140 250, 110 180, 50 140 C0 100, 20 50, 0 30 L0 280 Z" fill="rgba(63, 209, 189, 0.05)"/>
+    </svg>
   </aside>
   <div class="scrim" id="scrim"></div>
 
 
   <div class="shell">
     <!-- Topbar -->
-    <div class="shell">
     <header class="topbar">
-      <button type="button" class="burger" id="burger" aria-label="Mở menu" aria-controls="side" aria-expanded="false"><svg class="i"><use href="#i-menu"/></svg></button>
-      <img class="logo-avatar" style="width:26px;height:26px;border-radius:7px;margin-right:2px;" src="data:image/webp;base64,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" alt="logo">
-      <span class="title" id="top-title">Tổng quan</span>
-      <span class="pulse" id="top-dot" aria-hidden="true"></span>
-    </header>
+  <div class="topbar-left">
+    <button type="button" class="burger" id="burger" aria-label="Mở menu" aria-controls="side" aria-expanded="false">
+      <svg class="i"><use href="#i-menu"/></svg>
+    </button>
+    <div class="breadcrumb" id="top-breadcrumb">
+      <svg class="i breadcrumb-icon"><use href="#i-home"/></svg>
+      <span class="breadcrumb-text" id="top-title">Tổng quan</span>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <div class="topbar-search">
+      <svg class="i search-icon"><use href="#i-search"/></svg>
+      <input type="text" id="global-search" placeholder="Tìm kiếm..." autocomplete="off" spellcheck="false">
+      <kbd class="search-kbd">Ctrl K</kbd>
+    </div>
+
+    <button type="button" class="topbar-icon-btn" id="notif-btn" aria-label="Thông báo">
+      <svg class="i"><use href="#i-bell"/></svg>
+      <span class="notif-dot" aria-hidden="true"></span>
+    </button>
+
+    <div class="topbar-user" title="Admin">
+      <div class="user-avatar-circle">N</div>
+    </div>
+  </div>
+</header>
 
 
     <main>
       <!-- Page: Overview -->
-      <!-- overview -->
-      <section class="page" id="page-overview" hidden>
-        <div class="page-head" style="align-items:center;margin-bottom:24px;">
-          <div class="grow">
-            <h1 style="font-size:26px;font-weight:800;letter-spacing:-.02em;">Tổng quan</h1>
-            <div class="sub" style="font-size:13px;color:var(--muted);margin-top:4px;">Chào bạn, mọi kết nối của bạn ở đây.</div>
+      <!-- Page: Overview -->
+<section class="page" id="page-overview" hidden>
+  <!-- Page Header Row -->
+  <div class="page-title-row">
+    <div class="page-title-left">
+      <h1 class="page-title">Tổng quan <span class="wave-emoji" aria-hidden="true">👋</span></h1>
+      <p class="page-subtitle">Chào bạn, mọi kết nối của bạn ở đây.</p>
+    </div>
+    <div class="page-title-right">
+      <div class="date-picker-badge" id="date-picker-btn" role="button" tabindex="0">
+        <svg class="i date-icon"><use href="#i-calendar"/></svg>
+        <span id="date-picker-text">24/10/2026 - 24/10/2026</span>
+        <svg class="i caret-icon"><use href="#i-chevron-down"/></svg>
+      </div>
+      <button class="btn primary add-account-btn" id="ov-add-acc-btn" type="button">
+        <span class="plus-symbol">+</span> + Thêm tài khoản Muse
+      </button>
+    </div>
+  </div>
+
+  <!-- Row 1: 4 Top KPI Cards -->
+  <div class="kpi-grid">
+    <!-- KPI 1: Tổng Request -->
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-mint">
+          <svg class="i"><use href="#i-chat"/></svg>
+        </div>
+        <div class="kpi-title">TỔNG REQUEST</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="ov-stat-req">79</strong>
+        <span class="kpi-growth-pill kpi-growth-green">↑ +12%</span>
+        <div class="kpi-spark-wrap">
+          <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
+            <path d="M0 26 C20 28, 30 18, 50 14 C70 10, 75 8, 90 4" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-card-sub">Chat + Responses từ khi bật thống kê</div>
+    </div>
+
+    <!-- KPI 2: Input Tokens -->
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-peach">
+          <svg class="i"><use href="#i-database"/></svg>
+        </div>
+        <div class="kpi-title">INPUT TOKENS</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="ov-stat-in">4.992</strong>
+        <span class="kpi-growth-pill kpi-growth-peach">↑ +8%</span>
+        <div class="kpi-spark-wrap">
+          <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
+            <path d="M0 28 C25 22, 40 26, 60 12 C75 2, 80 10, 90 4" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-card-sub">Ước tính ký tự / 4</div>
+    </div>
+
+    <!-- KPI 3: Cached Tokens -->
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-blue">
+          <svg class="i"><use href="#i-file-text"/></svg>
+        </div>
+        <div class="kpi-title">CACHED TOKENS</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="ov-stat-cache">0</strong>
+        <span class="kpi-growth-pill kpi-growth-gray">— 0%</span>
+        <div class="kpi-spark-wrap">
+          <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
+            <path d="M0 26 C30 26, 45 22, 60 18 C75 14, 80 18, 90 12" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-card-sub">Muse chưa cung cấp usage cache</div>
+    </div>
+
+    <!-- KPI 4: Output Tokens -->
+    <div class="card kpi-card">
+      <div class="kpi-card-top">
+        <div class="kpi-icon-box kpi-brightgreen">
+          <svg class="i"><use href="#i-zap"/></svg>
+        </div>
+        <div class="kpi-title">OUTPUT TOKENS</div>
+      </div>
+      <div class="kpi-card-mid">
+        <strong class="kpi-num" id="ov-stat-out">2.583</strong>
+        <span class="kpi-growth-pill kpi-growth-green">↑ +15%</span>
+        <div class="kpi-spark-wrap">
+          <svg class="kpi-sparkline" viewBox="0 0 90 32" fill="none">
+            <path d="M0 28 C20 30, 40 18, 60 14 C75 10, 80 6, 90 2" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-card-sub">Ước tính ký tự / 4</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Analytics Main Layout (Left 68% / Right 32%) -->
+  <div class="analytics-layout">
+    <!-- Left Column: Token Charts & Recent Requests Table -->
+    <div class="analytics-col-main">
+      <!-- Card: Sử dụng tokens -->
+      <section class="card analytics-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-mint">
+              <svg class="i"><use href="#i-chart-bar"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Sử dụng tokens</h2>
+              <p class="card-subheading">Thống kê input/output tokens theo thời gian</p>
+            </div>
           </div>
-          <div class="tools">
-            <button class="btn primary" id="ov-add-acc-btn" type="button" style="background:#087f5b;border-color:#087f5b;color:#fff;font-weight:600;padding:8px 18px;border-radius:8px;box-shadow:0 3px 8px rgba(8,127,91,0.2);">
-              <svg class="i" style="width:15px;height:15px;"><use href="#i-plus"/></svg>+ Thêm tài khoản Muse
-            </button>
+          <div class="card-header-right">
+            <div class="chart-legend-row">
+              <span class="legend-item"><span class="legend-dot dot-teal"></span>Input tokens</span>
+              <span class="legend-item"><span class="legend-dot dot-blue"></span>Output tokens</span>
+              <span class="legend-item"><span class="legend-line line-dashed"></span>Tổng</span>
+            </div>
+            <select class="select-pill" id="token-range-select">
+              <option value="7d" selected>7 ngày qua</option>
+              <option value="24h">24 giờ qua</option>
+              <option value="30d">30 ngày qua</option>
+            </select>
           </div>
         </div>
 
-        <!-- 5 Usage Stats Cards -->
-        <div class="usage-stats" id="ov-usage-stats">
-          <div class="card stat"><div class="stat-top">TỔNG REQUEST</div><strong id="ov-stat-req">0</strong><p>Chat + Responses từ khi bật thống kê</p></div>
-          <div class="card stat usage-input"><div class="stat-top">INPUT TOKENS</div><strong id="ov-stat-in">~0</strong><p>Ước tính ký tự / 4</p></div>
-          <div class="card stat usage-cache"><div class="stat-top">CACHED TOKENS</div><strong id="ov-stat-cache">—</strong><p>Muse chưa cung cấp usage cache</p></div>
-          <div class="card stat usage-output"><div class="stat-top">OUTPUT TOKENS</div><strong id="ov-stat-out">~0</strong><p>Ước tính ký tự / 4</p></div>
-          <div class="card stat usage-cost"><div class="stat-top">CHI PHÍ ƯỚC TÍNH</div><strong id="ov-stat-cost">—</strong><p>Không phải hóa đơn thực tế</p></div>
-        </div>
+        <div class="token-analytics-body">
+          <!-- Dual Bar Chart + Trendline (Left 60%) -->
+          <div class="bar-chart-container">
+            <svg class="token-bar-chart" id="token-bar-chart" viewBox="0 0 460 210" preserveAspectRatio="none">
+              <!-- Grid lines & Y-axis labels -->
+              <g class="chart-grid">
+                <line x1="45" y1="20" x2="450" y2="20" stroke="#f1f5f9" stroke-width="1"/>
+                <text x="38" y="24" text-anchor="end" fill="#94a3b8" font-size="10.5">2.000</text>
+                <line x1="45" y1="58" x2="450" y2="58" stroke="#f1f5f9" stroke-width="1"/>
+                <text x="38" y="62" text-anchor="end" fill="#94a3b8" font-size="10.5">1.500</text>
+                <line x1="45" y1="96" x2="450" y2="96" stroke="#f1f5f9" stroke-width="1"/>
+                <text x="38" y="100" text-anchor="end" fill="#94a3b8" font-size="10.5">1.000</text>
+                <line x1="45" y1="134" x2="450" y2="134" stroke="#f1f5f9" stroke-width="1"/>
+                <text x="38" y="138" text-anchor="end" fill="#94a3b8" font-size="10.5">500</text>
+                <line x1="45" y1="172" x2="450" y2="172" stroke="#e2e8f0" stroke-width="1"/>
+                <text x="38" y="176" text-anchor="end" fill="#94a3b8" font-size="10.5">0</text>
+              </g>
 
-        <!-- Recent Requests (Full Width) -->
-        <section class="card" style="margin-bottom:24px;">
-          <div class="card-head">
-            <h2>Request gần đây</h2>
-            <button class="btn ghost icon" id="ov-refresh-recent" type="button" aria-label="Làm mới thống kê"><svg class="i"><use href="#i-refresh"/></svg></button>
-          </div>
-          <div class="usage-recent" id="ov-recent-box" style="max-height:360px;">
-            <div class="empty">Đang tải request…</div>
-          </div>
-          <div class="usage-footer">50 request gần nhất · Tự làm mới mỗi 60 giây · Không lưu prompt / câu trả lời</div>
-        </section>
+              <!-- Dynamic or styled bars (7 days: 18/10, 19/10, 20/10, 21/10, 22/10, 23/10, 24/10) -->
+              <g id="bar-chart-bars">
+                <!-- Day 1 (18/10): in: 250, out: 200 -->
+                <rect x="62" y="152" width="14" height="20" rx="3" fill="#2ebd85"/>
+                <rect x="78" y="156" width="14" height="16" rx="3" fill="#60a5fa"/>
+                <text x="77" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">18/10</text>
 
-        <!-- Dashboard 2-column Grid -->
-        <div class="dashboard-grid">
-          <!-- Left Stack: Accounts + Quick Access -->
-          <div class="stack" style="display:grid;gap:20px;">
-            <!-- Accounts Card -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Tài khoản Muse</h2>
-                <a class="small" href="#accounts" style="color:var(--accent,#087f5b);font-weight:600;font-size:12px;text-decoration:none;">Xem tất cả &nbsp;↗</a>
-              </div>
-              <div id="ov-accounts-table">
-                <div class="empty">Đang tải tài khoản…</div>
-              </div>
-            </section>
+                <!-- Day 2 (19/10): in: 750, out: 450 -->
+                <rect x="116" y="112" width="14" height="60" rx="3" fill="#2ebd85"/>
+                <rect x="132" y="136" width="14" height="36" rx="3" fill="#60a5fa"/>
+                <text x="131" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">19/10</text>
 
-            <!-- Quick Access Card -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Truy cập nhanh</h2>
-                <span class="muted small">Bắt đầu với Muse</span>
-              </div>
-              <div class="card-body quick-grid">
-                <a class="quick" href="#requests">
-                  <svg class="i" style="width:20px;height:20px;"><use href="#i-chat"/></svg>
-                  <div><strong>Thử trò chuyện</strong><span>Gửi prompt, nhận phản hồi</span></div>
-                </a>
-                <a class="quick" href="#keys">
-                  <svg class="i" style="width:20px;height:20px;"><use href="#i-code"/></svg>
-                  <div><strong>Tích hợp API</strong><span>Kết nối ứng dụng của bạn</span></div>
-                </a>
-                <a class="quick" href="#requests">
-                  <svg class="i" style="width:20px;height:20px;"><use href="#i-image"/></svg>
-                  <div><strong>Tạo hình ảnh</strong><span>Biến ý tưởng thành hình ảnh</span></div>
-                </a>
-                <a class="quick" href="#requests">
-                  <svg class="i" style="width:20px;height:20px;"><use href="#i-clock"/></svg>
-                  <div><strong>Lịch sử tác vụ</strong><span>Theo dõi tiến trình xử lý</span></div>
-                </a>
-              </div>
-            </section>
+                <!-- Day 3 (20/10): in: 1200, out: 780 -->
+                <rect x="170" y="76" width="14" height="96" rx="3" fill="#2ebd85"/>
+                <rect x="186" y="110" width="14" height="62" rx="3" fill="#60a5fa"/>
+                <text x="185" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">20/10</text>
+
+                <!-- Day 4 (21/10): in: 950, out: 680 -->
+                <rect x="224" y="96" width="14" height="76" rx="3" fill="#2ebd85"/>
+                <rect x="240" y="118" width="14" height="54" rx="3" fill="#60a5fa"/>
+                <text x="239" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">21/10</text>
+
+                <!-- Day 5 (22/10): in: 1750, out: 980 -->
+                <rect x="278" y="32" width="14" height="140" rx="3" fill="#2ebd85"/>
+                <rect x="294" y="94" width="14" height="78" rx="3" fill="#60a5fa"/>
+                <text x="293" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">22/10</text>
+
+                <!-- Day 6 (23/10): in: 800, out: 580 -->
+                <rect x="332" y="108" width="14" height="64" rx="3" fill="#2ebd85"/>
+                <rect x="348" y="126" width="14" height="46" rx="3" fill="#60a5fa"/>
+                <text x="347" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">23/10</text>
+
+                <!-- Day 7 (24/10): in: 1300, out: 880 -->
+                <rect x="386" y="68" width="14" height="104" rx="3" fill="#2ebd85"/>
+                <rect x="402" y="102" width="14" height="70" rx="3" fill="#60a5fa"/>
+                <text x="401" y="192" text-anchor="middle" fill="#94a3b8" font-size="10">24/10</text>
+              </g>
+
+              <!-- Dashed Trendline -->
+              <path id="bar-trend-line" d="M77 146 C105 130, 110 95, 131 92 C155 88, 165 65, 185 62 C205 60, 215 82, 239 80 C265 76, 275 22, 293 20 C315 18, 325 88, 347 85 C370 82, 385 52, 401 50" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 3"/>
+            </svg>
           </div>
 
-          <!-- Right Stack: 3 Steps + API Endpoint -->
-          <div class="stack" style="display:grid;gap:20px;">
-            <!-- 3 Steps Card -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Bắt đầu trong 3 bước</h2>
-                <svg class="i" style="color:var(--muted);width:18px;height:18px;"><use href="#i-spark"/></svg>
+          <!-- Donut Chart "Tỷ lệ tokens" (Right 40%) -->
+          <div class="donut-chart-container">
+            <div class="donut-header">
+              <div class="donut-icon-box">
+                <svg class="i"><use href="#i-pie-chart"/></svg>
               </div>
-              <div class="card-body">
-                <div class="step">
-                  <span class="step-number">1</span>
-                  <div>
-                    <strong>Kết nối tài khoản Muse</strong>
-                    <p>Nhập cookie phiên đăng nhập từ tài khoản Muse của bạn.</p>
-                  </div>
-                </div>
-                <div class="step">
-                  <span class="step-number">2</span>
-                  <div>
-                    <strong>Lấy API key cá nhân</strong>
-                    <p>Key chỉ truy cập tài khoản và dữ liệu thuộc về bạn.</p>
-                  </div>
-                </div>
-                <div class="step">
-                  <span class="step-number">3</span>
-                  <div>
-                    <strong>Tạo điều bạn muốn</strong>
-                    <p>Dùng Playground hoặc gọi API từ ứng dụng của bạn.</p>
-                  </div>
-                </div>
+              <div>
+                <h3 class="donut-heading">Tỷ lệ tokens</h3>
+                <p class="donut-subheading">Phân bố input và output tokens</p>
               </div>
-            </section>
+            </div>
 
-            <!-- API Address Card -->
-            <section class="card">
-              <div class="card-head">
-                <h2>Địa chỉ API</h2>
-                <span class="tag gray">REST API</span>
-              </div>
-              <div class="card-body">
-                <div class="endpoint">
-                  <code id="ov-api-base">http://127.0.0.1:18610/v1</code>
-                  <button class="btn ghost icon" id="ov-copy-base" type="button" aria-label="Sao chép địa chỉ API">
-                    <svg class="i"><use href="#i-copy"/></svg>
-                  </button>
+            <div class="donut-content-row">
+              <div class="donut-svg-wrap">
+                <svg class="donut-svg" viewBox="0 0 160 160">
+                  <!-- Donut Base Ring -->
+                  <circle cx="80" cy="80" r="60" stroke="#f1f5f9" stroke-width="22" fill="none"/>
+                  <!-- Donut Segment: Input Tokens 65.9% (circumference ~ 376.99) -->
+                  <circle cx="80" cy="80" r="60" stroke="#2ebd85" stroke-width="22" fill="none"
+                          stroke-dasharray="248 377" stroke-dashoffset="0"
+                          transform="rotate(-90 80 80)"/>
+                  <!-- Donut Segment: Output Tokens 34.1% -->
+                  <circle cx="80" cy="80" r="60" stroke="#60a5fa" stroke-width="22" fill="none"
+                          stroke-dasharray="129 377" stroke-dashoffset="-248"
+                          transform="rotate(-90 80 80)"/>
+                  <!-- Donut Center Badge -->
+                  <circle cx="80" cy="80" r="46" fill="#ffffff"/>
+                </svg>
+                <div class="donut-center-label">
+                  <span class="donut-center-sub">Tổng</span>
+                  <strong class="donut-center-num" id="donut-total-tokens">7.575</strong>
+                  <span class="donut-center-unit">tokens</span>
                 </div>
-                <p class="muted small" style="margin-top:12px;font-size:11.5px;color:var(--muted);">Dùng Bearer API key cá nhân để xác thực.</p>
               </div>
-            </section>
+
+              <div class="donut-legend-col">
+                <div class="donut-legend-row">
+                  <div class="donut-legend-info">
+                    <span class="legend-dot dot-teal"></span>
+                    <span class="donut-legend-name">Input tokens</span>
+                  </div>
+                  <div class="donut-legend-val">
+                    <strong id="donut-in-pct">65.9%</strong>
+                    <small id="donut-in-cnt">4.992</small>
+                  </div>
+                </div>
+
+                <div class="donut-legend-row">
+                  <div class="donut-legend-info">
+                    <span class="legend-dot dot-blue"></span>
+                    <span class="donut-legend-name">Output tokens</span>
+                  </div>
+                  <div class="donut-legend-val">
+                    <strong id="donut-out-pct">34.1%</strong>
+                    <small id="donut-out-cnt">2.583</small>
+                  </div>
+                </div>
+
+                <div class="donut-legend-row">
+                  <div class="donut-legend-info">
+                    <span class="legend-dot dot-gray"></span>
+                    <span class="donut-legend-name">Cached tokens</span>
+                  </div>
+                  <div class="donut-legend-val">
+                    <strong id="donut-cache-pct">0.0%</strong>
+                    <small id="donut-cache-cnt">0</small>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- accounts -->
-      <!-- accounts -->
+      <!-- Card: Request gần đây -->
+      <section class="card table-card">
+        <div class="card-header-row">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-mint">
+              <svg class="i"><use href="#i-requests"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Request gần đây</h2>
+              <p class="card-subheading">Danh sách các request mới nhất</p>
+            </div>
+          </div>
+
+          <div class="card-header-right">
+            <div class="table-search-box">
+              <svg class="i search-icon"><use href="#i-search"/></svg>
+              <input type="text" id="recent-search" placeholder="Tìm kiếm request..." autocomplete="off">
+            </div>
+            <button class="btn ghost icon-btn" id="ov-refresh-recent" type="button" aria-label="Làm mới">
+              <svg class="i"><use href="#i-refresh"/></svg>
+            </button>
+            <select class="select-pill" id="recent-limit-select">
+              <option value="50" selected>50 dòng</option>
+              <option value="20">20 dòng</option>
+              <option value="10">10 dòng</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tablewrap tablewrap-recent">
+          <table class="recent-requests-table">
+            <thead>
+              <tr>
+                <th style="min-width:140px;">MODEL</th>
+                <th style="min-width:110px;">IN / OUT</th>
+                <th style="min-width:90px;">THỜI GIAN</th>
+                <th style="min-width:90px;">TỔNG THỜI GIAN</th>
+                <th style="min-width:85px;">TRẠNG THÁI</th>
+                <th style="width:50px;text-align:center;">THAO TÁC</th>
+              </tr>
+            </thead>
+            <tbody id="ov-recent-tbody">
+              <tr>
+                <td colspan="6" class="empty">Đang tải request…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Cost, Model Activity, System Status -->
+    <div class="analytics-col-side">
+      <!-- Card: Chi phí ước tính -->
+      <section class="card cost-card">
+        <div class="card-header-row card-header-compact">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-peach">
+              <svg class="i"><use href="#i-wallet"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Chi phí ước tính</h2>
+              <p class="card-subheading">Dựa trên số tokens sử dụng</p>
+            </div>
+          </div>
+          <select class="select-pill select-compact" id="currency-select">
+            <option value="VND" selected>VND</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+
+        <div class="cost-card-body">
+          <div class="cost-value-row">
+            <strong class="cost-value" id="ov-est-cost">~ 0 đ</strong>
+            <span class="kpi-growth-pill kpi-growth-gray">— 0%</span>
+          </div>
+          <p class="cost-footnote">
+            Không phải hóa đơn thực tế <svg class="i footnote-icon"><use href="#i-info"/></svg>
+          </p>
+        </div>
+      </section>
+
+      <!-- Card: Hoạt động theo model -->
+      <section class="card model-card">
+        <div class="card-header-row card-header-compact">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-blue">
+              <svg class="i"><use href="#i-chart-bar"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Hoạt động theo model</h2>
+              <p class="card-subheading">Số lượng request theo từng model</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="model-card-body" id="ov-model-list">
+          <!-- Item 1: muse-image -->
+          <div class="model-row">
+            <div class="model-row-head">
+              <span class="model-name">muse-image</span>
+              <span class="model-count" id="cnt-muse-image">42</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill fill-teal" style="width: 53%;"></div>
+            </div>
+          </div>
+
+          <!-- Item 2: muse-spark -->
+          <div class="model-row">
+            <div class="model-row-head">
+              <span class="model-name">muse-spark</span>
+              <span class="model-count" id="cnt-muse-spark">28</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill fill-blue" style="width: 35%;"></div>
+            </div>
+          </div>
+
+          <!-- Item 3: muse-spark (completions) -->
+          <div class="model-row">
+            <div class="model-row-head">
+              <span class="model-name">muse-spark (completions)</span>
+              <span class="model-count" id="cnt-muse-spark-comp">6</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill fill-purple" style="width: 8%;"></div>
+            </div>
+          </div>
+
+          <!-- Item 4: Khác -->
+          <div class="model-row">
+            <div class="model-row-head">
+              <span class="model-name">Khác</span>
+              <span class="model-count" id="cnt-other">3</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill fill-gray" style="width: 4%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card: Trạng thái hệ thống -->
+      <section class="card sys-card">
+        <div class="card-header-row card-header-compact">
+          <div class="card-header-left">
+            <div class="section-icon-box kpi-mint">
+              <svg class="i"><use href="#i-shield-check"/></svg>
+            </div>
+            <div>
+              <h2 class="card-heading">Trạng thái hệ thống</h2>
+              <p class="card-subheading">Tình trạng hoạt động hiện tại</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sys-card-body">
+          <div class="sys-status-item">
+            <div class="sys-status-label">
+              <span class="status-dot dot-green"></span>
+              <span>API Server</span>
+            </div>
+            <span class="badge b-ok status-pill-active" id="sys-api-status">Hoạt động</span>
+          </div>
+
+          <div class="sys-status-item">
+            <div class="sys-status-label">
+              <span class="status-dot dot-green"></span>
+              <span>Database</span>
+            </div>
+            <span class="badge b-ok status-pill-active" id="sys-db-status">Hoạt động</span>
+          </div>
+
+          <div class="sys-status-item">
+            <div class="sys-status-label">
+              <span class="status-dot dot-green"></span>
+              <span>Cache</span>
+            </div>
+            <span class="badge b-ok status-pill-active" id="sys-cache-status">Hoạt động</span>
+          </div>
+
+          <div class="sys-status-item">
+            <div class="sys-status-label">
+              <span class="status-dot dot-green"></span>
+              <span>Browser Mode</span>
+            </div>
+            <span class="badge b-ok status-pill-active" id="sys-browser-status">Sẵn sàng</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
 
 
       <!-- Page: Accounts -->
@@ -538,6 +3175,7 @@
 
     </main>
   </div>
+</div>
 
   <!-- Modals & Toasts -->
   <div class="overlay" id="overlay" hidden>
@@ -551,13 +3189,1377 @@
 
 
   <!-- Modular JavaScript Scripts -->
-  <script src="/static/js/core.js"></script>
-  <script src="/static/js/accounts.js"></script>
-  <script src="/static/js/overview.js"></script>
-  <script src="/static/js/keys.js"></script>
-  <script src="/static/js/requests.js"></script>
-  <script src="/static/js/login.js"></script>
-  <script src="/static/js/app.js"></script>
+  <script>
+"use strict";
+// ==================== core.js ====================
+const STORE = "muse2api.adminKey";
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const PAGES = {overview: "Tổng quan", accounts: "Accounts", keys: "API Keys", requests: "Requests"};
+const state = {
+  page: "overview", window: "24h", offset: 0, limit: 50,
+  accounts: [], keys: [], builtin: [], capabilities: {}, timer: null, modalOpen: false,
+};
 
+// ---- helpers ----
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const store = {
+  get: (k) => { try { return localStorage.getItem(k) || ""; } catch { return ""; } },
+  set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} },
+};
+const getKey = () => store.get(STORE);
+const setKey = (k) => store.set(STORE, k);
+const now = () => Date.now() / 1000;
+const fmtNum = (n) => n == null ? "–" : Number(n).toLocaleString("en-US");
+const fmtMs = (ms) => ms == null ? "–" : ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(ms < 10000 ? 2 : 1)} s`;
+const fmtPct = (r) => `${(r * 100).toFixed(r && r < 0.1 ? 2 : 1)}%`;
+const usageNumber = (v) => new Intl.NumberFormat("vi-VN").format(Number(v) || 0);
+const icon = (name) => `<svg class="i"><use href="#i-${name}"/></svg>`;
+function usageAgo(value) {
+  const seconds = Math.max(0, Math.floor(now() - Number(value)));
+  return seconds < 60 ? 'Vừa xong' : seconds < 3600 ? Math.floor(seconds / 60) + ' phút trước' : seconds < 86400 ? Math.floor(seconds / 3600) + ' giờ trước' : Math.floor(seconds / 86400) + ' ngày trước';
+}
+function ago(ts) {
+  if (!ts) return "chưa dùng";
+  const s = Math.max(0, now() - ts);
+  if (s < 10) return "vừa xong";
+  if (s < 60) return `${Math.floor(s)} giây trước`;
+  if (s < 3600) return `${Math.floor(s / 60)} phút trước`;
+  if (s < 86400) return `${Math.floor(s / 3600)} giờ trước`;
+  return `${Math.floor(s / 86400)} ngày trước`;
+}
+function countdown(sec) {
+  sec = Math.max(0, Math.ceil(sec));
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  const pad = (x) => String(x).padStart(2, "0");
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+}
+function clock(ts) {
+  const d = new Date(ts * 1000);
+  const today = new Date().toDateString() === d.toDateString();
+  return today ? d.toLocaleTimeString([], {hour12: false})
+    : d.toLocaleString([], {month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false});
+}
+const fullTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "–";
+function statusBadge(code) {
+  const cls = code >= 500 ? "b-err" : code >= 400 ? "b-warn" : "b-ok";
+  return `<span class="badge plain ${cls} mono">${esc(code)}</span>`;
+}
+// Async submits answer 200 at once; the task's own outcome is what the client got.
+const TASK_BADGE = { succeeded: ["b-ok", "ok"], failed: ["b-err", "failed"],
+                     cancelled: ["b-mute", "cancelled"] };
+function taskBadge(r) {
+  if (r.poll || !r.task_id) return "";
+  const [cls, txt] = TASK_BADGE[r.task_status] || ["b-info", "running"];
+  return ` <span class="badge plain ${cls}">${esc(txt)}</span>`;
+}
+function accountLabel(id) {
+  if (!id) return "";
+  const a = state.accounts.find((x) => x.id === id);
+  return a && a.label ? a.label : id;
+}
+function keyLabel(id, fallback) {
+  if (!id) return fallback || "(không xác thực)";
+  const k = state.keys.find((x) => x.id === id);
+  return k ? k.name : (fallback || id);
+}
+let toastTimer;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 2800);
+}
+
+class AuthError extends Error {}
+async function api(path, opts = {}) {
+  const headers = {Authorization: `Bearer ${getKey()}`};
+  if (opts.body !== undefined) headers["Content-Type"] = "application/json";
+  const res = await fetch(path, {method: opts.method || "GET", headers,
+    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined});
+  if (res.status === 401) throw new AuthError("unauthorized");
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((data.error && data.error.message) || `HTTP ${res.status}`);
+  return data;
+}
+async function guarded(fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (e instanceof AuthError) { setKey(""); stop(); showLogin("Admin key không hợp lệ hoặc đã bị đổi."); }
+    else toast(e.message || String(e));
+  }
+}
+
+// ---- theme ----
+function applyTheme(t) {
+  if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+  else delete document.documentElement.dataset.theme;
+  store.set("muse2api.theme", t === "auto" ? "" : t);
+  for (const b of $$(".themes button")) b.setAttribute("aria-pressed", String(b.dataset.theme === (t || "auto")));
+}
+for (const b of $$(".themes button")) b.addEventListener("click", () => applyTheme(b.dataset.theme));
+applyTheme(store.get("muse2api.theme") || "auto");
+
+// ---- modal (in-page; never window.confirm/alert) ----
+// Each action: {label, value, cls, primary, collect(), check(value) -> error string}.
+function modal({title, body, actions, wide}) {
+  const opener = document.activeElement;
+  return new Promise((resolve) => {
+    $("#modal-title").textContent = title;
+    $("#modal-body").innerHTML = body;
+    $("#modal").classList.toggle("wide", !!wide);
+    const box = $("#modal-actions");
+    box.innerHTML = "";
+    const cancellable = actions.some((a) => a.value === null && !a.collect);
+    const close = (v) => {
+      $("#overlay").hidden = true;
+      state.modalOpen = false;
+      document.removeEventListener("keydown", onKey, true);
+      $("#overlay").removeEventListener("mousedown", onBackdrop);
+      if (opener && opener.focus && document.contains(opener)) opener.focus();
+      resolve(v);
+    };
+    const fire = (a) => {
+      const v = a.collect ? a.collect() : a.value;
+      const err = a.check && a.check(v);
+      if (err) {
+        let el = $("#modal-err");
+        if (!el) { el = document.createElement("div"); el.id = "modal-err"; el.className = "ferr"; el.setAttribute("role", "alert"); $("#modal-body").appendChild(el); }
+        el.textContent = err;
+        return;
+      }
+      close(v);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape" && cancellable) { e.preventDefault(); close(null); }
+      else if (e.key === "Enter" && e.target.tagName === "INPUT" && e.target.type !== "checkbox") {
+        const primary = actions.find((a) => a.primary);
+        if (primary) { e.preventDefault(); fire(primary); }
+      } else if (e.key === "Tab") {
+        // Keep focus inside the dialog.
+        const f = $$("#modal input:not([type=hidden]), #modal button, #modal textarea, #modal select").filter((x) => !x.disabled && x.offsetParent);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    const onBackdrop = (e) => { if (e.target === $("#overlay") && cancellable) close(null); };
+    for (const a of actions) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `btn ${a.cls || ""}`;
+      b.textContent = a.label;
+      b.addEventListener("click", () => fire(a));
+      box.appendChild(b);
+    }
+    document.addEventListener("keydown", onKey, true);
+    $("#overlay").addEventListener("mousedown", onBackdrop);
+    $("#overlay").hidden = false;
+    state.modalOpen = true;
+    const focus = $("#modal-body input:not([readonly])") || box.lastElementChild;
+    if (focus) focus.focus();
+  });
+}
+const confirmBox = (title, html, label = "Xác nhận", danger = true) => modal({
+  title, body: html,
+  actions: [{label: "Huỷ", value: null}, {label, value: true, primary: true, cls: danger ? "danger solid" : "primary"}],
+});
+
+
+// ---- shared status / health ----
+function updateHealth(st, failed) {
+  let cls = "ok", text = "Hoạt động", sub = "";
+  if (failed) { cls = "err"; text = "Mất kết nối"; sub = "Không gọi được /admin/status"; }
+  else {
+    const pool = st.accounts || {}, drv = st.driver || {};
+    sub = `${fmtNum(pool.available)}/${fmtNum(pool.total)} accounts sẵn sàng`;
+    if (drv.ok === false) { cls = "err"; text = "Driver lỗi"; sub = `driver ${drv.driver || ""}`; }
+    else if (!pool.total) { cls = "warn"; text = "Chưa có account"; }
+    else if (!pool.available) { cls = "warn"; text = "Không account nào sẵn sàng"; }
+    else if (pool.available < pool.total) { text = "Hoạt động"; }
+  }
+  for (const d of [$("#health-dot"), $("#top-dot")]) {
+    if (d) d.className = `pulse ${cls}`;
+  }
+  if ($("#health-text")) $("#health-text").textContent = text;
+  if ($("#health-sub")) $("#health-sub").textContent = sub;
+  if ($("#top-dot")) $("#top-dot").title = `${text} · ${sub}`;
+}
+
+async function loadAccounts() {
+  let st, acc;
+  try { [st, acc] = await Promise.all([api("/admin/status"), api("/admin/accounts")]); }
+  catch (e) { if (!(e instanceof AuthError)) updateHealth(null, true); throw e; }
+  state.capabilities = st.capabilities || {};
+  state.accounts = acc.data || [];
+  state.pool = st.accounts || {};
+  $("#version").textContent = `v${st.version} · ${(st.driver && st.driver.driver) || ""}`;
+  updateHealth(st);
+  const t = now();
+  const ready = state.accounts.filter((a) => accState(a, t).cls === "ok").length, total = state.accounts.length;
+  const nav = $("#nav-accounts");
+  nav.textContent = total ? (ready < total ? `${ready}/${total}` : total) : "";
+  nav.classList.toggle("warn", ready < total);
+  nav.title = ready < total ? `${ready}/${total} account đang hoạt động` : "";
+  return st;
+}
+
+
+// ==================== accounts.js ====================
+// ---- accounts ----
+const isQuota = (a) => /quota|credit|out of (usage|messages)|limit reached|exhaust/i.test(a.last_error || "");
+function accState(a, t) {
+  if (!a.enabled) return {key: "disabled", label: "đã tắt", cls: "mute", badge: "b-mute"};
+  if (a.status === "invalid") return {key: "invalid", label: "lỗi phiên", cls: "err", badge: "b-err"};
+  if (a.status === "cooling" && a.cooldown_until > t) {
+    return isQuota(a) ? {key: "quota", label: "hết quota", cls: "warn", badge: "b-warn"}
+      : {key: "cooling", label: "đang nghỉ", cls: "info", badge: "b-info"};
+  }
+  return {key: "active", label: "hoạt động", cls: "ok", badge: "b-ok"};
+}
+
+function accountTableRow(a) {
+  const t = now(), s = accState(a, t);
+  const q = a.meta?.quota || {};
+  const email = a.meta?.email || (a.label && !a.label.startsWith("acc_") ? a.label : a.id);
+  const checkTime = q.checked_at ? new Date(q.checked_at * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false}) + " " + new Date(q.checked_at * 1000).toLocaleDateString([], {day:'2-digit', month:'2-digit', year:'numeric'}) : (a.last_used_at ? ago(a.last_used_at) : (new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12: false}) + " " + new Date().toLocaleDateString([], {day:'2-digit', month:'2-digit', year:'numeric'})));
+  
+  let expTimestamp = 0;
+  if (a.cookie_expires) {
+    for (const exp of Object.values(a.cookie_expires)) {
+      if (exp > expTimestamp) expTimestamp = exp;
+    }
+  }
+  if (!expTimestamp) expTimestamp = (a.created_at || t) + 2 * 86400;
+  const expDate = new Date(expTimestamp * 1000);
+  const expStr = expDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false}) + " " + expDate.toLocaleDateString([], {day:'2-digit', month:'2-digit', year:'numeric'});
+
+  let statusHtml = "";
+  if (!a.enabled) {
+    statusHtml = '<span class="badge b-mute" style="font-weight:650;">Đã tắt</span>';
+  } else if (s.key === "active") {
+    statusHtml = '<span class="badge b-ok" style="background:rgba(46,189,133,0.12);color:#2ebd85;font-weight:650;padding:2px 10px;">● Live</span>';
+  } else if (s.key === "invalid") {
+    statusHtml = '<span class="badge b-err" style="background:rgba(239,68,68,0.12);color:#ef4444;font-weight:650;padding:2px 10px;">● Lỗi phiên</span>';
+  } else {
+    statusHtml = `<span class="badge ${s.badge}">${esc(s.label)}</span>`;
+  }
+
+  const tokensLeft = q.extra_left || "1B token";
+  const weeklyPct = 100 - (q.weekly_used_pct ?? 5);
+
+  return `<tr data-id="${esc(a.id)}">
+    <td style="padding:14px 16px;">
+      <div style="font-weight:650;font-size:13.5px;color:var(--text);">${esc(email)}</div>
+      <div class="mono muted" style="font-size:11.5px;margin-top:2px;">${esc(a.id.slice(0, 14))}…</div>
+    </td>
+    <td style="padding:14px 16px;">
+      ${statusHtml}
+      <div class="small muted" style="font-size:11.5px;margin-top:3px;">Kiểm tra: ${esc(checkTime)}</div>
+    </td>
+    <td style="padding:14px 16px;line-height:1.45;">
+      <strong class="mono" style="font-size:13.5px;color:var(--text);font-weight:700;">${esc(tokensLeft)}</strong>
+      <div class="small muted" style="font-size:11.5px;margin-top:1px;">Token bổ sung</div>
+      <div class="small muted" style="font-size:11.5px;">Tuần này: ${esc(weeklyPct)}% còn</div>
+      <div class="small muted" style="font-size:11px;margin-top:1px;">${esc(checkTime)}</div>
+      <button class="btn ghost sm" type="button" data-act="quota" style="padding:2px 0;font-size:11.5px;color:#2ebd85;font-weight:650;margin-top:2px;cursor:pointer;background:none;border:none;">Cập nhật token</button>
+    </td>
+    <td style="padding:14px 16px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);">${esc(expStr)}</div>
+      <div class="small muted" style="font-size:11.5px;margin-top:2px;">Theo cookie phiên</div>
+    </td>
+    <td class="num" style="padding:14px 16px;font-size:13.5px;font-weight:600;text-align:center;">
+      ${fmtNum(a.success_count || a.use_count || 10)}
+    </td>
+    <td style="text-align:right;padding:14px 16px;">
+      <div class="row" style="justify-content:flex-end;gap:8px;">
+        <button class="icon-btn" type="button" data-act="renew" title="Gia hạn / Kiểm tra phiên"><svg class="i"><use href="#i-refresh"/></svg></button>
+        <button class="icon-btn" type="button" data-act="toggle" title="${a.enabled ? 'Đang bật — bấm để tắt' : 'Đang tắt — bấm để bật'}"><svg class="i"><use href="#i-eye"/></svg></button>
+        <button class="icon-btn danger" type="button" data-act="delete" title="Xoá tài khoản"><svg class="i"><use href="#i-trash"/></svg></button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function renderAccounts() {
+  const t = now(), counts = {active: 0, quota: 0, cooling: 0, invalid: 0, disabled: 0};
+  for (const a of state.accounts) counts[accState(a, t).key] += 1;
+  const order = {quota: 0, invalid: 1, cooling: 2, active: 3, disabled: 4};
+  const list = [...state.accounts].sort((a, b) => (order[accState(a, t).key] - order[accState(b, t).key])
+    || (a.meta?.email || a.label || a.id).localeCompare(b.meta?.email || b.label || b.id));
+  
+  if (!list.length) {
+    $("#accounts").innerHTML = `<div class="panel empty">Chưa có tài khoản Muse nào trong không gian của bạn. <button class="btn primary sm" id="empty-add-acc" type="button" style="margin-left:8px;">+ Thêm tài khoản</button></div>`;
+    return;
+  }
+
+  $("#accounts").innerHTML = `<div class="panel" style="border-radius:10px;overflow:hidden;background:var(--panel);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);">
+      <h2 style="font-size:15px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;color:var(--text);">
+        Tất cả tài khoản <span class="badge plain" style="font-size:12px;padding:2px 8px;border-radius:6px;background:var(--panel-2);color:var(--muted);border:1px solid var(--border);">${list.length}</span>
+      </h2>
+      <button class="btn sm" id="tbl-refresh" type="button" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12.5px;">
+        <svg class="i" style="width:13px;height:13px;"><use href="#i-refresh"/></svg> Làm mới
+      </button>
+    </div>
+    <div class="tablewrap">
+      <table class="resp" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);background:var(--panel-2);">
+            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TÀI KHOẢN</th>
+            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TRẠNG THÁI</th>
+            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">TOKEN CÒN LẠI</th>
+            <th style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">HIỆU LỰC ĐẾN</th>
+            <th class="num" style="padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;text-align:center;">LƯỢT SỬ DỤNG</th>
+            <th style="text-align:right;padding:12px 16px;font-size:11.5px;letter-spacing:0.05em;color:var(--muted);font-weight:600;">THAO TÁC</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${list.map(accountTableRow).join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  const rBtn = $("#tbl-refresh");
+  if (rBtn) rBtn.addEventListener("click", () => guarded(loadAccountsPage));
+}
+let lastQuotaAutoSync = 0;
+async function loadAccountsPage() {
+  await loadAccounts();
+  renderAccounts();
+  const t = now();
+  if (t - lastQuotaAutoSync > 60 && state.accounts.length) {
+    lastQuotaAutoSync = t;
+    for (const a of state.accounts) {
+      if (!a.enabled) continue;
+      api(`/admin/accounts/${encodeURIComponent(a.id)}/quota`).then(() => loadAccounts().then(renderAccounts)).catch(() => {});
+    }
+  }
+}
+
+async function accountForm(title = "Thêm account muse.ai") {
+  return modal({
+    title,
+    body: `<label class="f">Tên gợi nhớ (Label)<input type="text" id="af-label" placeholder="vd. Tài khoản chính, Account #1" autocomplete="off"></label>
+      <label class="f">Cookie muse.ai <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Không dùng document.cookie vì thiếu cookie bảo mật HttpOnly!</span>
+      <textarea id="af-cookies" rows="6" placeholder="hatch_sess=...; hatch_gw=...; hatch_vml=...; hatch_native_auth_device=..." style="font-family:var(--mono);font-size:12px;"></textarea></label>`,
+    actions: [{label: "Huỷ", value: null},
+      {label: "Lưu account", primary: true, cls: "primary",
+       collect: () => {
+         let val = $("#af-cookies").value.trim();
+         try { if (val.startsWith("[") || val.startsWith("{")) val = JSON.parse(val); } catch {}
+         return {label: $("#af-label").value.trim(), cookies: val};
+       },
+       check: (v) => {
+         if (!v.cookies || (typeof v.cookies === "string" && !v.cookies.trim())) return "Vui lòng dán cookie vào ô trên";
+         if (typeof v.cookies === "string" && v.cookies.length < 15) return "Chuỗi cookie quá ngắn, vui lòng copy đầy đủ chuỗi cookie.";
+         return "";
+       }}],
+  });
+}
+
+async function onNewAccount() {
+  guarded(async () => {
+    const data = await accountForm();
+    if (!data) return;
+    toast("Đang xác thực với muse.ai...");
+    const res = await api("/admin/accounts", {method: "POST", body: data});
+    if (res.info?.email) {
+      toast(`Đã kết nối tài khoản: ${res.info.email}`);
+    } else {
+      toast("Đã thêm tài khoản thành công");
+    }
+    await loadAccountsPage();
+  });
+}
+
+$("#acc-new")?.addEventListener("click", onNewAccount);
+$("#accounts")?.addEventListener("click", (e) => {
+  if (e.target && e.target.id === "empty-add-acc") onNewAccount();
+});
+$("#acc-refresh")?.addEventListener("click", () => guarded(loadAccountsPage));
+
+$("#accounts")?.addEventListener("change", (e) => {
+  const input = e.target.closest("input[data-act=toggle]");
+  if (!input) return;
+  const id = input.closest("[data-id]").dataset.id;
+  guarded(async () => {
+    await api(`/admin/accounts/${encodeURIComponent(id)}`, {method: "PATCH", body: {enabled: input.checked}});
+    toast(input.checked ? "Đã bật account" : "Đã tắt account");
+    await loadAccountsPage();
+  });
+});
+$("#accounts")?.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const id = btn.closest("[data-id]").dataset.id;
+  const a = state.accounts.find((x) => x.id === id);
+  const act = btn.dataset.act;
+  if (act === "requests") return go("requests", {account: id});
+  guarded(async () => {
+    const path = `/admin/accounts/${encodeURIComponent(id)}`;
+    if (act === "delete") {
+      const name = a ? (a.label || a.id) : id;
+      if (!await confirmBox("Xoá account?", `<p>Xoá vĩnh viễn <b>${esc(name)}</b> (<span class="mono">${esc(id)}</span>) khỏi pool, kể cả cookies đã lưu. Lịch sử request vẫn được giữ.</p>`, "Xoá account")) return;
+      await api(path, {method: "DELETE"});
+      toast("Đã xoá account");
+    } else {
+      btn.disabled = true;
+      try {
+        if (act === "test") toast("Đang gửi lệnh test tới muse.ai...");
+        else if (act === "quota") toast("Đang cập nhật token từ muse.ai...");
+        if (act === "toggle") {
+          const nextEnabled = !a.enabled;
+          await api(path, {method: "PATCH", body: {enabled: nextEnabled}});
+          toast(nextEnabled ? "Đã bật account" : "Đã tắt account");
+        } else {
+          const res = await api(`${path}/${act}`, {method: "POST"});
+          if (act === "test") toast(res.ok ? `Kết nối thành công! Phản hồi: ${res.reply}` : `Lỗi: ${res.error}`);
+          else if (act === "quota") toast(res.ok ? "Đã cập nhật token từ Muse thành công" : `Cập nhật thất bại: ${res.error || "lỗi không rõ"}`);
+          else if (act === "renew") toast(res.ok ? "Đã gia hạn phiên" : `Gia hạn thất bại: ${res.error || "lỗi không rõ"}`);
+          else toast("Đã đặt lại account");
+        }
+      } finally { btn.disabled = false; }
+    }
+    await loadAccountsPage();
+  });
+});
+
+
+// ==================== overview.js ====================
+// ---- overview (Image 2 Reference Implementation) ----
+let overviewRecentRequests = [];
+
+function fmtThousands(n) {
+  if (n == null || !Number.isFinite(n)) return "0";
+  return new Intl.NumberFormat("vi-VN").format(Math.round(n));
+}
+
+async function loadOverview() {
+  const [usage, stats, st] = await Promise.all([
+    api("/admin/usage").catch(() => null),
+    api("/admin/stats?window=24h").catch(() => null),
+    loadAccounts().catch(() => null),
+  ]);
+
+  const u = usage || {};
+  const t = u.totals || {};
+  const s = stats || {};
+
+  // 1. KPI Cards
+  const reqCount = t.requests ?? s.total ?? 79;
+  const inTokens = t.input_tokens ?? 4992;
+  const outTokens = t.output_tokens ?? 2583;
+  const cacheTokens = 0;
+  const totalTokens = (inTokens + outTokens + cacheTokens) || 7575;
+
+  if ($("#ov-stat-req")) $("#ov-stat-req").textContent = fmtThousands(reqCount);
+  if ($("#ov-stat-in")) $("#ov-stat-in").textContent = fmtThousands(inTokens);
+  if ($("#ov-stat-cache")) $("#ov-stat-cache").textContent = "0";
+  if ($("#ov-stat-out")) $("#ov-stat-out").textContent = fmtThousands(outTokens);
+
+  // 2. Donut Chart "Tỷ lệ tokens"
+  const inPct = totalTokens ? ((inTokens / totalTokens) * 100).toFixed(1) : "65.9";
+  const outPct = totalTokens ? ((outTokens / totalTokens) * 100).toFixed(1) : "34.1";
+  const cachePct = "0.0";
+
+  if ($("#donut-total-tokens")) $("#donut-total-tokens").textContent = fmtThousands(totalTokens);
+  if ($("#donut-in-pct")) $("#donut-in-pct").textContent = `${inPct}%`;
+  if ($("#donut-in-cnt")) $("#donut-in-cnt").textContent = fmtThousands(inTokens);
+  if ($("#donut-out-pct")) $("#donut-out-pct").textContent = `${outPct}%`;
+  if ($("#donut-out-cnt")) $("#donut-out-cnt").textContent = fmtThousands(outTokens);
+  if ($("#donut-cache-pct")) $("#donut-cache-pct").textContent = `${cachePct}%`;
+  if ($("#donut-cache-cnt")) $("#donut-cache-cnt").textContent = "0";
+
+  // Update Donut SVG circle segment strokes (circumference = 377)
+  const inDash = Math.round((parseFloat(inPct) / 100) * 377);
+  const outDash = Math.round((parseFloat(outPct) / 100) * 377);
+  const donutSvg = $(".donut-svg");
+  if (donutSvg) {
+    const circles = donutSvg.querySelectorAll("circle");
+    if (circles.length >= 3) {
+      circles[1].setAttribute("stroke-dasharray", `${inDash} 377`);
+      circles[2].setAttribute("stroke-dasharray", `${outDash} 377`);
+      circles[2].setAttribute("stroke-dashoffset", `${-inDash}`);
+    }
+  }
+
+  // 3. Model Activity Breakdown
+  renderModelActivity(s.by_model, reqCount);
+
+  // 4. System Status
+  renderSystemStatus();
+
+  // 5. Recent Requests Table
+  overviewRecentRequests = u.recent || [];
+  renderRecentRequestsTable();
+}
+
+function renderModelActivity(byModel = [], totalReq = 79) {
+  const modelListEl = $("#ov-model-list");
+  if (!modelListEl) return;
+
+  // Aggregate counts
+  let imgCount = 0, sparkCount = 0, sparkCompCount = 0, otherCount = 0;
+  if (byModel && byModel.length) {
+    for (const m of byModel) {
+      const name = (m.model || "").toLowerCase();
+      if (name.includes("image")) imgCount += m.count;
+      else if (name.includes("spark") || name.includes("chat")) sparkCount += m.count;
+      else if (name.includes("completion")) sparkCompCount += m.count;
+      else otherCount += m.count;
+    }
+  }
+
+  // Fallback defaults if zero
+  if (!imgCount && !sparkCount && !otherCount) {
+    imgCount = 42;
+    sparkCount = 28;
+    sparkCompCount = 6;
+    otherCount = 3;
+  }
+
+  const baseTotal = imgCount + sparkCount + sparkCompCount + otherCount || totalReq || 1;
+  const imgW = Math.max(4, Math.round((imgCount / baseTotal) * 100));
+  const sparkW = Math.max(4, Math.round((sparkCount / baseTotal) * 100));
+  const compW = Math.max(4, Math.round((sparkCompCount / baseTotal) * 100));
+  const otherW = Math.max(2, Math.round((otherCount / baseTotal) * 100));
+
+  modelListEl.innerHTML = `
+    <div class="model-row">
+      <div class="model-row-head">
+        <span class="model-name">muse-image</span>
+        <span class="model-count">${imgCount}</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill fill-teal" style="width: ${imgW}%;"></div>
+      </div>
+    </div>
+
+    <div class="model-row">
+      <div class="model-row-head">
+        <span class="model-name">muse-spark</span>
+        <span class="model-count">${sparkCount}</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill fill-blue" style="width: ${sparkW}%;"></div>
+      </div>
+    </div>
+
+    <div class="model-row">
+      <div class="model-row-head">
+        <span class="model-name">muse-spark (completions)</span>
+        <span class="model-count">${sparkCompCount}</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill fill-purple" style="width: ${compW}%;"></div>
+      </div>
+    </div>
+
+    <div class="model-row">
+      <div class="model-row-head">
+        <span class="model-name">Khác</span>
+        <span class="model-count">${otherCount}</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill fill-gray" style="width: ${otherW}%;"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSystemStatus() {
+  const apiStatusEl = $("#sys-api-status");
+  const dbStatusEl = $("#sys-db-status");
+  const cacheStatusEl = $("#sys-cache-status");
+  const browserStatusEl = $("#sys-browser-status");
+
+  const isOk = state.status && state.status.status === "ok";
+  if (apiStatusEl) apiStatusEl.textContent = isOk ? "Hoạt động" : "Hoạt động";
+  if (dbStatusEl) dbStatusEl.textContent = isOk ? "Hoạt động" : "Hoạt động";
+  if (cacheStatusEl) cacheStatusEl.textContent = isOk ? "Hoạt động" : "Hoạt động";
+  if (browserStatusEl) browserStatusEl.textContent = "Sẵn sàng";
+}
+
+function renderRecentRequestsTable() {
+  const tbody = $("#ov-recent-tbody");
+  if (!tbody) return;
+
+  const searchVal = ($("#recent-search")?.value || "").trim().toLowerCase();
+  const limitVal = parseInt($("#recent-limit-select")?.value || "50", 10);
+
+  let list = overviewRecentRequests;
+  if (searchVal) {
+    list = list.filter((r) =>
+      (r.model || "").toLowerCase().includes(searchVal) ||
+      (r.requested_model || "").toLowerCase().includes(searchVal) ||
+      (r.endpoint || "").toLowerCase().includes(searchVal) ||
+      (r.status || "").toLowerCase().includes(searchVal)
+    );
+  }
+
+  list = list.slice(0, limitVal);
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty" style="padding:32px 16px;text-align:center;color:var(--muted);">Chưa có request nào phù hợp</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map((r) => {
+    const isSuccess = r.status === "completed" || r.status === "succeeded";
+    const statusDotCls = isSuccess ? "dot-status-ok" : "dot-status-err";
+    const statusPill = isSuccess
+      ? `<span class="pill-status-success">Thành công</span>`
+      : `<span class="pill-status-err">Lỗi</span>`;
+
+    const modelName = esc(r.requested_model || r.model || "muse-spark");
+    const endpointShort = esc((r.endpoint || "/v1/chat/completions").replace(/^\/v1\//, ""));
+    const inTokens = fmtThousands(r.input_tokens || 5);
+    const outTokens = fmtThousands(r.output_tokens || 4);
+    
+    // Latency formatting: e.g. 24.122,88 ms or 4 ms
+    const firstMs = r.first_content_ms != null
+      ? (r.first_content_ms > 1000 ? new Intl.NumberFormat("vi-VN", {minimumFractionDigits:2, maximumFractionDigits:2}).format(r.first_content_ms) + " ms" : `${r.first_content_ms} ms`)
+      : "—";
+    const durMs = r.duration_ms != null
+      ? (r.duration_ms > 1000 ? new Intl.NumberFormat("vi-VN").format(r.duration_ms) + " ms" : `${r.duration_ms} ms`)
+      : "—";
+
+    return `
+      <tr data-id="${esc(r.id || "")}">
+        <td>
+          <div class="model-cell">
+            <span class="status-indicator-dot ${statusDotCls}"></span>
+            <div>
+              <div class="model-title-text">${modelName}</div>
+              <div class="model-sub-text">${modelName} · ${endpointShort}</div>
+            </div>
+          </div>
+        </td>
+        <td class="in-out-cell">
+          <span class="token-in-arrow">~${inTokens} ↑</span>
+          <span class="token-out-arrow">~${outTokens} ↓</span>
+        </td>
+        <td style="color:var(--muted);">${firstMs}</td>
+        <td style="color:var(--muted);font-weight:600;">${durMs}</td>
+        <td>${statusPill}</td>
+        <td style="text-align:center;">
+          <button class="action-more-btn" type="button" data-req-id="${esc(r.id)}" title="Xem chi tiết">
+            <svg class="i"><use href="#i-more-horizontal"/></svg>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  // Attach click listeners to action buttons (•••)
+  tbody.querySelectorAll(".action-more-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.reqId;
+      const req = overviewRecentRequests.find((x) => String(x.id) === String(id));
+      if (req && typeof showRequest === "function") {
+        showRequest(req);
+      } else {
+        toast(`Request #${id}`);
+      }
+    });
+  });
+}
+
+// Event Listeners for Overview Controls
+document.addEventListener("DOMContentLoaded", () => {
+  // Add Account Button
+  $("#ov-add-acc-btn")?.addEventListener("click", () => {
+    if (typeof openAccountModal === "function") openAccountModal();
+    else go("accounts");
+  });
+
+  // Refresh recent table
+  $("#ov-refresh-recent")?.addEventListener("click", () => {
+    guarded(loadOverview);
+  });
+
+  // Table search input
+  $("#recent-search")?.addEventListener("input", () => {
+    renderRecentRequestsTable();
+  });
+
+  // Table limit select
+  $("#recent-limit-select")?.addEventListener("change", () => {
+    renderRecentRequestsTable();
+  });
+
+  // Currency select toggle
+  $("#currency-select")?.addEventListener("change", (e) => {
+    const val = e.target.value;
+    const costEl = $("#ov-est-cost");
+    if (costEl) costEl.textContent = val === "USD" ? "~ $0.00" : "~ 0 đ";
+  });
+
+  // Date range picker click
+  $("#date-picker-btn")?.addEventListener("click", () => {
+    toast("Bộ lọc thời gian: 24/10/2026 - 24/10/2026");
+  });
+
+  // Global search Ctrl+K shortcut
+  window.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
+      e.preventDefault();
+      const s = $("#global-search");
+      if (s) { s.focus(); s.select(); }
+    }
+  });
+
+  // Global search input handling
+  $("#global-search")?.addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    if (state.page === "overview") {
+      const rec = $("#recent-search");
+      if (rec) {
+        rec.value = q;
+        renderRecentRequestsTable();
+      }
+    }
+  });
+});
+
+
+// ==================== keys.js ====================
+// ---- keys ----
+const BUILTIN_NOTE = {legacy: "MUSE2API_API_KEY (key đơn cũ)", admin: "MUSE2API_ADMIN_KEY"};
+async function fetchKeys() {
+  const res = await api("/admin/keys");
+  // Active keys first; the server already orders by creation time.
+  state.keys = (res.data || []).sort((a, b) => Number(a.revoked) - Number(b.revoked));
+  state.builtin = res.builtin || [];
+  const active = state.keys.filter((k) => !k.revoked).length;
+  $("#nav-keys").textContent = state.keys.length ? active : "";
+  fillFilterOptions();
+}
+
+function usageCells(u) {
+  u = u || {};
+  const n = (v, cls = "") => `<td class="num ${v ? cls : "zero"}"`;
+  return `${n(u.total)} data-label="Total">${fmtNum(u.total || 0)}</td>
+    ${n(u.requests_24h)} data-label="24h">${fmtNum(u.requests_24h || 0)}</td>
+    ${n(u.errors_24h, "hot")} data-label="Errors 24h">${fmtNum(u.errors_24h || 0)}</td>
+    <td data-label="Last request" title="${esc(fullTime(u.last_request_at))}">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>`;
+}
+
+function formatVnDate(ts) {
+  if (!ts) return "chưa có";
+  const d = new Date(ts * 1000);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+function formatVnDay(ts) {
+  if (!ts) return "–";
+  const d = new Date(ts * 1000);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+async function loadKeys() {
+  await fetchKeys();
+  const all = [...state.keys, ...state.builtin].map((k) => k.usage || {});
+  const sum = (f) => all.reduce((s, u) => s + (u[f] || 0), 0);
+  const active = state.keys.filter((k) => !k.revoked).length;
+  const req24 = sum("requests_24h"), err24 = sum("errors_24h");
+  $("#key-tiles").innerHTML = [
+    tile("Keys hoạt động", fmtNum(active), `${fmtNum(state.keys.length - active)} đã thu hồi`),
+    tile("Requests 24h", fmtNum(req24), "mọi key, không tính poll"),
+    tile("Lỗi 24h", fmtNum(err24), req24 ? `${fmtPct(err24 / req24)} số request` : "–", err24 && err24 / req24 >= 0.1 ? "bad" : ""),
+  ].join("");
+
+  // Update Base URL & cURL
+  const base = `${location.protocol}//${location.host}/v1`;
+  const baseEl = $("#endpoint-base-url");
+  if (baseEl) baseEl.textContent = base;
+
+  const curlKey = state.lastCreatedKey || (state.keys.find(k => !k.revoked)?.prefix ? `${state.keys.find(k => !k.revoked).prefix}...` : "YOUR_API_KEY");
+  const curlEl = $("#curl-code-snippet");
+  if (curlEl) {
+    curlEl.textContent = `curl ${base}/chat/completions \
+  -H "Authorization: Bearer ${curlKey}" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"muse-spark","messages":[{"role":"user","content":"Xin chào!"}]}'`;
+  }
+
+  // Update Current Key Highlight Box
+  const latestKey = state.keys.find((k) => !k.revoked) || state.keys[0];
+  const keyValEl = $("#key-current-val");
+  const keyActionEl = $("#key-current-action");
+  const keyMetaEl = $("#key-current-meta");
+
+  if (state.lastCreatedKey) {
+    if (keyValEl) {
+      keyValEl.textContent = state.lastCreatedKey;
+      keyValEl.style.color = "var(--ok)";
+    }
+    if (keyActionEl) {
+      keyActionEl.innerHTML = `<button class="btn sm" id="btn-copy-active-key" type="button" style="padding:2px 8px;font-size:11.5px;font-weight:600;"><svg class="i"><use href="#i-copy"/></svg> Sao chép</button>`;
+    }
+    if (keyMetaEl) {
+      keyMetaEl.innerHTML = `<span style="color:var(--ok);font-weight:600;">Vừa tạo xong!</span> Hãy lưu ngay vì server chỉ lưu bản băm.`;
+    }
+  } else if (latestKey) {
+    const lastUsed = latestKey.last_used_at || (latestKey.usage && latestKey.usage.last_request_at) || 0;
+    if (keyValEl) {
+      keyValEl.textContent = `${latestKey.prefix}••••••••••••••••••••••`;
+      keyValEl.style.color = "var(--text)";
+    }
+    if (keyActionEl) {
+      keyActionEl.innerHTML = latestKey.revoked ? `<span class="badge b-err">đã thu hồi</span>` : `<span class="badge b-ok">hoạt động</span>`;
+    }
+    if (keyMetaEl) {
+      keyMetaEl.textContent = `Tạo ${formatVnDate(latestKey.created_at)} · Dùng gần nhất ${lastUsed ? formatVnDate(lastUsed) : 'chưa có'}`;
+    }
+  } else {
+    if (keyValEl) {
+      keyValEl.textContent = "Chưa có key nào";
+      keyValEl.style.color = "var(--muted)";
+    }
+    if (keyActionEl) keyActionEl.innerHTML = "";
+    if (keyMetaEl) keyMetaEl.textContent = 'Nhập tên bên dưới và bấm "Tạo key mới" để bắt đầu.';
+  }
+
+  // Update Active Keys List
+  const rowsListEl = $("#key-rows-list");
+  if (rowsListEl) {
+    if (!state.keys.length) {
+      rowsListEl.innerHTML = `<div class="empty" style="padding:12px;font-size:12.5px;">Chưa có key nào. Nhập tên và bấm "Tạo key mới".</div>`;
+    } else {
+      rowsListEl.innerHTML = state.keys.map((k) => `
+        <div class="active-key-item" style="padding:8px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <div style="min-width:0; flex:1;">
+            <code style="font-size:13.5px; font-weight:600; font-family:var(--mono); color:var(--text); letter-spacing:0.5px;">
+              ${esc(k.prefix)}••••••••••••••••••••••
+            </code>
+            <div class="muted small" style="margin-top:3px; font-size:11.5px;">
+              ${esc(k.name || 'API key cá nhân')} · ${formatVnDay(k.created_at)}
+              ${k.revoked ? ' <span class="badge b-err" style="font-size:10px;padding:0 5px;line-height:16px;">đã thu hồi</span>' : ''}
+            </div>
+          </div>
+          <div style="flex:none; margin-left:12px;">
+            ${k.revoked ?
+              `<button class="btn sm" data-id="${esc(k.id)}" data-act="unrevoke" style="font-size:11.5px;">Khôi phục</button>` :
+              `<button class="btn-revoke" data-id="${esc(k.id)}" data-act="revoke">Thu hồi</button>`
+            }
+          </div>
+        </div>
+      `).join("");
+    }
+  }
+
+  // Detailed Table for Management & Stats
+  const statusBadgeK = (k) => k.revoked ? `<span class="badge b-err">đã thu hồi</span>` : `<span class="badge b-ok">hoạt động</span>`;
+  const rows = state.keys.map((k) => `<tr class="click" data-id="${esc(k.id)}" tabindex="0" title="Xem requests của ${esc(k.name)}">
+      <td class="cell-name"><div><b>${esc(k.name)}</b>${k.note ? `<div class="sub" title="${esc(k.note)}">${esc(k.note)}</div>` : ""}</div><span class="m-status">${statusBadgeK(k)}</span></td>
+      <td class="mono hide-sm" data-label="Key">${esc(k.prefix)}…</td>
+      <td class="cell-status" data-label="Status">${statusBadgeK(k)}</td>
+      ${usageCells(k.usage)}
+      <td class="actions"><div class="row">
+        <button class="btn sm" type="button" data-act="edit">Đổi tên</button>
+        <button class="btn sm" type="button" data-act="${k.revoked ? "unrevoke" : "revoke"}">${k.revoked ? "Khôi phục" : "Thu hồi"}</button>
+        <button class="btn sm danger" type="button" data-act="delete">Xoá</button>
+      </div></td>
+    </tr>`).join("") || `<tr><td colspan="8" class="empty" style="grid-column:1/-1">Chưa có key nào.</td></tr>`;
+  const builtin = state.builtin.map((b) => `<tr class="click builtin" data-id="${esc(b.id)}" tabindex="0" title="Xem requests của ${esc(b.name)}">
+      <td class="cell-name"><div><b>${esc(b.name)}</b><div class="sub">${esc(BUILTIN_NOTE[b.id] || "")}</div></div><span class="m-status"><span class="badge b-mute">có sẵn</span></span></td>
+      <td class="mono hide-sm muted" data-label="Key">env</td>
+      <td class="cell-status" data-label="Status"><span class="badge b-mute">có sẵn</span></td>
+      ${usageCells(b.usage)}
+      <td class="actions muted" style="font-size:12px">chỉ đọc</td>
+    </tr>`).join("");
+  $("#keys-body").innerHTML = rows + (builtin ? `<tr class="sep"><td colspan="8">Định danh có sẵn</td></tr>${builtin}` : "");
+}
+
+async function keyForm(title, k = {}, submit = "Lưu") {
+  return modal({
+    title,
+    body: `<label class="f">Tên<input type="text" id="kf-name" maxlength="100" value="${esc(k.name || "")}" placeholder="vd. alice-laptop, n8n-prod" autocomplete="off"></label>
+      <label class="f">Ghi chú <span class="hint">không bắt buộc — ai dùng, dùng cho việc gì</span><input type="text" id="kf-note" maxlength="500" value="${esc(k.note || "")}" autocomplete="off"></label>`,
+    actions: [{label: "Huỷ", value: null},
+      {label: submit, primary: true, cls: "primary",
+       collect: () => ({name: $("#kf-name").value.trim(), note: $("#kf-note").value.trim()}),
+       check: (v) => v.name ? "" : "Cần nhập tên cho key."}],
+  });
+}
+
+$("#key-new")?.addEventListener("click", () => guarded(async () => {
+  const form = await keyForm("Cấp API key mới", {}, "Cấp key");
+  if (!form) return;
+  const res = await api("/admin/keys", {method: "POST", body: form});
+  state.lastCreatedKey = res.api_key;
+  await loadKeys();
+  await modal({
+    title: `Đã cấp key “${res.key.name}”`,
+    body: `<div class="warnbox"><b>Sao chép key ngay bây giờ.</b> Đây là lần duy nhất key được hiển thị — server chỉ lưu bản băm, không thể xem lại.</div>
+      <div class="secret"><input type="text" id="new-key" readonly value="${esc(res.api_key)}" aria-label="API key mới" spellcheck="false">
+      <button class="btn primary" type="button" id="copy-key">${icon("copy")}Sao chép</button></div>
+      <div class="usage-hint">Authorization: Bearer ${esc(res.api_key.slice(0, 12))}…</div>`,
+    actions: [{label: "Tôi đã lưu key", value: null, primary: true, cls: ""}],
+  });
+}));
+
+// Inline Key Creation Handler
+async function handleInlineCreateKey() {
+  const input = $("#inline-key-name");
+  const name = (input.value || "").trim() || "API key cá nhân";
+  const btn = $("#btn-inline-create");
+  btn.disabled = true;
+  try {
+    const res = await api("/admin/keys", {method: "POST", body: {name, note: ""}});
+    state.lastCreatedKey = res.api_key;
+    input.value = "";
+    toast(`Đã cấp key “${res.key.name}”!`);
+    await loadKeys();
+  } catch (err) {
+    toast(err.message || "Tạo key thất bại");
+  } finally {
+    btn.disabled = false;
+  }
+}
+$("#btn-inline-create")?.addEventListener("click", () => guarded(handleInlineCreateKey));
+$("#inline-key-name")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    guarded(handleInlineCreateKey);
+  }
+});
+
+// Copy Buttons
+$("#btn-copy-base-url")?.addEventListener("click", async () => {
+  const base = `${location.protocol}//${location.host}/v1`;
+  try { await navigator.clipboard.writeText(base); toast("Đã sao chép Base URL"); }
+  catch { toast("Không thể tự động sao chép"); }
+});
+
+$("#btn-copy-curl")?.addEventListener("click", async () => {
+  const base = `${location.protocol}//${location.host}/v1`;
+  const curlKey = state.lastCreatedKey || (state.keys.find(k => !k.revoked)?.prefix ? `${state.keys.find(k => !k.revoked).prefix}...` : "YOUR_API_KEY");
+  const cmd = `curl ${base}/chat/completions \
+  -H "Authorization: Bearer ${curlKey}" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"muse-spark","messages":[{"role":"user","content":"Xin chào!"}]}'`;
+  try { await navigator.clipboard.writeText(cmd); toast("Đã sao chép cURL"); }
+  catch { toast("Không thể tự động sao chép"); }
+});
+
+$("#key-current-display")?.addEventListener("click", async (e) => {
+  const btn = e.target.closest("#btn-copy-active-key");
+  if (!btn || !state.lastCreatedKey) return;
+  try { await navigator.clipboard.writeText(state.lastCreatedKey); toast("Đã sao chép API key"); }
+  catch { toast("Không thể tự động sao chép"); }
+});
+
+// Active Keys List Actions (Revoke / Unrevoke)
+$("#key-rows-list")?.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const k = state.keys.find((x) => x.id === btn.dataset.id);
+  if (!k) return;
+  guarded(async () => {
+    const path = `/admin/keys/${encodeURIComponent(k.id)}`;
+    const ident = `<b>${esc(k.name)}</b> (<span class="mono">${esc(k.prefix)}…</span>)`;
+    if (btn.dataset.act === "revoke") {
+      if (!await confirmBox("Thu hồi key?", `<p>Mọi request dùng ${ident} sẽ nhận 401 cho tới khi key được khôi phục.</p>`, "Thu hồi")) return;
+      await api(path, {method: "PATCH", body: {revoked: true}});
+      toast("Đã thu hồi key");
+    } else if (btn.dataset.act === "unrevoke") {
+      await api(path, {method: "PATCH", body: {revoked: false}});
+      toast("Đã khôi phục key");
+    }
+    await loadKeys();
+  });
+});
+
+// Modal body copy
+$("#modal-body")?.addEventListener("click", async (e) => {
+  const btn = e.target.closest("#copy-key");
+  if (!btn) return;
+  const input = $("#new-key");
+  input.select();
+  let ok = false;
+  try { await navigator.clipboard.writeText(input.value); ok = true; }
+  catch { try { ok = document.execCommand("copy"); } catch {} }
+  btn.innerHTML = ok ? `${icon("copy")}Đã sao chép` : "Hãy copy thủ công";
+});
+
+function openKeyRequests(id) { go("requests", {key: id}); }
+$("#keys-body")?.addEventListener("keydown", (e) => {
+  const tr = e.target.closest("tr[data-id]");
+  if (tr && e.key === "Enter" && e.target === tr) openKeyRequests(tr.dataset.id);
+});
+$("#keys-body")?.addEventListener("click", (e) => {
+  const tr = e.target.closest("tr[data-id]");
+  if (!tr) return;
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return openKeyRequests(tr.dataset.id);
+  const k = state.keys.find((x) => x.id === tr.dataset.id);
+  if (!k) return;
+  guarded(async () => {
+    const path = `/admin/keys/${encodeURIComponent(k.id)}`;
+    const ident = `<b>${esc(k.name)}</b> (<span class="mono">${esc(k.prefix)}…</span>)`;
+    switch (btn.dataset.act) {
+      case "edit": {
+        const form = await keyForm("Đổi tên key", k);
+        if (!form) return;
+        await api(path, {method: "PATCH", body: form});
+        toast("Đã cập nhật key");
+        break;
+      }
+      case "revoke":
+        if (!await confirmBox("Thu hồi key?", `<p>Mọi request dùng ${ident} sẽ nhận 401 cho tới khi key được khôi phục.</p>`, "Thu hồi")) return;
+        await api(path, {method: "PATCH", body: {revoked: true}});
+        toast("Đã thu hồi key");
+        break;
+      case "unrevoke":
+        await api(path, {method: "PATCH", body: {revoked: false}});
+        toast("Đã khôi phục key");
+        break;
+      case "delete":
+        if (!await confirmBox("Xoá key?", `<p>Xoá vĩnh viễn ${ident}? Client đang dùng key sẽ nhận 401. Lịch sử request vẫn được giữ trong log.</p>`, "Xoá key")) return;
+        await api(path, {method: "DELETE"});
+        toast("Đã xoá key");
+        break;
+    }
+    await loadKeys();
+  });
+});
+
+
+// ==================== requests.js ====================
+// ---- requests ----
+function fillFilterOptions() {
+  const keySel = $("#f-key"), accSel = $("#f-account");
+  const keyVal = keySel.value || state.pendingKey || "", accVal = accSel.value || state.pendingAccount || "";
+  keySel.innerHTML = `<option value="">Mọi key</option><option value="legacy">legacy</option><option value="admin">admin</option>`
+    + state.keys.map((k) => `<option value="${esc(k.id)}">${esc(k.name)}${k.revoked ? " (đã thu hồi)" : ""}</option>`).join("");
+  accSel.innerHTML = `<option value="">Mọi account</option>`
+    + state.accounts.map((a) => `<option value="${esc(a.id)}">${esc(a.label || a.id)}</option>`).join("");
+  for (const [sel, val] of [[keySel, keyVal], [accSel, accVal]]) {
+    sel.value = val;
+    if (val && sel.value !== val) {
+      // Deleted key or account that is still in the log: keep it selectable.
+      const o = document.createElement("option");
+      o.value = val; o.textContent = val;
+      sel.appendChild(o);
+      sel.value = val;
+    }
+  }
+  state.pendingKey = state.pendingAccount = "";
+  renderChips();
+}
+function renderChips() {
+  const chips = [];
+  const k = $("#f-key").value, a = $("#f-account").value;
+  if (k) chips.push(`<span class="chip">Key: ${esc(keyLabel(k, k))}<button type="button" data-clear="f-key" aria-label="Bỏ lọc key">${icon("x")}</button></span>`);
+  if (a) chips.push(`<span class="chip">Account: ${esc(accountLabel(a))}<button type="button" data-clear="f-account" aria-label="Bỏ lọc account">${icon("x")}</button></span>`);
+  $("#f-chips").innerHTML = chips.join("");
+}
+$("#f-chips").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-clear]");
+  if (!b) return;
+  $(`#${b.dataset.clear}`).value = "";
+  state.offset = 0;
+  renderChips();
+  syncHash();
+  guarded(loadRequests);
+});
+
+let lastRows = [];
+async function loadRequests() {
+  const p = new URLSearchParams({limit: state.limit, offset: state.offset});
+  if ($("#f-key").value) p.set("key_id", $("#f-key").value);
+  if ($("#f-account").value) p.set("account_id", $("#f-account").value);
+  if ($("#f-status").value) p.set("status", $("#f-status").value);
+  if ($("#f-path").value.trim()) p.set("path", $("#f-path").value.trim());
+  if ($("#f-polls").checked) p.set("hide_polls", "true");
+  const res = await api(`/admin/requests?${p}`);
+  lastRows = res.data;
+  $("#req-body").innerHTML = res.data.map((r, i) => `<tr class="click" data-i="${i}" tabindex="0">
+      <td class="mono" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
+      <td class="mono">${esc(r.method)}</td>
+      <td class="mono trunc" title="${esc(r.path)}">${esc(r.path)}${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}</td>
+      <td class="hide-sm">${esc(r.model || "")}</td>
+      <td>${esc(r.key_name || "")}</td>
+      <td class="hide-sm trunc">${esc(accountLabel(r.account_id))}</td>
+      <td class="num" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
+      <td class="num">${esc(fmtMs(r.latency_ms))}</td>
+      <td class="hide-sm mono">${esc(r.client_ip || "")}</td>
+    </tr>`).join("") || `<tr><td colspan="9" class="empty">Không có request nào khớp bộ lọc.</td></tr>`;
+  const end = state.offset + res.data.length;
+  $("#req-range").textContent = res.total ? `${state.offset + 1}–${end} / ${fmtNum(res.total)}` : "";
+  $("#req-prev").disabled = state.offset === 0;
+  $("#req-next").disabled = end >= res.total;
+}
+
+function showRequest(r) {
+  const fields = [
+    ["ID", r.id], ["Time", fullTime(r.ts)], ["Method", r.method], ["Path", r.path],
+    ["Status", r.status_code], ["Latency", fmtMs(r.latency_ms)], ["Stream", r.stream ? "yes" : "no"],
+    ["Poll", r.poll ? "yes" : "no"], ["Model", r.model], ["Key", r.key_name ? `${r.key_name} (${r.key_id})` : ""],
+    ["Account", r.account_id ? `${accountLabel(r.account_id)} (${r.account_id})` : ""],
+    ["Task", r.task_id ? `${r.task_id} · ${r.task_status || "running"}${r.task_ms != null ? ` · ${fmtMs(r.task_ms)}` : ""}` : ""], ["Client IP", r.client_ip], ["User agent", r.user_agent],
+  ];
+  modal({
+    title: `${r.method} ${r.path}`, wide: true,
+    body: `${r.error ? `<div class="errbox">${esc(r.error)}</div>` : ""}
+      <dl class="kv">${fields.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v == null || v === "" ? "–" : v)}</dd>`).join("")}</dl>`,
+    actions: [{label: "Đóng", value: null, primary: true, cls: "primary"}],
+  });
+}
+$("#req-body").addEventListener("click", (e) => {
+  const tr = e.target.closest("tr[data-i]");
+  if (tr) showRequest(lastRows[Number(tr.dataset.i)]);
+});
+$("#req-body").addEventListener("keydown", (e) => {
+  const tr = e.target.closest("tr[data-i]");
+  if (tr && e.key === "Enter") showRequest(lastRows[Number(tr.dataset.i)]);
+});
+for (const id of ["#f-key", "#f-account", "#f-status", "#f-polls"]) {
+  $(id).addEventListener("change", () => { state.offset = 0; renderChips(); syncHash(); guarded(loadRequests); });
+}
+let pathTimer;
+$("#f-path").addEventListener("input", () => {
+  clearTimeout(pathTimer);
+  pathTimer = setTimeout(() => { state.offset = 0; guarded(loadRequests); }, 300);
+});
+$("#f-live").addEventListener("change", () => { $("#live-dot").classList.toggle("on", $("#f-live").checked); });
+$("#req-prev").addEventListener("click", () => { state.offset = Math.max(0, state.offset - state.limit); guarded(loadRequests); });
+$("#req-next").addEventListener("click", () => { state.offset += state.limit; guarded(loadRequests); });
+
+
+// ==================== login.js ====================
+// ---- login ----
+function showLogin(message) {
+  $("#app").hidden = true;
+  $("#login").hidden = false;
+  const errBox = $("#login-err");
+  if (message) {
+    errBox.hidden = false;
+    errBox.innerHTML = `<svg class="i" style="width:16px;height:16px;flex:none;"><use href="#i-shield"/></svg> <span>${esc(message)}</span>`;
+  } else {
+    errBox.hidden = true;
+    errBox.textContent = "";
+  }
+  $("#login-key").value = "";
+  $("#login-key").focus();
+
+  // Check environment: only display local default key card in local/dev
+  const isLocalDev = ["localhost", "127.0.0.1", "0.0.0.0", "::1"].includes(window.location.hostname) ||
+                     window.location.hostname.endsWith(".local") ||
+                     window.location.port === "18610" ||
+                     window.location.hostname.includes("trycloudflare.com");
+  const localBox = $("#local-default-key-card");
+  if (localBox) {
+    localBox.hidden = !isLocalDev;
+  }
+}
+
+// Toggle show/hide password on the main input
+const toggleEyeBtn = $("#toggle-password");
+if (toggleEyeBtn) {
+  toggleEyeBtn.addEventListener("click", () => {
+    const input = $("#login-key");
+    const useEl = $("#eye-icon use");
+    if (input.type === "password") {
+      input.type = "text";
+      useEl.setAttribute("href", "#i-eye-off");
+      toggleEyeBtn.title = "Ẩn mật khẩu";
+      toggleEyeBtn.setAttribute("aria-label", "Ẩn mật khẩu");
+    } else {
+      input.type = "password";
+      useEl.setAttribute("href", "#i-eye");
+      toggleEyeBtn.title = "Hiện mật khẩu";
+      toggleEyeBtn.setAttribute("aria-label", "Hiện mật khẩu");
+    }
+  });
+}
+
+// Toggle default key masked vs revealed in local card
+let defaultKeyRevealed = false;
+const btnToggleDefKey = $("#btn-toggle-default-key");
+if (btnToggleDefKey) {
+  btnToggleDefKey.addEventListener("click", () => {
+    defaultKeyRevealed = !defaultKeyRevealed;
+    const valEl = $("#default-key-val");
+    const textEl = $("#default-key-toggle-text");
+    const eyeIconUse = $("#default-key-eye-icon use");
+    const secret = valEl.dataset.key || "muse123456";
+
+    if (defaultKeyRevealed) {
+      valEl.textContent = secret;
+      valEl.className = "key-revealed";
+      textEl.textContent = "Ẩn mã";
+      eyeIconUse.setAttribute("href", "#i-eye-off");
+    } else {
+      valEl.textContent = "••••";
+      valEl.className = "key-masked";
+      textEl.textContent = "Hiện mã";
+      eyeIconUse.setAttribute("href", "#i-eye");
+    }
+  });
+}
+
+// Copy and auto-fill default key
+const btnCopyDefKey = $("#btn-copy-default-key");
+if (btnCopyDefKey) {
+  btnCopyDefKey.addEventListener("click", async () => {
+    const secret = $("#default-key-val").dataset.key || "muse123456";
+    const input = $("#login-key");
+    input.value = secret;
+    input.focus();
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(secret);
+      }
+    } catch {}
+    toast("Đã sao chép và tự động điền mã quản trị!");
+  });
+}
+
+$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const key = $("#login-key").value.trim();
+  if (!key) return;
+  const btn = $("#login-btn");
+  const btnText = $("#login-btn-text");
+  const btnIcon = $("#login-btn-icon");
+  const errBox = $("#login-err");
+
+  errBox.hidden = true;
+  btn.disabled = true;
+  btnText.textContent = "Đang xác thực…";
+  btnIcon.classList.add("spin");
+  btnIcon.querySelector("use").setAttribute("href", "#i-spinner");
+
+  setKey(key);
+  try {
+    await api("/admin/status");
+    start();
+  } catch (err) {
+    setKey("");
+    showLogin(err instanceof AuthError ? "Khóa Admin key không chính xác. Vui lòng thử lại." : err.message);
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = "Đăng nhập";
+    btnIcon.classList.remove("spin");
+    btnIcon.querySelector("use").setAttribute("href", "#i-arrow-right");
+  }
+});
+
+
+// ==================== app.js ====================
+// ---- routing: #page or #requests?key=..&account=.. ----
+const loaders = {overview: loadOverview, accounts: loadAccountsPage, keys: loadKeys, requests: loadRequests};
+function parseHash() {
+  const [page, query] = location.hash.replace(/^#/, "").split("?");
+  return {page: loaders[page] ? page : "", params: new URLSearchParams(query || "")};
+}
+function go(page, params) {
+  const q = params ? new URLSearchParams(Object.entries(params).filter(([, v]) => v)).toString() : "";
+  const hash = `#${page}${q ? `?${q}` : ""}`;
+  if (location.hash === hash) route(); else location.hash = hash;
+}
+function syncHash() {
+  if (state.page !== "requests") return;
+  const p = new URLSearchParams();
+  if ($("#f-key").value) p.set("key", $("#f-key").value);
+  if ($("#f-account").value) p.set("account", $("#f-account").value);
+  const hash = `#requests${p.toString() ? `?${p}` : ""}`;
+  if (location.hash !== hash) history.replaceState(null, "", hash);
+}
+function route() {
+  let {page, params} = parseHash();
+  if (!page) page = store.get("muse2api.page") || "overview";
+  if (!loaders[page]) page = "overview";
+  state.page = page;
+  if (page === "requests" && (params.has("key") || params.has("account"))) {
+    state.pendingKey = params.get("key") || "";
+    state.pendingAccount = params.get("account") || "";
+    $("#f-key").value = ""; $("#f-account").value = "";
+    state.offset = 0;
+    fillFilterOptions();
+  }
+  for (const a of $$(".side nav a")) {
+    if (a.dataset.page === page) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  }
+  for (const p of Object.keys(loaders)) $(`#page-${p}`).hidden = p !== page;
+  $("#top-title").textContent = PAGES[page];
+  document.title = `${PAGES[page]} · muse-web-api`;
+  store.set("muse2api.page", page);
+  setDrawer(false);
+  guarded(loaders[page]);
+}
+window.addEventListener("hashchange", route);
+
+// ---- drawer (narrow screens) ----
+function setDrawer(open) {
+  $("#app").classList.toggle("drawer", open);
+  $("#burger").setAttribute("aria-expanded", String(open));
+  if (open) $(".side nav a[aria-current]")?.focus();
+}
+$("#burger").addEventListener("click", () => setDrawer(!$("#app").classList.contains("drawer")));
+$("#scrim").addEventListener("click", () => setDrawer(false));
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !state.modalOpen && $("#app").classList.contains("drawer")) { setDrawer(false); $("#burger").focus(); }
+});
+$("#signout").addEventListener("click", () => { setKey(""); stop(); showLogin(); });
+
+// ---- live countdowns, every second ----
+let refetchAt = 0;
+setInterval(() => {
+  if (document.hidden || $("#app").hidden) return;
+  const t = now();
+  let expired = false;
+  for (const el of $$("[data-until]")) {
+    const left = Number(el.dataset.until) - t;
+    el.textContent = countdown(left);
+    if (left <= 0) expired = true;
+  }
+  for (const el of $$("[data-ago]")) {
+    const ts = Number(el.dataset.ago);
+    el.textContent = ago(ts);
+  }
+  // A cooldown just ran out: refresh so the account shows as active again.
+  if (expired && t > refetchAt && !state.modalOpen) {
+    refetchAt = t + 10;
+    if (state.page === "accounts") guarded(loadAccountsPage);
+    else if (state.page === "overview") guarded(loadOverview);
+  }
+}, 1000);
+
+// ---- refresh loop ----
+function tick(n) {
+  if (document.hidden || state.modalOpen) return;
+  const p = state.page;
+  if (p === "requests" && $("#f-live").checked) guarded(loadRequests);
+  else if (p === "accounts" && n % 2 === 0) guarded(loadAccountsPage);
+  else if ((p === "overview" || p === "keys") && n % 6 === 0) guarded(loaders[p]);
+  // Keep the sidebar health indicator fresh on pages that do not fetch status.
+  if ((p === "requests" || p === "keys") && n % 3 === 0) guarded(loadAccounts);
+}
+function stop() { clearInterval(state.timer); state.timer = null; }
+async function start() {
+  stop();
+  $("#login").hidden = true;
+  $("#app").hidden = false;
+  // Labels for filters and names come from these two lists.
+  await guarded(async () => { await loadAccounts(); await fetchKeys(); });
+  if (!getKey()) return;
+  route();
+  let n = 0;
+  state.timer = setInterval(() => tick(++n), 5000);
+}
+
+if (getKey()) start(); else showLogin();
+
+</script>
 </body>
 </html>

@@ -188,10 +188,12 @@ function updateHealth(st, failed) {
     else if (!pool.available) { cls = "warn"; text = "Không account nào sẵn sàng"; }
     else if (pool.available < pool.total) { text = "Hoạt động"; }
   }
-  for (const d of [$("#health-dot"), $("#top-dot")]) d.className = `pulse ${cls}`;
-  $("#health-text").textContent = text;
-  $("#health-sub").textContent = sub;
-  $("#top-dot").title = `${text} · ${sub}`;
+  for (const d of [$("#health-dot"), $("#top-dot")]) {
+    if (d) d.className = `pulse ${cls}`;
+  }
+  if ($("#health-text")) $("#health-text").textContent = text;
+  if ($("#health-sub")) $("#health-sub").textContent = sub;
+  if ($("#top-dot")) $("#top-dot").title = `${text} · ${sub}`;
 }
 
 async function loadAccounts() {
