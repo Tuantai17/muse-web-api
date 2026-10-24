@@ -200,7 +200,7 @@ function renderRecentRequestsTable() {
 
     return `
       <tr data-id="${esc(r.id || "")}">
-        <td>
+        <td class="text-left">
           <div class="model-cell">
             <span class="status-indicator-dot ${statusDotCls}"></span>
             <div>
@@ -209,14 +209,14 @@ function renderRecentRequestsTable() {
             </div>
           </div>
         </td>
-        <td class="in-out-cell">
+        <td class="text-left in-out-cell">
           <span class="token-in-arrow">~${inTokens} ↑</span>
           <span class="token-out-arrow">~${outTokens} ↓</span>
         </td>
-        <td style="color:var(--muted);">${firstMs}</td>
-        <td style="color:var(--muted);font-weight:600;">${durMs}</td>
-        <td>${statusPill}</td>
-        <td style="text-align:center;">
+        <td class="text-left" style="color:var(--muted);">${firstMs}</td>
+        <td class="text-left" style="color:var(--muted);font-weight:600;">${durMs}</td>
+        <td class="text-left">${statusPill}</td>
+        <td class="text-center">
           <button class="action-more-btn" type="button" data-req-id="${esc(r.id)}" title="Xem chi tiết">
             <svg class="i"><use href="#i-more-horizontal"/></svg>
           </button>

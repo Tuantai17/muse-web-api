@@ -88,8 +88,6 @@ def _assert_public_url(url: str) -> str:
 
 async def _assert_public_host(hostname: str) -> None:
     """Reject hostnames resolving to non-public IPs (SSRF guard)."""
-    if hostname in ("localhost", "127.0.0.1", "::1"):
-        return
     try:
         infos = await asyncio.get_running_loop().getaddrinfo(
             hostname, None, type=socket.SOCK_STREAM

@@ -565,16 +565,20 @@
 }
 
 .recent-requests-table th {
-  background: #f8fbfa;
+  background: var(--panel-2);
   font-size: 10.5px;
   letter-spacing: 0.07em;
-  padding: 11px 12px;
+  padding: 12px 14px;
   border-top: none;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
 }
 
 .recent-requests-table td {
-  padding: 11px 12px;
+  padding: 12px 14px;
   font-size: 12.5px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
 }
 
 .recent-requests-table tr:hover td {

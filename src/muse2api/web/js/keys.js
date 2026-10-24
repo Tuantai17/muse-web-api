@@ -132,13 +132,13 @@ async function loadKeys() {
     const u = k.usage || {};
     const hasErr = (u.errors_24h || 0) > 0;
     return `<tr class="click" data-id="${esc(k.id)}" tabindex="0" title="Xem requests của ${esc(k.name)}">
-      <td>
+      <td class="text-left">
         <div class="key-name-block">
           <strong class="key-name-title">${esc(k.name)}</strong>
           ${k.note ? `<div class="key-note-sub">${esc(k.note)}</div>` : ""}
         </div>
       </td>
-      <td>
+      <td class="text-left">
         <div class="key-prefix-wrap">
           <code class="key-prefix-badge">${esc(k.prefix)}••••••••</code>
           <button class="tbl-action-btn copy-prefix-btn" type="button" data-act="copy-prefix" data-prefix="${esc(k.prefix)}" title="Sao chép tiền tố key">
@@ -146,15 +146,15 @@ async function loadKeys() {
           </button>
         </div>
       </td>
-      <td>${statusBadgeK(k)}</td>
+      <td class="text-left">${statusBadgeK(k)}</td>
       <td class="text-right num font-mono">${fmtNum(u.total || 0)}</td>
       <td class="text-right num font-mono font-bold">${fmtNum(u.requests_24h || 0)}</td>
       <td class="text-right num font-mono">
         ${hasErr ? `<span class="err-count-badge">${fmtNum(u.errors_24h)}</span>` : `<span class="text-muted">0</span>`}
       </td>
-      <td class="text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
+      <td class="text-left text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
       <td class="text-right">
-        <div class="acc-action-group" style="justify-content:flex-end;">
+        <div class="acc-action-group">
           <button class="tbl-action-btn" type="button" data-act="edit" title="Đổi tên">
             <svg class="i"><use href="#i-keys"/></svg>
           </button>

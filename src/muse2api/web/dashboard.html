@@ -12,12 +12,12 @@
   </script>
 
   <!-- Modular CSS Stylesheets -->
-  <link rel="stylesheet" href="/static/css/base.css?v=2.4.0">
-  <link rel="stylesheet" href="/static/css/login.css?v=2.4.0">
-  <link rel="stylesheet" href="/static/css/overview.css?v=2.4.0">
-  <link rel="stylesheet" href="/static/css/accounts.css?v=2.4.0">
-  <link rel="stylesheet" href="/static/css/keys.css?v=2.4.0">
-  <link rel="stylesheet" href="/static/css/requests.css?v=2.4.0">
+  <link rel="stylesheet" href="/static/css/base.css?v=2.5.0">
+  <link rel="stylesheet" href="/static/css/login.css?v=2.5.0">
+  <link rel="stylesheet" href="/static/css/overview.css?v=2.5.0">
+  <link rel="stylesheet" href="/static/css/accounts.css?v=2.5.0">
+  <link rel="stylesheet" href="/static/css/keys.css?v=2.5.0">
+  <link rel="stylesheet" href="/static/css/requests.css?v=2.5.0">
 </head>
 <body>
 
@@ -568,12 +568,12 @@
           <table class="recent-requests-table">
             <thead>
               <tr>
-                <th style="min-width:140px;">MODEL</th>
-                <th style="min-width:110px;">IN / OUT</th>
-                <th style="min-width:90px;">THỜI GIAN</th>
-                <th style="min-width:90px;">TỔNG THỜI GIAN</th>
-                <th style="min-width:85px;">TRẠNG THÁI</th>
-                <th style="width:50px;text-align:center;">THAO TÁC</th>
+                <th style="min-width:140px;" class="text-left">MODEL</th>
+                <th style="min-width:110px;" class="text-left">IN / OUT</th>
+                <th style="min-width:90px;" class="text-left">THỜI GIAN</th>
+                <th style="min-width:90px;" class="text-left">TỔNG THỜI GIAN</th>
+                <th style="min-width:85px;" class="text-left">TRẠNG THÁI</th>
+                <th style="width:60px;" class="text-center">THAO TÁC</th>
               </tr>
             </thead>
             <tbody id="ov-recent-tbody">
@@ -865,14 +865,14 @@
       <table class="recent-requests-table keys-table">
         <thead>
           <tr>
-            <th style="min-width:160px;">TÊN KHÓA</th>
-            <th style="min-width:140px;">TIỀN TỐ (KEY)</th>
-            <th style="min-width:110px;">TRẠNG THÁI</th>
-            <th style="min-width:90px;text-align:right;">TỔNG GỌI</th>
-            <th style="min-width:90px;text-align:right;">24H QUA</th>
-            <th style="min-width:80px;text-align:right;">LỖI 24H</th>
-            <th style="min-width:120px;">GẦN NHẤT</th>
-            <th style="min-width:130px;text-align:right;">THAO TÁC</th>
+            <th style="min-width:160px;" class="text-left">TÊN KHÓA</th>
+            <th style="min-width:140px;" class="text-left">TIỀN TỐ (KEY)</th>
+            <th style="min-width:110px;" class="text-left">TRẠNG THÁI</th>
+            <th style="min-width:90px;" class="text-right">TỔNG GỌI</th>
+            <th style="min-width:90px;" class="text-right">24H QUA</th>
+            <th style="min-width:85px;" class="text-right">LỖI 24H</th>
+            <th style="min-width:120px;" class="text-left">GẦN NHẤT</th>
+            <th style="min-width:130px;" class="text-right">THAO TÁC</th>
           </tr>
         </thead>
         <tbody id="keys-body">
@@ -1087,15 +1087,15 @@
       <table class="recent-requests-table requests-log-table">
         <thead>
           <tr>
-            <th style="min-width:90px;">THỜI GIAN</th>
-            <th style="min-width:70px;">METHOD</th>
-            <th style="min-width:180px;">PATH</th>
-            <th style="min-width:130px;" class="hide-sm">MODEL</th>
-            <th style="min-width:100px;">KEY</th>
-            <th style="min-width:120px;" class="hide-sm">ACCOUNT</th>
-            <th style="min-width:85px;text-align:center;">STATUS</th>
-            <th style="min-width:85px;text-align:right;">LATENCY</th>
-            <th style="min-width:100px;" class="hide-sm">CLIENT</th>
+            <th style="min-width:90px;" class="text-left">THỜI GIAN</th>
+            <th style="min-width:75px;" class="text-center">METHOD</th>
+            <th style="min-width:180px;" class="text-left">PATH</th>
+            <th style="min-width:130px;" class="text-left hide-sm">MODEL</th>
+            <th style="min-width:100px;" class="text-left">KEY</th>
+            <th style="min-width:120px;" class="text-left hide-sm">ACCOUNT</th>
+            <th style="min-width:85px;" class="text-center">STATUS</th>
+            <th style="min-width:90px;" class="text-right">LATENCY</th>
+            <th style="min-width:100px;" class="text-left hide-sm">CLIENT</th>
           </tr>
         </thead>
         <tbody id="req-body">
@@ -1146,7 +1146,9 @@
   <!-- Modular JavaScript Scripts -->
   <script>
 "use strict";
+
 // ==================== core.js ====================
+"use strict";
 const STORE = "muse2api.adminKey";
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -1372,6 +1374,7 @@ async function loadAccounts() {
 
 
 // ==================== accounts.js ====================
+"use strict";
 // ---- accounts ----
 const isQuota = (a) => /quota|credit|out of (usage|messages)|limit reached|exhaust/i.test(a.last_error || "");
 function accState(a, t) {
@@ -1417,7 +1420,7 @@ function accountTableRow(a) {
   const weeklyPct = Math.max(0, Math.min(100, 100 - (q.weekly_used_pct ?? 5)));
 
   return `<tr data-id="${esc(a.id)}">
-    <td>
+    <td class="text-left">
       <div class="acc-user-cell">
         <div class="acc-avatar-icon">
           <svg class="i"><use href="#i-accounts"/></svg>
@@ -1428,11 +1431,11 @@ function accountTableRow(a) {
         </div>
       </div>
     </td>
-    <td>
+    <td class="text-left">
       ${statusHtml}
       <div class="acc-meta-time">Kiểm tra: ${esc(checkTime)}</div>
     </td>
-    <td>
+    <td class="text-left">
       <div class="acc-quota-block">
         <strong class="acc-quota-title">${esc(tokensLeft)}</strong>
         <div class="acc-quota-sub">Token bổ sung · Tuần này: <b>${esc(weeklyPct)}%</b> còn</div>
@@ -1444,7 +1447,7 @@ function accountTableRow(a) {
         </button>
       </div>
     </td>
-    <td>
+    <td class="text-left">
       <div class="acc-exp-date">${esc(expStr)}</div>
       <div class="acc-meta-sub">Theo cookie phiên</div>
     </td>
@@ -1509,12 +1512,12 @@ function renderAccounts() {
       <table class="recent-requests-table accounts-table">
         <thead>
           <tr>
-            <th style="min-width:180px;">TÀI KHOẢN</th>
-            <th style="min-width:140px;">TRẠNG THÁI</th>
-            <th style="min-width:200px;">TOKEN CÒN LẠI</th>
-            <th style="min-width:150px;">HIỆU LỰC ĐẾN</th>
-            <th style="min-width:110px;text-align:center;">LƯỢT SỬ DỤNG</th>
-            <th style="min-width:120px;text-align:right;">THAO TÁC</th>
+            <th style="min-width:180px;" class="text-left">TÀI KHOẢN</th>
+            <th style="min-width:140px;" class="text-left">TRẠNG THÁI</th>
+            <th style="min-width:200px;" class="text-left">TOKEN CÒN LẠI</th>
+            <th style="min-width:150px;" class="text-left">HIỆU LỰC ĐẾN</th>
+            <th style="min-width:110px;" class="text-center">LƯỢT SỬ DỤNG</th>
+            <th style="min-width:120px;" class="text-right">THAO TÁC</th>
           </tr>
         </thead>
         <tbody>
@@ -1627,6 +1630,8 @@ $("#accounts").addEventListener("click", async (e) => {
 
 
 // ==================== overview.js ====================
+"use strict";
+
 // ---- overview (Image 2 Reference Implementation) ----
 let overviewRecentRequests = [];
 
@@ -1827,7 +1832,7 @@ function renderRecentRequestsTable() {
 
     return `
       <tr data-id="${esc(r.id || "")}">
-        <td>
+        <td class="text-left">
           <div class="model-cell">
             <span class="status-indicator-dot ${statusDotCls}"></span>
             <div>
@@ -1836,14 +1841,14 @@ function renderRecentRequestsTable() {
             </div>
           </div>
         </td>
-        <td class="in-out-cell">
+        <td class="text-left in-out-cell">
           <span class="token-in-arrow">~${inTokens} ↑</span>
           <span class="token-out-arrow">~${outTokens} ↓</span>
         </td>
-        <td style="color:var(--muted);">${firstMs}</td>
-        <td style="color:var(--muted);font-weight:600;">${durMs}</td>
-        <td>${statusPill}</td>
-        <td style="text-align:center;">
+        <td class="text-left" style="color:var(--muted);">${firstMs}</td>
+        <td class="text-left" style="color:var(--muted);font-weight:600;">${durMs}</td>
+        <td class="text-left">${statusPill}</td>
+        <td class="text-center">
           <button class="action-more-btn" type="button" data-req-id="${esc(r.id)}" title="Xem chi tiết">
             <svg class="i"><use href="#i-more-horizontal"/></svg>
           </button>
@@ -1925,6 +1930,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ==================== keys.js ====================
+"use strict";
 // ---- keys ----
 
 const BUILTIN_NOTE = {legacy: "MUSE2API_API_KEY (key đơn cũ)", admin: "MUSE2API_ADMIN_KEY"};
@@ -2058,13 +2064,13 @@ async function loadKeys() {
     const u = k.usage || {};
     const hasErr = (u.errors_24h || 0) > 0;
     return `<tr class="click" data-id="${esc(k.id)}" tabindex="0" title="Xem requests của ${esc(k.name)}">
-      <td>
+      <td class="text-left">
         <div class="key-name-block">
           <strong class="key-name-title">${esc(k.name)}</strong>
           ${k.note ? `<div class="key-note-sub">${esc(k.note)}</div>` : ""}
         </div>
       </td>
-      <td>
+      <td class="text-left">
         <div class="key-prefix-wrap">
           <code class="key-prefix-badge">${esc(k.prefix)}••••••••</code>
           <button class="tbl-action-btn copy-prefix-btn" type="button" data-act="copy-prefix" data-prefix="${esc(k.prefix)}" title="Sao chép tiền tố key">
@@ -2072,15 +2078,15 @@ async function loadKeys() {
           </button>
         </div>
       </td>
-      <td>${statusBadgeK(k)}</td>
+      <td class="text-left">${statusBadgeK(k)}</td>
       <td class="text-right num font-mono">${fmtNum(u.total || 0)}</td>
       <td class="text-right num font-mono font-bold">${fmtNum(u.requests_24h || 0)}</td>
       <td class="text-right num font-mono">
         ${hasErr ? `<span class="err-count-badge">${fmtNum(u.errors_24h)}</span>` : `<span class="text-muted">0</span>`}
       </td>
-      <td class="text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
+      <td class="text-left text-muted small">${esc(u.last_request_at ? ago(u.last_request_at) : "chưa có")}</td>
       <td class="text-right">
-        <div class="acc-action-group" style="justify-content:flex-end;">
+        <div class="acc-action-group">
           <button class="tbl-action-btn" type="button" data-act="edit" title="Đổi tên">
             <svg class="i"><use href="#i-keys"/></svg>
           </button>
@@ -2307,6 +2313,7 @@ $("#keys-body")?.addEventListener("click", (e) => {
 
 
 // ==================== requests.js ====================
+"use strict";
 // ---- requests ----
 
 function methodBadge(m) {
@@ -2365,19 +2372,19 @@ async function loadRequests() {
   const res = await api(`/admin/requests?${p}`);
   lastRows = res.data;
   $("#req-body").innerHTML = res.data.map((r, i) => `<tr class="click" data-i="${i}" tabindex="0">
-      <td class="mono-time" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
+      <td class="text-left mono-time" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
       <td class="text-center">${methodBadge(r.method)}</td>
-      <td class="path-cell">
+      <td class="text-left path-cell">
         <span class="path-code" title="${esc(r.path)}">${esc(r.path)}</span>
         ${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}
         ${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}
       </td>
-      <td class="hide-sm">${r.model ? `<span class="model-tag">${esc(r.model)}</span>` : '<span class="text-muted">–</span>'}</td>
-      <td><span class="key-name-tag">${esc(r.key_name || (r.key_id ? r.key_id.slice(0, 8) + '…' : "–"))}</span></td>
-      <td class="hide-sm"><span class="acc-tag">${esc(accountLabel(r.account_id))}</span></td>
+      <td class="text-left hide-sm">${r.model ? `<span class="model-tag">${esc(r.model)}</span>` : '<span class="text-muted">–</span>'}</td>
+      <td class="text-left"><span class="key-name-tag">${esc(r.key_name || (r.key_id ? r.key_id.slice(0, 8) + '…' : "–"))}</span></td>
+      <td class="text-left hide-sm"><span class="acc-tag">${esc(accountLabel(r.account_id))}</span></td>
       <td class="text-center" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
       <td class="text-right num-latency">${esc(fmtMs(r.latency_ms))}</td>
-      <td class="hide-sm mono-client">${esc(r.client_ip || "–")}</td>
+      <td class="text-left hide-sm mono-client">${esc(r.client_ip || "–")}</td>
     </tr>`).join("") || `<tr><td colspan="9" class="empty">Không có request nào khớp bộ lọc.</td></tr>`;
   const end = state.offset + res.data.length;
   $("#req-range").textContent = res.total ? `Hiển thị ${state.offset + 1}–${end} / ${fmtNum(res.total)} request` : "";
@@ -2437,6 +2444,7 @@ $("#req-next").addEventListener("click", () => {
 
 
 // ==================== login.js ====================
+"use strict";
 // ---- login ----
 function showLogin(message) {
   $("#app").hidden = true;
@@ -2557,6 +2565,7 @@ $("#login-form").addEventListener("submit", async (e) => {
 
 
 // ==================== app.js ====================
+"use strict";
 // ---- routing: #page or #requests?key=..&account=.. ----
 const loaders = {overview: loadOverview, accounts: loadAccountsPage, keys: loadKeys, requests: loadRequests};
 function parseHash() {

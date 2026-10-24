@@ -819,6 +819,38 @@ th {
   background: var(--panel-2);
 }
 
+/* Table Column Alignment Utilities */
+.text-left { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+
+th.text-left, td.text-left { text-align: left !important; }
+th.text-center, td.text-center { text-align: center !important; }
+th.text-right, td.text-right { text-align: right !important; }
+
+/* Ensure children inside aligned cells position predictably */
+td.text-center > span,
+td.text-center > div,
+td.text-center > button {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+td.text-right > .acc-action-group,
+td.text-right > div {
+  justify-content: flex-end;
+}
+
+/* Typography & Number tabular formatting */
+.font-mono, .mono { font-family: var(--mono) !important; }
+.font-bold { font-weight: 700 !important; }
+.text-muted { color: var(--muted) !important; }
+.small { font-size: 11.5px !important; }
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
 /* Modals & Overlay */
 .overlay {
   position: fixed;

@@ -259,7 +259,10 @@
 
 /* Use count */
 .acc-use-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
   font-family: var(--mono);
   font-weight: 700;
   font-size: 13px;
@@ -274,6 +277,7 @@
 .acc-action-group {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
 }
 

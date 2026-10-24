@@ -57,19 +57,19 @@ async function loadRequests() {
   const res = await api(`/admin/requests?${p}`);
   lastRows = res.data;
   $("#req-body").innerHTML = res.data.map((r, i) => `<tr class="click" data-i="${i}" tabindex="0">
-      <td class="mono-time" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
+      <td class="text-left mono-time" title="${esc(fullTime(r.ts))}">${esc(clock(r.ts))}</td>
       <td class="text-center">${methodBadge(r.method)}</td>
-      <td class="path-cell">
+      <td class="text-left path-cell">
         <span class="path-code" title="${esc(r.path)}">${esc(r.path)}</span>
         ${r.stream ? ` <span class="badge plain b-mute">stream</span>` : ""}
         ${r.poll ? ` <span class="badge plain b-mute">poll</span>` : ""}
       </td>
-      <td class="hide-sm">${r.model ? `<span class="model-tag">${esc(r.model)}</span>` : '<span class="text-muted">–</span>'}</td>
-      <td><span class="key-name-tag">${esc(r.key_name || (r.key_id ? r.key_id.slice(0, 8) + '…' : "–"))}</span></td>
-      <td class="hide-sm"><span class="acc-tag">${esc(accountLabel(r.account_id))}</span></td>
+      <td class="text-left hide-sm">${r.model ? `<span class="model-tag">${esc(r.model)}</span>` : '<span class="text-muted">–</span>'}</td>
+      <td class="text-left"><span class="key-name-tag">${esc(r.key_name || (r.key_id ? r.key_id.slice(0, 8) + '…' : "–"))}</span></td>
+      <td class="text-left hide-sm"><span class="acc-tag">${esc(accountLabel(r.account_id))}</span></td>
       <td class="text-center" title="${esc(r.error || "")}">${statusBadge(r.status_code)}${taskBadge(r)}</td>
       <td class="text-right num-latency">${esc(fmtMs(r.latency_ms))}</td>
-      <td class="hide-sm mono-client">${esc(r.client_ip || "–")}</td>
+      <td class="text-left hide-sm mono-client">${esc(r.client_ip || "–")}</td>
     </tr>`).join("") || `<tr><td colspan="9" class="empty">Không có request nào khớp bộ lọc.</td></tr>`;
   const end = state.offset + res.data.length;
   $("#req-range").textContent = res.total ? `Hiển thị ${state.offset + 1}–${end} / ${fmtNum(res.total)} request` : "";

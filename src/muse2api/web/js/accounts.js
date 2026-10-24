@@ -44,7 +44,7 @@ function accountTableRow(a) {
   const weeklyPct = Math.max(0, Math.min(100, 100 - (q.weekly_used_pct ?? 5)));
 
   return `<tr data-id="${esc(a.id)}">
-    <td>
+    <td class="text-left">
       <div class="acc-user-cell">
         <div class="acc-avatar-icon">
           <svg class="i"><use href="#i-accounts"/></svg>
@@ -55,11 +55,11 @@ function accountTableRow(a) {
         </div>
       </div>
     </td>
-    <td>
+    <td class="text-left">
       ${statusHtml}
       <div class="acc-meta-time">Kiểm tra: ${esc(checkTime)}</div>
     </td>
-    <td>
+    <td class="text-left">
       <div class="acc-quota-block">
         <strong class="acc-quota-title">${esc(tokensLeft)}</strong>
         <div class="acc-quota-sub">Token bổ sung · Tuần này: <b>${esc(weeklyPct)}%</b> còn</div>
@@ -71,7 +71,7 @@ function accountTableRow(a) {
         </button>
       </div>
     </td>
-    <td>
+    <td class="text-left">
       <div class="acc-exp-date">${esc(expStr)}</div>
       <div class="acc-meta-sub">Theo cookie phiên</div>
     </td>
@@ -136,12 +136,12 @@ function renderAccounts() {
       <table class="recent-requests-table accounts-table">
         <thead>
           <tr>
-            <th style="min-width:180px;">TÀI KHOẢN</th>
-            <th style="min-width:140px;">TRẠNG THÁI</th>
-            <th style="min-width:200px;">TOKEN CÒN LẠI</th>
-            <th style="min-width:150px;">HIỆU LỰC ĐẾN</th>
-            <th style="min-width:110px;text-align:center;">LƯỢT SỬ DỤNG</th>
-            <th style="min-width:120px;text-align:right;">THAO TÁC</th>
+            <th style="min-width:180px;" class="text-left">TÀI KHOẢN</th>
+            <th style="min-width:140px;" class="text-left">TRẠNG THÁI</th>
+            <th style="min-width:200px;" class="text-left">TOKEN CÒN LẠI</th>
+            <th style="min-width:150px;" class="text-left">HIỆU LỰC ĐẾN</th>
+            <th style="min-width:110px;" class="text-center">LƯỢT SỬ DỤNG</th>
+            <th style="min-width:120px;" class="text-right">THAO TÁC</th>
           </tr>
         </thead>
         <tbody>
