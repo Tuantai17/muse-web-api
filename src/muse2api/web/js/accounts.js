@@ -179,7 +179,7 @@ async function accountForm(title = "Thêm account muse.ai") {
     </label>
     
     <label class="f">Cookie muse.ai 
-      <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Cần có cookie <code>hatch_sess</code> và <code>hatch_vml</code>!</span>
+      <span class="hint">⚠️ Copy từ tab Network trong F12 (Headers → cookie:). Chỉ cần có cookie <code>hatch_sess</code> là hệ thống sẽ tự động liên kết phiên!</span>
       <textarea id="af-cookies" rows="5" placeholder="hatch_sess=...; hatch_gw=...; hatch_vml=...; hatch_native_auth_device=..." style="font-family:var(--mono);font-size:12px;"></textarea>
     </label>
 

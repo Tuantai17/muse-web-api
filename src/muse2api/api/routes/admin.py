@@ -102,12 +102,11 @@ async def verify_account(body: AccountCreate, svc: Services = Depends(get_servic
     except InvalidRequest as e:
         return {"ok": False, "error": e.message}
 
-    missing = missing_session_cookies(acc.cookies)
-    if missing:
+    if not acc.cookies.get("hatch_sess"):
         return {
             "ok": False,
-            "error": f"Thiếu cookie bắt buộc: {', '.join(missing)}. Vui lòng copy đầy đủ cookie từ tab Network trong F12.",
-            "missing_cookies": missing,
+            "error": "Thiếu cookie bắt buộc: hatch_sess. Vui lòng copy từ tab Network trong F12 (Headers -> cookie:) trên trang muse.ai.",
+            "missing_cookies": ["hatch_sess"],
         }
 
     if not svc.driver.requires_account:
