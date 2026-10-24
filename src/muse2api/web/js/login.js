@@ -14,14 +14,10 @@ function showLogin(message) {
   $("#login-key").value = "";
   $("#login-key").focus();
 
-  // Check environment: only display local default key card in local/dev
-  const isLocalDev = ["localhost", "127.0.0.1", "0.0.0.0", "::1"].includes(window.location.hostname) ||
-                     window.location.hostname.endsWith(".local") ||
-                     window.location.port === "18610" ||
-                     window.location.hostname.includes("trycloudflare.com");
+  // Luôn hiển thị khung khóa mặc định để giao diện đồng nhất tuyệt đối trên cả local và cloud/Render
   const localBox = $("#local-default-key-card");
   if (localBox) {
-    localBox.hidden = !isLocalDev;
+    localBox.hidden = false;
   }
 }
 

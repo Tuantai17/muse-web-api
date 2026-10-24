@@ -12,12 +12,12 @@
   </script>
 
   <!-- Modular CSS Stylesheets -->
-  <link rel="stylesheet" href="/static/css/base.css?v=2.6.0">
-  <link rel="stylesheet" href="/static/css/login.css?v=2.6.0">
-  <link rel="stylesheet" href="/static/css/overview.css?v=2.6.0">
-  <link rel="stylesheet" href="/static/css/accounts.css?v=2.6.0">
-  <link rel="stylesheet" href="/static/css/keys.css?v=2.6.0">
-  <link rel="stylesheet" href="/static/css/requests.css?v=2.6.0">
+  <link rel="stylesheet" href="/static/css/base.css?v=2.7.0">
+  <link rel="stylesheet" href="/static/css/login.css?v=2.7.0">
+  <link rel="stylesheet" href="/static/css/overview.css?v=2.7.0">
+  <link rel="stylesheet" href="/static/css/accounts.css?v=2.7.0">
+  <link rel="stylesheet" href="/static/css/keys.css?v=2.7.0">
+  <link rel="stylesheet" href="/static/css/requests.css?v=2.7.0">
 </head>
 <body>
 
@@ -2462,14 +2462,10 @@ function showLogin(message) {
   $("#login-key").value = "";
   $("#login-key").focus();
 
-  // Check environment: only display local default key card in local/dev
-  const isLocalDev = ["localhost", "127.0.0.1", "0.0.0.0", "::1"].includes(window.location.hostname) ||
-                     window.location.hostname.endsWith(".local") ||
-                     window.location.port === "18610" ||
-                     window.location.hostname.includes("trycloudflare.com");
+  // Luôn hiển thị khung khóa mặc định để giao diện đồng nhất tuyệt đối trên cả local và cloud/Render
   const localBox = $("#local-default-key-card");
   if (localBox) {
-    localBox.hidden = !isLocalDev;
+    localBox.hidden = false;
   }
 }
 

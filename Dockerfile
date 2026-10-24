@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir .
 ENV MUSE2API_HOST=0.0.0.0 \
     MUSE2API_PORT=7860 \
     MUSE2API_DATA_DIR=/app/data \
+    MUSE2API_ADMIN_KEY=muse123456 \
     MUSE2API_CHROMIUM_PATH=/usr/bin/chromium \
     CHROME_NO_SANDBOX=1
 
