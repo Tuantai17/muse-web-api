@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%230b6b61%22/%3E%3C/svg%3E">
-<title>muse2api dashboard</title>
+<title>muse-web-api dashboard</title>
 <script>
   // Apply the saved theme before first paint.
   try { const t = localStorage.getItem("muse2api.theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch {}
@@ -59,15 +59,35 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ---------- login ---------- */
-.login { min-height: 100vh; display: grid; place-items: center; padding: 16px;
-  background: radial-gradient(1200px 500px at 50% -10%, var(--accent-soft), transparent 70%), var(--bg); }
-.login-card { width: 100%; max-width: 380px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 26px 24px 22px; box-shadow: var(--shadow-lg); }
-.login-card .wordmark { color: var(--text); }
-.login-card h1 { font-size: 18px; margin: 18px 0 4px; letter-spacing: -.01em; }
-.login-card p { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
-.login-card form { display: flex; flex-direction: column; gap: 10px; }
-.login-card .btn { justify-content: center; padding: 8px 12px; }
+/* ---------- modern login ---------- */
+.login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  background: radial-gradient(ellipse 90% 65% at 50% -10%, rgba(63, 209, 189, 0.16), transparent 70%),
+              radial-gradient(circle 500px at 85% 90%, rgba(20, 184, 166, 0.08), transparent 70%), var(--bg); }
+.login-card { width: 100%; max-width: 420px; background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 36px 30px 28px; box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); position: relative; overflow: hidden; animation: rise .22s cubic-bezier(0.16, 1, 0.3, 1); }
+.login-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3.5px; background: linear-gradient(90deg, #3fd1bd, #0b6b61, #2eb985); }
+.login-card .wordmark { margin-bottom: 22px; color: var(--text); }
+.login-card .wordmark .glyph { width: 34px; height: 34px; font-size: 13px; border-radius: 9px; box-shadow: 0 4px 14px rgba(63, 209, 189, 0.28); }
+.login-card h1 { font-size: 21px; font-weight: 700; margin: 0 0 8px; letter-spacing: -.02em; color: var(--text); }
+.login-card .login-desc { margin: 0 0 20px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.login-card form { display: flex; flex-direction: column; gap: 14px; }
+.field-wrap { display: flex; flex-direction: column; gap: 6px; }
+.field-wrap label.f { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.input-password-wrap { position: relative; display: flex; align-items: center; }
+.input-password-wrap .input-icon { position: absolute; left: 12px; color: var(--muted); pointer-events: none; display: flex; align-items: center; }
+.input-password-wrap input { width: 100%; padding: 11px 44px 11px 38px; font-size: 14px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--panel-2); color: var(--text); transition: all .16s ease; font-family: var(--sans); }
+.input-password-wrap input:focus { outline: none; border-color: #3fd1bd; box-shadow: 0 0 0 3px rgba(63, 209, 189, 0.2); background: var(--panel); }
+.btn-toggle-eye { position: absolute; right: 6px; width: 34px; height: 34px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; transition: all .15s ease; padding: 0; }
+.btn-toggle-eye:hover { color: var(--text); background: rgba(125, 125, 125, 0.12); }
+.btn-toggle-eye svg { width: 16px; height: 16px; }
+.quick-key-hint { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; background: rgba(63, 209, 189, 0.06); border: 1px dashed rgba(63, 209, 189, 0.3); font-size: 12px; color: var(--muted); margin-top: -2px; }
+.quick-key-hint .hint-text { font-weight: 500; }
+.chip-key { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(63, 209, 189, 0.4); background: rgba(63, 209, 189, 0.12); color: #2eb985; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s ease; }
+.chip-key:hover { background: rgba(63, 209, 189, 0.22); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(63, 209, 189, 0.2); }
+.chip-key svg { width: 13px; height: 13px; }
+.login-submit-btn { width: 100%; padding: 11px 18px; border-radius: 10px; font-size: 14.5px; font-weight: 650; display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #10b981, #0d9488); color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.32); transition: all .18s ease; margin-top: 4px; }
+.login-submit-btn:hover { background: linear-gradient(135deg, #059669, #0f766e); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.42); transform: translateY(-1px); }
+.login-submit-btn:active { transform: translateY(0); }
+.login-submit-btn svg { width: 16px; height: 16px; }
 
 /* ---------- shell ---------- */
 .app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
@@ -425,6 +445,9 @@ dl.kv dd { margin: 0; overflow-wrap: anywhere; font-family: var(--mono); font-si
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
   <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
@@ -439,21 +462,40 @@ dl.kv dd { margin: 0; overflow-wrap: anywhere; font-family: var(--mono); font-si
 <!-- login screen -->
 <div class="login" id="login" hidden>
   <div class="login-card">
-    <div class="wordmark"><span class="glyph">m2a</span><span>muse2api<small>Bảng điều khiển quản trị</small></span></div>
-    <h1>Đăng nhập</h1>
-    <p>Nhập admin key (<span class="mono">MUSE2API_ADMIN_KEY</span>). Key được lưu trong local storage của trình duyệt này.</p>
+    <div class="wordmark"><span class="glyph">mwa</span><span>muse-web-api<small>Bảng điều khiển quản trị</small></span></div>
+    <h1>Đăng nhập quản trị</h1>
+    <p class="login-desc">Nhập khóa Admin key để truy cập bảng điều khiển hệ thống và quản lý tài khoản.</p>
     <form id="login-form" autocomplete="on">
       <input type="text" name="username" value="admin" autocomplete="username" hidden>
-      <label class="f">Admin key<input type="password" id="login-key" autocomplete="current-password" required></label>
+      <div class="field-wrap">
+        <label class="f" for="login-key">Khóa Admin key</label>
+        <div class="input-password-wrap">
+          <span class="input-icon"><svg class="i"><use href="#i-lock"/></svg></span>
+          <input type="password" id="login-key" placeholder="Nhập khóa quản trị (ví dụ: muse123456)" autocomplete="current-password" required>
+          <button type="button" id="toggle-password" class="btn-toggle-eye" title="Ẩn/Hiện mật khẩu" aria-label="Ẩn/Hiện mật khẩu">
+            <svg class="i" id="eye-icon"><use href="#i-eye"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="quick-key-hint">
+        <span class="hint-text">Khóa mặc định:</span>
+        <button type="button" id="btn-fill-default-key" class="chip-key" title="Nhấn để tự động điền key này">
+          <span class="mono">muse123456</span>
+          <svg class="i"><use href="#i-copy"/></svg>
+        </button>
+      </div>
       <div class="errbox" id="login-err" hidden></div>
-      <button class="btn primary" type="submit" id="login-btn">Đăng nhập</button>
+      <button class="btn primary login-submit-btn" type="submit" id="login-btn">
+        <span>Đăng nhập</span>
+        <svg class="i"><use href="#i-arrow-right"/></svg>
+      </button>
     </form>
   </div>
 </div>
 
 <div class="app" id="app" hidden>
   <aside class="side" id="side" aria-label="Điều hướng">
-    <div class="wordmark"><span class="glyph" aria-hidden="true">m2a</span><span>muse2api<small id="version">admin</small></span></div>
+    <div class="wordmark"><span class="glyph" aria-hidden="true">mwa</span><span>muse-web-api<small id="version">admin</small></span></div>
     <div class="health" id="health" role="status" aria-live="polite">
       <span class="pulse" id="health-dot"></span><b id="health-text">Đang kiểm tra…</b><small id="health-sub">&nbsp;</small>
     </div>
@@ -1018,6 +1060,36 @@ dl.kv dd { margin: 0; overflow-wrap: anywhere; font-family: var(--mono); font-si
     $("#login-key").value = "";
     $("#login-key").focus();
   }
+
+  // Toggle show/hide password
+  const toggleEyeBtn = $("#toggle-password");
+  if (toggleEyeBtn) {
+    toggleEyeBtn.addEventListener("click", () => {
+      const input = $("#login-key");
+      const useEl = $("#eye-icon use");
+      if (input.type === "password") {
+        input.type = "text";
+        useEl.setAttribute("href", "#i-eye-off");
+        toggleEyeBtn.title = "Ẩn mật khẩu";
+      } else {
+        input.type = "password";
+        useEl.setAttribute("href", "#i-eye");
+        toggleEyeBtn.title = "Hiện mật khẩu";
+      }
+    });
+  }
+
+  // Quick fill default key (muse123456)
+  const fillDefaultBtn = $("#btn-fill-default-key");
+  if (fillDefaultBtn) {
+    fillDefaultBtn.addEventListener("click", () => {
+      const input = $("#login-key");
+      input.value = "muse123456";
+      input.focus();
+      toast("Đã điền khóa mặc định (muse123456)");
+    });
+  }
+
   $("#login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const key = $("#login-key").value.trim();
@@ -1955,7 +2027,7 @@ dl.kv dd { margin: 0; overflow-wrap: anywhere; font-family: var(--mono); font-si
     }
     for (const p of Object.keys(loaders)) $(`#page-${p}`).hidden = p !== page;
     $("#top-title").textContent = PAGES[page];
-    document.title = `${PAGES[page]} · muse2api dashboard`;
+    document.title = `${PAGES[page]} · muse-web-api`;
     store.set("muse2api.page", page);
     setDrawer(false);
     guarded(loaders[page]);
