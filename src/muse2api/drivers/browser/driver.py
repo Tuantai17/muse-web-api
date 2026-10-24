@@ -197,8 +197,16 @@ class BrowserDriver(MuseDriver):
             return res["browserContextId"]
 
     async def _open_tab(self, account: Account) -> _Tab:
-        if missing := muse.missing_session_cookies(account.cookies):
-            raise UpstreamAuthError(f"account is missing session cookies: {', '.join(missing)}")
+        if not account.cookies.get("hatch_sess"):
+            raise UpstreamAuthError("account is missing session cookie: hatch_sess")
+        if not account.cookies.get("hatch_vml"):
+            try:
+                info = await self.renew_session(account)
+                account.cookies.update(info.cookies)
+                account.cookie_expires.update(info.cookie_expires)
+                account.meta.update(info.meta)
+            except Exception as e:
+                log.warning("session renewal before tab open failed: %s", e)
         assert self._browser and self._chromium
         context_id = await self._context(account)
         # A window per tab: Chromium throttles background tabs of a shared window,

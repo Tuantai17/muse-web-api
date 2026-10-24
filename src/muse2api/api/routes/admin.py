@@ -99,6 +99,8 @@ async def create_account(body: AccountCreate, svc: Services = Depends(get_servic
     acc = _build_account(body)
     info = await fetch_account_info(acc.cookies)
     if info.get("ok"):
+        if info.get("new_cookies"):
+            acc.cookies.update(info["new_cookies"])
         email = info.get("email")
         if email and (not acc.label or acc.label.startswith("acc_")):
             acc.label = email
@@ -185,11 +187,10 @@ async def renew(account_id: str, svc: Services = Depends(get_services)) -> dict:
 @router.post("/accounts/{account_id}/test")
 async def test_account(account_id: str, svc: Services = Depends(get_services)) -> dict:
     acc = _get(svc, account_id)
-    missing = missing_session_cookies(acc.cookies)
-    if missing:
+    if not acc.cookies.get("hatch_sess"):
         return {
             "ok": False,
-            "error": f"Thiếu các cookie: {', '.join(missing)}. Vui lòng copy chuỗi Cookie từ tab Network trong F12 (không dùng document.cookie)."
+            "error": "Thiếu cookie hatch_sess. Vui lòng nhập cookie đăng nhập của muse.ai."
         }
     try:
         from ...drivers.base import ChatRequest
@@ -211,6 +212,8 @@ async def account_quota(account_id: str, svc: Services = Depends(get_services)) 
     acc = _get(svc, account_id)
     info = await fetch_account_info(acc.cookies)
     if info.get("ok"):
+        if info.get("new_cookies"):
+            acc.cookies.update(info["new_cookies"])
         if info.get("email") and (not acc.label or acc.label.startswith("acc_") or acc.label in ("sadsa", "test")):
             acc.label = info.get("email")
         acc.meta["email"] = info.get("email")

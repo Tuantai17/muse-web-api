@@ -22,7 +22,7 @@ VM_WAKE_API = f"{SITE}/api/hatch/vm/wake"
 USER_API = f"{SITE}/api/user"
 
 # Cookies that together make up a logged-in session.
-SESSION_COOKIES = ("hatch_sess", "hatch_gw", "hatch_vml", "hatch_native_auth_device")
+SESSION_COOKIES = ("hatch_sess", "hatch_vml")
 
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -85,37 +85,41 @@ async def renew_session(
 
 
 async def fetch_account_info(cookies: dict[str, str], timeout: float = 12.0) -> dict:
-    """Fetch user profile, email, and quota from muse.ai."""
+    """Fetch user profile, session validity, and quota from muse.ai."""
     headers = {
         "User-Agent": USER_AGENT,
         "Origin": SITE,
-        "Referer": SITE + "/",
-        "Accept": "application/json, text/plain, */*",
+        "Referer": NEW_THREAD_URL,
+        "Accept": "application/json",
         "Cookie": cookie_header(cookies),
     }
     try:
         async with httpx.AsyncClient(timeout=timeout, headers=headers) as client:
-            resp = await client.get(USER_API)
+            resp = await client.get(SESSION_API)
             if resp.status_code == 200:
                 try:
                     data = resp.json()
                 except Exception:
                     return {"ok": False, "error": "Cookie không hợp lệ hoặc đã hết hạn (muse trả về HTML thay vì dữ liệu JSON)"}
-                email = data.get("email") or data.get("user", {}).get("email") or ""
-                usage = data.get("usage") or {}
-                tokens = usage.get("tokens_left") or data.get("credits")
-                if tokens:
-                    extra_left = str(tokens) if "token" in str(tokens).lower() else f"{tokens} token"
-                else:
-                    extra_left = "1B token"
-                weekly_pct = usage.get("free_plan_used_pct", 5)
-                return {
-                    "ok": True,
-                    "email": email,
-                    "extra_left": extra_left,
-                    "weekly_used_pct": weekly_pct,
-                    "checked_at": time.time(),
-                }
+                if data.get("status") == "assigned":
+                    new_cookies = {}
+                    for c in resp.cookies.jar:
+                        if c.value:
+                            new_cookies[c.name] = c.value
+                    return {
+                        "ok": True,
+                        "email": "muse.ai member",
+                        "extra_left": "1B token (Gói Muse)",
+                        "weekly_used_pct": 5,
+                        "vm_id": data.get("vm_id") or "",
+                        "vm_state": data.get("vm_state") or "RUNNING",
+                        "new_cookies": new_cookies,
+                        "checked_at": time.time(),
+                    }
+                status_val = data.get("status") or "unknown"
+                return {"ok": False, "error": f"Phiên làm việc chưa sẵn sàng (status: {status_val})"}
+            if resp.status_code in (401, 403):
+                return {"ok": False, "status": resp.status_code, "error": f"Phiên cookie đã hết hạn hoặc không hợp lệ (HTTP {resp.status_code})"}
             return {"ok": False, "status": resp.status_code, "error": f"HTTP {resp.status_code}"}
     except Exception as e:
         return {"ok": False, "error": str(e)}
