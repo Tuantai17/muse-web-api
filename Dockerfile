@@ -7,7 +7,7 @@ RUN apt-get update \
 RUN useradd --create-home --uid 1000 muse
 WORKDIR /app
 
-COPY pyproject.toml README.md ./
+COPY pyproject.toml _README.md ./
 COPY src ./src
 RUN pip install --no-cache-dir .
 
