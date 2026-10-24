@@ -1,0 +1,36 @@
+<section class="page" id="page-requests" hidden>
+        <div class="page-head">
+          <div class="grow"><h1>Requests</h1><div class="sub">Nhật ký từng request tới <span class="mono">/v1/*</span>. Bấm một dòng để xem chi tiết.</div></div>
+          <div class="tools"><label class="chk"><input type="checkbox" id="f-live" checked> <span class="livedot on" id="live-dot"></span> Tự động làm mới</label></div>
+        </div>
+        <div class="filters">
+          <select id="f-key" aria-label="Key"></select>
+          <select id="f-account" aria-label="Account"></select>
+          <select id="f-status" aria-label="Status">
+            <option value="">Mọi status</option>
+            <option value="2xx">2xx</option>
+            <option value="4xx">4xx</option>
+            <option value="5xx">5xx</option>
+            <option value="failed">Lỗi (gồm task failed)</option>
+          </select>
+          <input type="text" id="f-path" placeholder="Path, ví dụ /v1/chat" aria-label="Path prefix">
+          <label class="chk"><input type="checkbox" id="f-polls" checked> Ẩn poll</label>
+          <span id="f-chips" class="row"></span>
+        </div>
+        <div class="panel">
+          <div class="tablewrap">
+            <table>
+              <thead><tr>
+                <th>Time</th><th>Method</th><th>Path</th><th class="hide-sm">Model</th><th>Key</th>
+                <th class="hide-sm">Account</th><th class="num">Status</th><th class="num">Latency</th><th class="hide-sm">Client</th>
+              </tr></thead>
+              <tbody id="req-body"></tbody>
+            </table>
+          </div>
+          <div class="pager">
+            <span id="req-range"></span>
+            <button class="btn sm" id="req-prev" type="button">Mới hơn</button>
+            <button class="btn sm" id="req-next" type="button">Cũ hơn</button>
+          </div>
+        </div>
+      </section>

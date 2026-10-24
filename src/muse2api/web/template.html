@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <title>muse-web-api dashboard</title>
+  <script>
+    // Apply the saved theme before first paint.
+    try { const t = localStorage.getItem("muse2api.theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch {}
+  </script>
+
+  <!-- Modular CSS Stylesheets -->
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/login.css">
+  <link rel="stylesheet" href="/static/css/overview.css">
+  <link rel="stylesheet" href="/static/css/accounts.css">
+  <link rel="stylesheet" href="/static/css/keys.css">
+  <link rel="stylesheet" href="/static/css/requests.css">
+</head>
+<body>
+
+  <!-- SVG Icons Sprite -->
+  <!-- INCLUDE:pages/svgs.html -->
+
+  <!-- Login Screen -->
+  <!-- INCLUDE:pages/login.html -->
+
+  <!-- Sidebar Navigation -->
+  <!-- INCLUDE:pages/sidebar.html -->
+
+  <div class="shell">
+    <!-- Topbar -->
+    <!-- INCLUDE:pages/topbar.html -->
+
+    <main>
+      <!-- Page: Overview -->
+      <!-- INCLUDE:pages/overview.html -->
+
+      <!-- Page: Accounts -->
+      <!-- INCLUDE:pages/accounts.html -->
+
+      <!-- Page: Keys -->
+      <!-- INCLUDE:pages/keys.html -->
+
+      <!-- Page: Requests -->
+      <!-- INCLUDE:pages/requests.html -->
+
+      <!-- Footer -->
+      <!-- INCLUDE:pages/footer.html -->
+    </main>
+  </div>
+
+  <!-- Modals & Toasts -->
+  <!-- INCLUDE:pages/modals.html -->
+
+  <!-- Modular JavaScript Scripts -->
+  <script src="/static/js/core.js"></script>
+  <script src="/static/js/accounts.js"></script>
+  <script src="/static/js/overview.js"></script>
+  <script src="/static/js/keys.js"></script>
+  <script src="/static/js/requests.js"></script>
+  <script src="/static/js/login.js"></script>
+  <script src="/static/js/app.js"></script>
+
+</body>
+</html>

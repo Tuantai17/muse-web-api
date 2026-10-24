@@ -1,0 +1,9 @@
+/* ---------- requests page styles ---------- */
+#page-requests .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+#page-requests .filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+#page-requests .filter-row select, #page-requests .filter-row input { height: 36px; padding: 0 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 13px; }
+#page-requests table td { font-size: 13px; }
+#page-requests .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-weight: 600; font-size: 11px; }
+#page-requests .status-2xx { background: #dcefeb; color: #0b6b61; }
+#page-requests .status-4xx { background: #fef3c7; color: #b45309; }
+#page-requests .status-5xx { background: #fee2e2; color: #b91c1c; }

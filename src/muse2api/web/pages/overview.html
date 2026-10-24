@@ -1,0 +1,132 @@
+<!-- overview -->
+      <section class="page" id="page-overview" hidden>
+        <div class="page-head" style="align-items:center;margin-bottom:24px;">
+          <div class="grow">
+            <h1 style="font-size:26px;font-weight:800;letter-spacing:-.02em;">Tổng quan</h1>
+            <div class="sub" style="font-size:13px;color:var(--muted);margin-top:4px;">Chào bạn, mọi kết nối của bạn ở đây.</div>
+          </div>
+          <div class="tools">
+            <button class="btn primary" id="ov-add-acc-btn" type="button" style="background:#087f5b;border-color:#087f5b;color:#fff;font-weight:600;padding:8px 18px;border-radius:8px;box-shadow:0 3px 8px rgba(8,127,91,0.2);">
+              <svg class="i" style="width:15px;height:15px;"><use href="#i-plus"/></svg>+ Thêm tài khoản Muse
+            </button>
+          </div>
+        </div>
+
+        <!-- 5 Usage Stats Cards -->
+        <div class="usage-stats" id="ov-usage-stats">
+          <div class="card stat"><div class="stat-top">TỔNG REQUEST</div><strong id="ov-stat-req">0</strong><p>Chat + Responses từ khi bật thống kê</p></div>
+          <div class="card stat usage-input"><div class="stat-top">INPUT TOKENS</div><strong id="ov-stat-in">~0</strong><p>Ước tính ký tự / 4</p></div>
+          <div class="card stat usage-cache"><div class="stat-top">CACHED TOKENS</div><strong id="ov-stat-cache">—</strong><p>Muse chưa cung cấp usage cache</p></div>
+          <div class="card stat usage-output"><div class="stat-top">OUTPUT TOKENS</div><strong id="ov-stat-out">~0</strong><p>Ước tính ký tự / 4</p></div>
+          <div class="card stat usage-cost"><div class="stat-top">CHI PHÍ ƯỚC TÍNH</div><strong id="ov-stat-cost">—</strong><p>Không phải hóa đơn thực tế</p></div>
+        </div>
+
+        <!-- Recent Requests (Full Width) -->
+        <section class="card" style="margin-bottom:24px;">
+          <div class="card-head">
+            <h2>Request gần đây</h2>
+            <button class="btn ghost icon" id="ov-refresh-recent" type="button" aria-label="Làm mới thống kê"><svg class="i"><use href="#i-refresh"/></svg></button>
+          </div>
+          <div class="usage-recent" id="ov-recent-box" style="max-height:360px;">
+            <div class="empty">Đang tải request…</div>
+          </div>
+          <div class="usage-footer">50 request gần nhất · Tự làm mới mỗi 60 giây · Không lưu prompt / câu trả lời</div>
+        </section>
+
+        <!-- Dashboard 2-column Grid -->
+        <div class="dashboard-grid">
+          <!-- Left Stack: Accounts + Quick Access -->
+          <div class="stack" style="display:grid;gap:20px;">
+            <!-- Accounts Card -->
+            <section class="card">
+              <div class="card-head">
+                <h2>Tài khoản Muse</h2>
+                <a class="small" href="#accounts" style="color:var(--accent,#087f5b);font-weight:600;font-size:12px;text-decoration:none;">Xem tất cả &nbsp;↗</a>
+              </div>
+              <div id="ov-accounts-table">
+                <div class="empty">Đang tải tài khoản…</div>
+              </div>
+            </section>
+
+            <!-- Quick Access Card -->
+            <section class="card">
+              <div class="card-head">
+                <h2>Truy cập nhanh</h2>
+                <span class="muted small">Bắt đầu với Muse</span>
+              </div>
+              <div class="card-body quick-grid">
+                <a class="quick" href="#requests">
+                  <svg class="i" style="width:20px;height:20px;"><use href="#i-chat"/></svg>
+                  <div><strong>Thử trò chuyện</strong><span>Gửi prompt, nhận phản hồi</span></div>
+                </a>
+                <a class="quick" href="#keys">
+                  <svg class="i" style="width:20px;height:20px;"><use href="#i-code"/></svg>
+                  <div><strong>Tích hợp API</strong><span>Kết nối ứng dụng của bạn</span></div>
+                </a>
+                <a class="quick" href="#requests">
+                  <svg class="i" style="width:20px;height:20px;"><use href="#i-image"/></svg>
+                  <div><strong>Tạo hình ảnh</strong><span>Biến ý tưởng thành hình ảnh</span></div>
+                </a>
+                <a class="quick" href="#requests">
+                  <svg class="i" style="width:20px;height:20px;"><use href="#i-clock"/></svg>
+                  <div><strong>Lịch sử tác vụ</strong><span>Theo dõi tiến trình xử lý</span></div>
+                </a>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Stack: 3 Steps + API Endpoint -->
+          <div class="stack" style="display:grid;gap:20px;">
+            <!-- 3 Steps Card -->
+            <section class="card">
+              <div class="card-head">
+                <h2>Bắt đầu trong 3 bước</h2>
+                <svg class="i" style="color:var(--muted);width:18px;height:18px;"><use href="#i-spark"/></svg>
+              </div>
+              <div class="card-body">
+                <div class="step">
+                  <span class="step-number">1</span>
+                  <div>
+                    <strong>Kết nối tài khoản Muse</strong>
+                    <p>Nhập cookie phiên đăng nhập từ tài khoản Muse của bạn.</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <span class="step-number">2</span>
+                  <div>
+                    <strong>Lấy API key cá nhân</strong>
+                    <p>Key chỉ truy cập tài khoản và dữ liệu thuộc về bạn.</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <span class="step-number">3</span>
+                  <div>
+                    <strong>Tạo điều bạn muốn</strong>
+                    <p>Dùng Playground hoặc gọi API từ ứng dụng của bạn.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- API Address Card -->
+            <section class="card">
+              <div class="card-head">
+                <h2>Địa chỉ API</h2>
+                <span class="tag gray">REST API</span>
+              </div>
+              <div class="card-body">
+                <div class="endpoint">
+                  <code id="ov-api-base">http://127.0.0.1:18610/v1</code>
+                  <button class="btn ghost icon" id="ov-copy-base" type="button" aria-label="Sao chép địa chỉ API">
+                    <svg class="i"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+                <p class="muted small" style="margin-top:12px;font-size:11.5px;color:var(--muted);">Dùng Bearer API key cá nhân để xác thực.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- accounts -->
+      <!-- accounts -->

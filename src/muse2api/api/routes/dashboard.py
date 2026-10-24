@@ -16,13 +16,29 @@ router = APIRouter(tags=["dashboard"])
 
 _WEB_DIR = Path(__file__).resolve().parents[2] / "web"
 _PAGE = _WEB_DIR / "dashboard.html"
+_TEMPLATE = _WEB_DIR / "template.html"
 _FAVICON = _WEB_DIR / "favicon.ico"
 _LOGO_PNG = _WEB_DIR / "logo.png"
 _LOGO_WEBP = _WEB_DIR / "logo.webp"
 
 
 def _html() -> str:
-    return _PAGE.read_text(encoding="utf-8")
+    if not _TEMPLATE.exists():
+        return _PAGE.read_text(encoding="utf-8")
+
+    import re
+
+    template = _TEMPLATE.read_text(encoding="utf-8")
+
+    def _replace_include(match: re.Match) -> str:
+        rel_path = match.group(1).strip()
+        target = _WEB_DIR / rel_path
+        if target.exists():
+            return target.read_text(encoding="utf-8")
+        return f"<!-- missing include: {rel_path} -->"
+
+    composed = re.sub(r"<!--\s*INCLUDE:([^\s>]+)\s*-->", _replace_include, template)
+    return composed
 
 
 @router.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
@@ -30,6 +46,14 @@ async def dashboard() -> HTMLResponse:
     return HTMLResponse(_html(), headers={"Cache-Control": "no-cache",
                                           "X-Frame-Options": "DENY",
                                           "Referrer-Policy": "no-referrer"})
+
+
+@router.get("/static/{file_path:path}", include_in_schema=False)
+async def static_file(file_path: str) -> Response:
+    p = (_WEB_DIR / file_path).resolve()
+    if not str(p).startswith(str(_WEB_DIR.resolve())) or not p.is_file():
+        return Response(status_code=404)
+    return FileResponse(p)
 
 
 @router.get("/favicon.ico", include_in_schema=False)
