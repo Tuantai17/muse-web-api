@@ -30,11 +30,14 @@ class Settings(BaseSettings):
 
     @model_validator(mode="before")
     @classmethod
-    def _read_cloud_port(cls, data: Any) -> Any:
+    def _read_cloud_config(cls, data: Any) -> Any:
         if isinstance(data, dict):
             if "port" not in data and "PORT" in os.environ and "MUSE2API_PORT" not in os.environ:
                 with contextlib.suppress(ValueError):
                     data["port"] = int(os.environ["PORT"])
+            if "driver" not in data and "MUSE2API_DRIVER" not in os.environ:
+                if os.environ.get("MUSE2API_CHROMIUM_PATH") or os.path.exists("/usr/bin/chromium"):
+                    data["driver"] = "browser"
         return data
     log_level: str = "INFO"
     public_base: str = Field(
