@@ -439,10 +439,10 @@ main {
   z-index: 2;
 }
 
-/* Theme Toggle Pill (Sun / Auto / Moon) */
+/* Theme Toggle Pill (Sun / Moon) */
 .themes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   background: var(--side-2);
   border: 1px solid var(--side-border);
   border-radius: 999px;

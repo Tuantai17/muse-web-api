@@ -12,12 +12,12 @@
   </script>
 
   <!-- Modular CSS Stylesheets -->
-  <link rel="stylesheet" href="/static/css/base.css?v=2.5.0">
-  <link rel="stylesheet" href="/static/css/login.css?v=2.5.0">
-  <link rel="stylesheet" href="/static/css/overview.css?v=2.5.0">
-  <link rel="stylesheet" href="/static/css/accounts.css?v=2.5.0">
-  <link rel="stylesheet" href="/static/css/keys.css?v=2.5.0">
-  <link rel="stylesheet" href="/static/css/requests.css?v=2.5.0">
+  <link rel="stylesheet" href="/static/css/base.css?v=2.6.0">
+  <link rel="stylesheet" href="/static/css/login.css?v=2.6.0">
+  <link rel="stylesheet" href="/static/css/overview.css?v=2.6.0">
+  <link rel="stylesheet" href="/static/css/accounts.css?v=2.6.0">
+  <link rel="stylesheet" href="/static/css/keys.css?v=2.6.0">
+  <link rel="stylesheet" href="/static/css/requests.css?v=2.6.0">
 </head>
 <body>
 
@@ -194,15 +194,12 @@
 
     <!-- Sidebar Bottom / Footer -->
     <div class="side-foot">
-      <!-- 3-State Theme Toggle -->
+      <!-- 2-State Theme Toggle (Light / Dark) -->
       <div class="themes" role="group" aria-label="Giao diện">
-        <button type="button" data-theme="light" title="Sáng" aria-label="Sáng">
+        <button type="button" data-theme="light" title="Giao diện sáng" aria-label="Sáng">
           <svg class="i"><use href="#i-sun"/></svg>
         </button>
-        <button type="button" data-theme="auto" title="Theo hệ thống" aria-label="Theo hệ thống">
-          <svg class="i"><use href="#i-auto"/></svg>
-        </button>
-        <button type="button" data-theme="dark" title="Tối" aria-label="Tối">
+        <button type="button" data-theme="dark" title="Giao diện tối" aria-label="Tối">
           <svg class="i"><use href="#i-moon"/></svg>
         </button>
       </div>
@@ -1259,13 +1256,18 @@ async function guarded(fn) {
 
 // ---- theme ----
 function applyTheme(t) {
-  if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-  else delete document.documentElement.dataset.theme;
-  store.set("muse2api.theme", t === "auto" ? "" : t);
-  for (const b of $$(".themes button")) b.setAttribute("aria-pressed", String(b.dataset.theme === (t || "auto")));
+  if (t === "dark") {
+    document.documentElement.dataset.theme = "dark";
+    store.set("muse2api.theme", "dark");
+  } else {
+    t = "light";
+    delete document.documentElement.dataset.theme;
+    store.set("muse2api.theme", "light");
+  }
+  for (const b of $$(".themes button")) b.setAttribute("aria-pressed", String(b.dataset.theme === t));
 }
 for (const b of $$(".themes button")) b.addEventListener("click", () => applyTheme(b.dataset.theme));
-applyTheme(store.get("muse2api.theme") || "auto");
+applyTheme(store.get("muse2api.theme") || "light");
 
 // ---- modal (in-page; never window.confirm/alert) ----
 // Each action: {label, value, cls, primary, collect(), check(value) -> error string}.

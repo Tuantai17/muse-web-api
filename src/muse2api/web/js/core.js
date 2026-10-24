@@ -109,13 +109,18 @@ async function guarded(fn) {
 
 // ---- theme ----
 function applyTheme(t) {
-  if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-  else delete document.documentElement.dataset.theme;
-  store.set("muse2api.theme", t === "auto" ? "" : t);
-  for (const b of $$(".themes button")) b.setAttribute("aria-pressed", String(b.dataset.theme === (t || "auto")));
+  if (t === "dark") {
+    document.documentElement.dataset.theme = "dark";
+    store.set("muse2api.theme", "dark");
+  } else {
+    t = "light";
+    delete document.documentElement.dataset.theme;
+    store.set("muse2api.theme", "light");
+  }
+  for (const b of $$(".themes button")) b.setAttribute("aria-pressed", String(b.dataset.theme === t));
 }
 for (const b of $$(".themes button")) b.addEventListener("click", () => applyTheme(b.dataset.theme));
-applyTheme(store.get("muse2api.theme") || "auto");
+applyTheme(store.get("muse2api.theme") || "light");
 
 // ---- modal (in-page; never window.confirm/alert) ----
 // Each action: {label, value, cls, primary, collect(), check(value) -> error string}.
